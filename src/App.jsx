@@ -45,7 +45,7 @@ const App = () => {
                 <div style={{ padding: "250px", textAlign: "left" }}>
                     <h4>HELLO WORLD! 👋</h4>
                     I'm{" "}
-                    <strong style={{ color: "lightpink" }}>
+                    <strong style={{ color: "hsl(241.88deg 62.75% 80%)" }}>
                         <span ref={el} style={{ fontSize: "34px" }}></span>
                     </strong>
                 </div>
