@@ -2,27 +2,10 @@ import React from "react";
 import Typed from "typed.js";
 import myAvatar from "../src/assets/avatar.jpg";
 import bg from "../src/assets/bg.png";
-import { useState, useEffect, useRef } from "react";
+import TypedText from "./components/TypedText";
+import { useState, useEffect } from "react";
 
 const App = () => {
-    const el = useRef(null);
-
-    useEffect(() => {
-        const typed = new Typed(el.current, {
-            strings: ["AGNEY", "अग्नेय", "АГНЕЙ", "അഗ്നേയ"],
-            startDelay: 300,
-            typeSpeed: 100,
-            backSpeed: 100,
-            backDelay: 100,
-            loop: true,
-            cursorChar: "",
-        });
-
-        return () => {
-            typed.destroy();
-        };
-    }, []);
-
     return (
         <div
             style={{
@@ -46,8 +29,29 @@ const App = () => {
                     <h4>HELLO WORLD! 👋</h4>
                     I'm{" "}
                     <strong style={{ color: "lightpink" }}>
-                        <span ref={el} style={{ fontSize: "34px" }}></span>
+                        <TypedText
+                            strings={["AGNEY", "अग्नेय", "АГНЕЙ", "അഗ്നേയ"]}
+                            startDelay={300}
+                            typeSpeed={100}
+                            backSpeed={100}
+                            backDelay={100}
+                            loop={true}
+                            cursorChar={""}
+                            fontSize={34}
+                        />
                     </strong>
+                    <h3>
+                        <TypedText
+                            strings={["FULL STACK DEVELOPER", "Passionate About Deep Learning "]}
+                            startDelay={300}
+                            typeSpeed={100}
+                            backSpeed={100}
+                            backDelay={100}
+                            loop={true}
+                            cursorChar={"|"}
+                            fontSize={54}
+                        />
+                    </h3>
                 </div>
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", marginRight: "100px" }}>
