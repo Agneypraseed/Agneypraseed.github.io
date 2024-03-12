@@ -1,6 +1,7 @@
 import React from "react";
 import Typed from "typed.js";
 import myAvatar from "../src/assets/avatar.jpg";
+import bg from "../src/assets/bg.png";
 import { useState, useEffect, useRef } from "react";
 
 const App = () => {
@@ -23,9 +24,25 @@ const App = () => {
     }, []);
 
     return (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: "100vh" }}>
-            <div style={{ flex: "0 0 auto", padding: "0 20px" }}>
-                <div style={{ padding: 250, textAlign: "left" }}>
+        <div
+            style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                display: "grid",
+                gridTemplateColumns: "1fr auto",
+                alignItems: "center",
+                backgroundImage: `url(${bg})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+            }}
+        >
+            <div style={{ padding: "0 20px", overflow: "hidden" }}>
+                <div style={{ padding: "250px", textAlign: "left" }}>
                     <h4>HELLO WORLD! 👋</h4>
                     I'm{" "}
                     <strong style={{ color: "lightpink" }}>
@@ -33,7 +50,7 @@ const App = () => {
                     </strong>
                 </div>
             </div>
-            <div style={{ flex: "0 0 auto", marginRight: "100px" }}>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginRight: "100px" }}>
                 <img
                     src={myAvatar}
                     alt="home pic"
