@@ -2,15 +2,32 @@ import React from "react";
 import myAvatar from "../src/assets/avatar.jpg";
 import blue_bg from "../src/assets/blue_bg.png";
 import TypedText from "./components/TypedText";
-import { useState, useEffect } from "react";
 import Skills from "./components/Skills";
+import { useEffect, useState } from "react";
 import CanvasBackground from "./components/CanvasBackground";
+import DarkModeToggle from "./components/DarkModeToggle";
 
 const App = () => {
+    // const [darkMode, setDarkMode] = useState(false);
+
+    // useEffect(() => {
+    //     const savedMode = localStorage.getItem("darkMode");
+    //     if (savedMode) {
+    //         setDarkMode(savedMode === "true");
+    //     }
+    // }, []);
+
+    // const handleDarkModeToggle = (e) => {
+    //     const newMode = e.target.checked;
+    //     setDarkMode(newMode);
+    //     localStorage.setItem("darkMode", newMode);
+    // };
+
     return (
         <>
+            {/* <DarkModeToggle darkMode={darkMode} toggleDarkMode={handleDarkModeToggle} /> */}
             <div
-                style={{                    
+                style={{
                     position: "relative",
                     margin: "-0.5em",
                     height: "100vh",
@@ -22,7 +39,7 @@ const App = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
-                    backgroundColor: "rgba(255, 255, 255, 0.9)",                    
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
                 }}
             >
                 <CanvasBackground />
