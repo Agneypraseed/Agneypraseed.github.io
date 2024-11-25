@@ -6,33 +6,34 @@ const CanvasBackground = () => {
 
     useEffect(() => {
         const sketch = (p) => {
-            let waveY = [];
-            let waveCount = 1000;
-
+            let phase = 0;            
+            
             p.setup = () => {
                 const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
-                canvas.parent(canvasRef.current);
-                for (let i = 0; i < waveCount; i++) {
-                    waveY.push(p.height / 2);
-                }
+                canvas.parent(canvasRef.current);                
             };
 
             p.draw = () => {
-                p.clear();
+                p.clear();                
                 p.noFill();
-                p.stroke(255, 255, 255, 100); // White lines with transparency
-                p.strokeWeight(0.5);
+                p.stroke(255, 255, 255, 60); // White lines with low opacity
+                p.strokeWeight(1.5);
 
-                // Draw waves
-                for (let i = 0; i < waveCount; i++) {
-                    let yOffset = i * 50; // Vertical offset for each wave
+                // Draw multiple wave lines
+                for (let i = 0; i < 60; i++) { // Increased number of lines
                     p.beginShape();
-                    for (let x = 0; x <= p.width; x += 10) {
-                        const y = p.noise(x * 0.005, p.frameCount * 0.01 + i) * 100 + yOffset;
-                        p.vertex(x, p.height / 2 + y - waveY[i]);
+                    for (let x = 0; x < p.width + 100; x += 5) { // Smaller step for smoother curves
+                        // Calculate y position using sine wave and noise
+                        const baseY = i * 10; // Spacing between lines
+                        const noiseVal = p.noise(x * 0.002 + phase, i * 0.002, phase);
+                        const y = baseY + p.sin(x * 0.01 + phase) * 50 + noiseVal * 100;
+                        
+                        p.vertex(x, y);
                     }
                     p.endShape();
                 }
+                
+                phase += 1.003; // Faster Fan like movement
             };
 
             p.windowResized = () => {

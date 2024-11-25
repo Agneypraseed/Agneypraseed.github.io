@@ -10,7 +10,7 @@ const App = () => {
     return (
         <>
             <div
-                style={{
+                style={{                    
                     position: "relative",
                     margin: "-0.5em",
                     height: "100vh",
@@ -22,7 +22,7 @@ const App = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
-                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",                    
                 }}
             >
                 <CanvasBackground />
