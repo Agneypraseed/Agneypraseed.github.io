@@ -1,9 +1,10 @@
 import React from "react";
 import myAvatar from "../src/assets/avatar.jpg";
-import bg from "../src/assets/bg.png";
+import blue_bg from "../src/assets/blue_bg.png";
 import TypedText from "./components/TypedText";
 import { useState, useEffect } from "react";
 import Skills from "./components/Skills";
+import CanvasBackground from "./components/CanvasBackground";
 
 const App = () => {
     return (
@@ -17,14 +18,15 @@ const App = () => {
                     color: "rgba(255, 255, 255, 0.87)",
                     gridTemplateColumns: "1fr auto",
                     alignItems: "center",
-                    backgroundImage: `url(${bg})`,
+                    backgroundImage: `url(${blue_bg})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
                     backgroundColor: "rgba(255, 255, 255, 0.9)",
                 }}
             >
-                <div style={{ padding: "0 20px", overflow: "hidden" }}>
+                <CanvasBackground />
+                <div style={{ padding: "0 20px", overflow: "hidden", zIndex: 20 }}>
                     <div style={{ padding: "120px", textAlign: "left" }}>
                         <h4>HELLO WORLD! 👋</h4>
                         I'm{" "}
@@ -54,7 +56,15 @@ const App = () => {
                         </h3>
                     </div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "flex-end", marginRight: "340px" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        marginRight: "340px",
+                        overflow: "hidden",
+                        zIndex: 20,
+                    }}
+                >
                     <img
                         src={myAvatar}
                         alt="home pic"
