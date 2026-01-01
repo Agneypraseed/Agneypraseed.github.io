@@ -1,10 +1,11 @@
-import myAvatar from "../src/assets/avatar.jpg";
-import blue_bg from "../src/assets/blue_bg.png";
-import TypedText from "./components/TypedText";
-import Skills from "./components/Skills";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import CanvasBackground from "./components/CanvasBackground";
+import Navbar from "./components/Navbar";
 import DarkModeToggle from "./components/DarkModeToggle";
+import HomePage from "./pages/HomePage";
+import ProjectsPage from "./pages/ProjectsPage";
+import BlogPage from "./pages/BlogPage";
+import FootprintsPage from "./pages/FootprintsPage";
 
 const App = () => {
     const [darkMode, setDarkMode] = useState(false);
@@ -33,89 +34,16 @@ const App = () => {
     }, [darkMode]);
 
     return (
-        <>
+        <Router>
+            <Navbar darkMode={darkMode} />
             <DarkModeToggle darkMode={darkMode} toggleDarkMode={handleDarkModeToggle} />
-            <div
-                style={{
-                    position: "relative",
-                    margin: 0,
-                    height: "100vh",
-                    display: "grid",
-                    color: darkMode ? "rgba(255, 255, 255, 0.87)" : "rgba(255, 255, 255, 0.87)",
-                    gridTemplateColumns: "1fr auto",
-                    alignItems: "center",
-                    backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundColor: darkMode ? "#1a1a1a" : "rgba(255, 255, 255, 0.9)",
-                    transition: "background-color 0.3s ease, background-image 0.3s ease",
-                    overflow: "hidden",
-                }}
-            >
-                <CanvasBackground darkMode={darkMode} />
-                <div style={{ padding: "0 20px", overflow: "hidden", zIndex: 20 }}>
-                    <div style={{ padding: "120px", textAlign: "left" }}>
-                        <h4>HELLO WORLD! 👋</h4>
-                        I&apos;m{" "}
-                        <strong style={{ color: "#66d4cf" }}>
-                            <TypedText
-                                strings={["AGNEY", "अग्नेय", "АГНЕЙ", "അഗ്നെയ്"]}
-                                startDelay={300}
-                                typeSpeed={100}
-                                backSpeed={100}
-                                backDelay={100}
-                                loop={true}
-                                cursorChar={""}
-                                fontSize={34}
-                            />
-                        </strong>
-                        <h3>
-                            <TypedText
-                                strings={["FULL STACK DEVELOPER", "Passionate About Deep Learning "]}
-                                startDelay={300}
-                                typeSpeed={100}
-                                backSpeed={100}
-                                backDelay={100}
-                                loop={true}
-                                cursorChar={"|"}
-                                fontSize={54}
-                            />
-                        </h3>
-                    </div>
-                </div>
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        marginRight: "340px",
-                        overflow: "hidden",
-                        zIndex: 20,
-                    }}
-                >
-                    <img
-                        src={myAvatar}
-                        alt="home pic"
-                        style={{ width: "200px", height: "200px", borderRadius: "50%" }}
-                    />
-                </div>
-            </div>
-            <div
-                style={{
-                    position: "relative",
-                    display: "flex",
-                    justifyContent: "center",
-                    backgroundColor: darkMode ? "#1a1a1a" : "transparent",
-                    backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    transition: "all 0.3s ease",
-                    overflow: "hidden",
-                }}
-            >
-                <Skills darkMode={darkMode} />
-            </div>
-        </>
+            <Routes>
+                <Route path="/" element={<HomePage darkMode={darkMode} />} />
+                <Route path="/projects" element={<ProjectsPage darkMode={darkMode} />} />
+                <Route path="/blog" element={<BlogPage darkMode={darkMode} />} />
+                <Route path="/footprints" element={<FootprintsPage darkMode={darkMode} />} />
+            </Routes>
+        </Router>
     );
 };
 

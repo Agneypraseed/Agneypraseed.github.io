@@ -1,0 +1,99 @@
+import myAvatar from "../assets/avatar.jpg";
+import blue_bg from "../assets/blue_bg.png";
+import TypedText from "../components/TypedText";
+import Skills from "../components/Skills";
+import Footer from "../components/Footer";
+import CanvasBackground from "../components/CanvasBackground";
+
+const HomePage = ({ darkMode }) => {
+    return (
+        <>
+            <div
+                style={{
+                    position: "relative",
+                    margin: 0,
+                    height: "100vh",
+                    display: "grid",
+                    color: darkMode ? "rgba(255, 255, 255, 0.87)" : "rgba(255, 255, 255, 0.87)",
+                    gridTemplateColumns: "1fr auto",
+                    alignItems: "center",
+                    backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    backgroundColor: darkMode ? "#1a1a1a" : "rgba(255, 255, 255, 0.9)",
+                    transition: "background-color 0.3s ease, background-image 0.3s ease",
+                    overflow: "hidden",
+                }}
+            >
+                <CanvasBackground darkMode={darkMode} />
+                <div style={{ padding: "0 20px", overflow: "hidden", zIndex: 20 }}>
+                    <div style={{ padding: "120px", textAlign: "left" }}>
+                        <h4>HELLO WORLD! 👋</h4>
+                        I&apos;m{" "}
+                        <strong style={{ color: "#66d4cf" }}>
+                            <TypedText
+                                strings={["AGNEY", "अग्नेय", "АГНЕЙ", "അഗ്നെയ്"]}
+                                startDelay={300}
+                                typeSpeed={100}
+                                backSpeed={100}
+                                backDelay={100}
+                                loop={true}
+                                cursorChar={""}
+                                fontSize={34}
+                            />
+                        </strong>
+                        <h3>
+                            <TypedText
+                                strings={["FULL STACK DEVELOPER", "Passionate About Deep Learning "]}
+                                startDelay={300}
+                                typeSpeed={100}
+                                backSpeed={100}
+                                backDelay={100}
+                                loop={true}
+                                cursorChar={"|"}
+                                fontSize={54}
+                            />
+                        </h3>
+                    </div>
+                </div>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        marginRight: "340px",
+                        overflow: "hidden",
+                        zIndex: 20,
+                    }}
+                >
+                    <img
+                        src={myAvatar}
+                        alt="home pic"
+                        style={{ width: "200px", height: "200px", borderRadius: "50%" }}
+                    />
+                </div>
+            </div>
+            <div
+                id="skills-section"
+                style={{
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    width: "100%",
+                    backgroundColor: darkMode ? "#1a1a1a" : "transparent",
+                    backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    transition: "all 0.3s ease",
+                    overflow: "hidden",
+                }}
+            >
+                <Skills darkMode={darkMode} />
+                <Footer darkMode={darkMode} />
+            </div>
+        </>
+    );
+};
+
+export default HomePage;
