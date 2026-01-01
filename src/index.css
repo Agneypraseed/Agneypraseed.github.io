@@ -1,3 +1,14 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
 :root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;
@@ -46,5 +57,23 @@
 
 .toggle-input:checked + .toggle-label {
     background-color: #4A90E2; /* Change the background color when checked */
+}
+
+/* Bulb Button Styles */
+.bulb-button {
+    outline: none;
+}
+
+.bulb-button:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+.bulb-button:active {
+    transform: scale(0.95);
+}
+
+.bulb-button svg {
+    color: rgba(255, 255, 255, 0.9);
 }
 

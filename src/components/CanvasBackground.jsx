@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import p5 from "p5";
 
-const CanvasBackground = () => {
+const CanvasBackground = ({ darkMode }) => {
     const canvasRef = useRef();
 
     useEffect(() => {
@@ -16,7 +16,9 @@ const CanvasBackground = () => {
             p.draw = () => {
                 p.clear();                
                 p.noFill();
-                p.stroke(255, 255, 255, 60); // White lines with low opacity
+                // Adjust stroke color based on dark mode
+                const strokeOpacity = darkMode ? 40 : 60;
+                p.stroke(255, 255, 255, strokeOpacity);
                 p.strokeWeight(1.5);
 
                 // Draw multiple wave lines
@@ -45,9 +47,9 @@ const CanvasBackground = () => {
         return () => {
             p5Instance.remove();
         };
-    }, []);
+    }, [darkMode]);
 
-    return <div ref={canvasRef} style={{ position: "fixed", top: 0, left: 0, zIndex: 10, pointerEvents: "none" }} />;
+    return <div ref={canvasRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 10, pointerEvents: "none", overflow: "hidden" }} />;
 };
 
 export default CanvasBackground;

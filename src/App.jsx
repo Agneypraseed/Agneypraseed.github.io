@@ -1,4 +1,3 @@
-import React from "react";
 import myAvatar from "../src/assets/avatar.jpg";
 import blue_bg from "../src/assets/blue_bg.png";
 import TypedText from "./components/TypedText";
@@ -8,45 +7,57 @@ import CanvasBackground from "./components/CanvasBackground";
 import DarkModeToggle from "./components/DarkModeToggle";
 
 const App = () => {
-    // const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
 
-    // useEffect(() => {
-    //     const savedMode = localStorage.getItem("darkMode");
-    //     if (savedMode) {
-    //         setDarkMode(savedMode === "true");
-    //     }
-    // }, []);
+    useEffect(() => {
+        const savedMode = localStorage.getItem("darkMode");
+        if (savedMode) {
+            setDarkMode(savedMode === "true");
+        }
+    }, []);
 
-    // const handleDarkModeToggle = (e) => {
-    //     const newMode = e.target.checked;
-    //     setDarkMode(newMode);
-    //     localStorage.setItem("darkMode", newMode);
-    // };
+    const handleDarkModeToggle = () => {
+        const newMode = !darkMode;
+        setDarkMode(newMode);
+        localStorage.setItem("darkMode", newMode);
+    };
+
+    useEffect(() => {
+        if (darkMode) {
+            document.body.style.backgroundColor = "#1a1a1a";
+            document.body.style.color = "#ffffff";
+        } else {
+            document.body.style.backgroundColor = "";
+            document.body.style.color = "";
+        }
+    }, [darkMode]);
 
     return (
         <>
-            {/* <DarkModeToggle darkMode={darkMode} toggleDarkMode={handleDarkModeToggle} /> */}
+            <DarkModeToggle darkMode={darkMode} toggleDarkMode={handleDarkModeToggle} />
             <div
                 style={{
                     position: "relative",
-                    margin: "-0.5em",
+                    margin: 0,
                     height: "100vh",
                     display: "grid",
-                    color: "rgba(255, 255, 255, 0.87)",
+                    color: darkMode ? "rgba(255, 255, 255, 0.87)" : "rgba(255, 255, 255, 0.87)",
                     gridTemplateColumns: "1fr auto",
                     alignItems: "center",
-                    backgroundImage: `url(${blue_bg})`,
+                    backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
-                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    backgroundColor: darkMode ? "#1a1a1a" : "rgba(255, 255, 255, 0.9)",
+                    transition: "background-color 0.3s ease, background-image 0.3s ease",
+                    overflow: "hidden",
                 }}
             >
-                <CanvasBackground />
+                <CanvasBackground darkMode={darkMode} />
                 <div style={{ padding: "0 20px", overflow: "hidden", zIndex: 20 }}>
                     <div style={{ padding: "120px", textAlign: "left" }}>
                         <h4>HELLO WORLD! 👋</h4>
-                        I'm{" "}
+                        I&apos;m{" "}
                         <strong style={{ color: "#66d4cf" }}>
                             <TypedText
                                 strings={["AGNEY", "अग्नेय", "АГНЕЙ", "അഗ്നെയ്"]}
@@ -89,8 +100,20 @@ const App = () => {
                     />
                 </div>
             </div>
-            <div style={{ display: "flex" }}>
-                <Skills />
+            <div
+                style={{
+                    position: "relative",
+                    display: "flex",
+                    justifyContent: "center",
+                    backgroundColor: darkMode ? "#1a1a1a" : "transparent",
+                    backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    transition: "all 0.3s ease",
+                    overflow: "hidden",
+                }}
+            >
+                <Skills darkMode={darkMode} />
             </div>
         </>
     );
