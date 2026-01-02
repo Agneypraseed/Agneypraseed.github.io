@@ -1,6 +1,6 @@
 import blue_bg from "../assets/blue_bg.png";
-import blogWaves from "../assets/blog_waves.png";
 import Footer from "../components/Footer";
+import AnimatedWaves from "../components/AnimatedWaves";
 
 const BlogPage = ({ darkMode }) => {
     return (
@@ -29,22 +29,14 @@ const BlogPage = ({ darkMode }) => {
                 }}
             >
                 <h1 style={{ 
-                    color: darkMode ? "#ffffff" : "#333333",
+                    color: "#ffffff",
                     marginBottom: "2rem",
-                    fontSize: "3rem"
+                    fontSize: "3rem",
+                    textShadow: "0 2px 10px rgba(0,0,0,0.3)",
                 }}>
                     Blog
                 </h1>
-                <img 
-                    src={blogWaves} 
-                    alt="Creative waves" 
-                    style={{ 
-                        width: "100%", 
-                        maxWidth: "500px", 
-                        marginBottom: "2rem",
-                        opacity: darkMode ? 0.8 : 1,
-                    }} 
-                />
+                <AnimatedWaves darkMode={darkMode} />
                 <p style={{ 
                     color: darkMode ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.95)",
                     fontSize: "1.5rem",
