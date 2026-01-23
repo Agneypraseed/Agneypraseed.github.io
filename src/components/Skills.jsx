@@ -9,6 +9,8 @@ import git from "../assets/skills/git.png";
 import mongodb from "../assets/skills/mongodb.jpeg";
 import nodejs from "../assets/skills/nodejs.png";
 import opencv from "../assets/skills/opencv.png";
+import pytorch from "../assets/skills/pytorch.png";
+import springboot from "../assets/skills/springboot.svg";
 
 const Skills = ({ darkMode }) => (
     <div style={{ 
@@ -22,11 +24,22 @@ const Skills = ({ darkMode }) => (
         boxShadow: darkMode ? "0 8px 32px rgba(0, 0, 0, 0.3)" : "0 8px 32px rgba(0, 0, 0, 0.1)",
         transition: "all 0.3s ease" 
     }}>
-        <h2 style={{ color: darkMode ? "#ffffff" : "#333333", transition: "color 0.3s ease" }}>Skills</h2>
-        {/* <span>Languages, Frameworks and Tools</span> */}
-        <div style={{ display: "flex", flexWrap: "wrap" }}>
+        <h2 style={{ 
+            color: darkMode ? "#ffffff" : "#333333", 
+            transition: "color 0.3s ease",
+            marginBottom: "1.5rem",
+            textAlign: "center",
+        }}>Skills</h2>
+        <div style={{ 
+            display: "flex", 
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "0.5rem",
+        }}>
             <Skill logo={java} title="Java" darkMode={darkMode} />
             <Skill logo={python} title="Python" darkMode={darkMode} />
+            <Skill logo={pytorch} title="PyTorch" darkMode={darkMode} />
+            <Skill logo={springboot} title="Spring Boot" darkMode={darkMode} />
             <Skill logo={js} title="JavaScript" darkMode={darkMode} />
             <Skill logo={cpp} title="C++" darkMode={darkMode} />
             <Skill logo={bash} title="Bash" darkMode={darkMode} />

@@ -58,9 +58,41 @@ const BlogPage = ({ darkMode }) => {
                     color: darkMode ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.8)",
                     fontSize: "0.95rem",
                     marginTop: "0.75rem",
+                    marginBottom: "3rem",
                 }}>
                     — Robert Cormier
                 </p>
+
+                {/* Notes Link */}
+                <a
+                    href="https://quartz-6zw.pages.dev/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        color: "#ffffff",
+                        textDecoration: "none",
+                        fontSize: "1.3rem",
+                        fontWeight: "500",
+                        opacity: 0.9,
+                        transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = "1";
+                        e.currentTarget.style.gap = "0.75rem";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = "0.9";
+                        e.currentTarget.style.gap = "0.5rem";
+                    }}
+                >
+                    <span>Notes</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
+                </a>
             </div>
             <Footer darkMode={darkMode} />
         </div>
