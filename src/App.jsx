@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import DarkModeToggle from "./components/DarkModeToggle";
@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import ProjectsPage from "./pages/ProjectsPage";
 import BlogPage from "./pages/BlogPage";
 import FootprintsPage from "./pages/FootprintsPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
     const [darkMode, setDarkMode] = useState(false);
@@ -42,6 +43,7 @@ const App = () => {
                 <Route path="/projects" element={<ProjectsPage darkMode={darkMode} />} />
                 <Route path="/blog" element={<BlogPage darkMode={darkMode} />} />
                 <Route path="/footprints" element={<FootprintsPage darkMode={darkMode} />} />
+                <Route path="*" element={<NotFoundPage darkMode={darkMode} />} />
             </Routes>
         </Router>
     );

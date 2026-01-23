@@ -60,12 +60,25 @@ const ProjectsPage = ({ darkMode }) => {
             <h1 style={{ 
                 color: "#ffffff",
                 textAlign: "center",
-                marginBottom: "2rem",
+                marginBottom: "0.75rem",
                 fontSize: "2.5rem",
                 textShadow: "0 2px 10px rgba(0,0,0,0.3)",
             }}>
                 Projects
             </h1>
+            <span style={{
+                display: "inline-block",
+                background: "rgba(255, 193, 7, 0.2)",
+                color: "#ffc107",
+                fontSize: "0.75rem",
+                fontWeight: "600",
+                padding: "4px 12px",
+                borderRadius: "12px",
+                marginBottom: "2rem",
+                border: "1px solid rgba(255, 193, 7, 0.3)",
+            }}>
+                🚧 Work in Progress
+            </span>
 
             {/* Project Cards Grid */}
             <div style={{

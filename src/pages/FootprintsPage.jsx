@@ -187,13 +187,6 @@ const FootprintsPage = ({ darkMode }) => {
                                 }}>
                                     📍 {travel.location}
                                 </p>
-                                <p style={{ 
-                                    margin: "2px 0 0", 
-                                    fontSize: "0.75rem", 
-                                    color: "#888",
-                                }}>
-                                    {travel.date}
-                                </p>
                             </div>
                         </div>
                     ))}

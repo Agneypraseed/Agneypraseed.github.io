@@ -30,12 +30,25 @@ const BlogPage = ({ darkMode }) => {
             >
                 <h1 style={{ 
                     color: "#ffffff",
-                    marginBottom: "2rem",
+                    marginBottom: "0.75rem",
                     fontSize: "3rem",
                     textShadow: "0 2px 10px rgba(0,0,0,0.3)",
                 }}>
                     Blog
                 </h1>
+                <span style={{
+                    display: "inline-block",
+                    background: "rgba(255, 193, 7, 0.2)",
+                    color: "#ffc107",
+                    fontSize: "0.75rem",
+                    fontWeight: "600",
+                    padding: "4px 12px",
+                    borderRadius: "12px",
+                    marginBottom: "1.5rem",
+                    border: "1px solid rgba(255, 193, 7, 0.3)",
+                }}>
+                    🚧 Work in Progress
+                </span>
                 <AnimatedWaves darkMode={darkMode} />
                 <p style={{ 
                     color: darkMode ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.95)",
