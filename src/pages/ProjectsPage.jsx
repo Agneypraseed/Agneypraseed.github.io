@@ -40,7 +40,7 @@ const projects = [
     },
 ];
 
-import catCursor from "../assets/cat-cursor.svg";
+import catCursor from "../assets/paw-cursor-32.png";
 
 const ProjectsPage = ({ darkMode }) => {
     return (

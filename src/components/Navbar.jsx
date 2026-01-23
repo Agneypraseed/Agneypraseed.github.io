@@ -1,9 +1,6 @@
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Navbar = ({ darkMode }) => {
-    const navigate = useNavigate();
-    const location = useLocation();
-
     const linkStyle = {
         color: darkMode ? "rgba(255, 255, 255, 0.9)" : "rgba(255, 255, 255, 0.95)",
         textDecoration: "none",
@@ -18,25 +15,6 @@ const Navbar = ({ darkMode }) => {
     const activeLinkStyle = {
         ...linkStyle,
         background: darkMode ? "rgba(255, 255, 255, 0.15)" : "rgba(255, 255, 255, 0.25)",
-    };
-
-    const scrollToSkills = () => {
-        if (location.pathname !== "/") {
-            // Navigate to home first, then scroll after a short delay
-            navigate("/");
-            setTimeout(() => {
-                const skillsSection = document.getElementById("skills-section");
-                if (skillsSection) {
-                    skillsSection.scrollIntoView({ behavior: "smooth" });
-                }
-            }, 100);
-        } else {
-            // Already on home page, just scroll
-            const skillsSection = document.getElementById("skills-section");
-            if (skillsSection) {
-                skillsSection.scrollIntoView({ behavior: "smooth" });
-            }
-        }
     };
 
     return (
@@ -72,18 +50,22 @@ const Navbar = ({ darkMode }) => {
             >
                 Home
             </NavLink>
-            <span 
-                style={linkStyle}
-                onClick={scrollToSkills}
+            <NavLink 
+                to="/about" 
+                style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
                 onMouseEnter={(e) => {
-                    e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.15)";
+                    if (!e.currentTarget.classList.contains('active')) {
+                        e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.15)";
+                    }
                 }}
                 onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "transparent";
+                    if (!e.currentTarget.classList.contains('active')) {
+                        e.currentTarget.style.background = "transparent";
+                    }
                 }}
             >
-                Skills
-            </span>
+                About
+            </NavLink>
             <NavLink 
                 to="/projects" 
                 style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
