@@ -40,6 +40,8 @@ const projects = [
     },
 ];
 
+import catCursor from "../assets/cat-cursor.svg";
+
 const ProjectsPage = ({ darkMode }) => {
     return (
         <div
@@ -54,6 +56,7 @@ const ProjectsPage = ({ darkMode }) => {
                 backgroundPosition: "center",
                 backgroundAttachment: "fixed",
                 padding: "100px 20px 20px",
+                cursor: `url(${catCursor}) 16 16, auto`,
             }}
         >
             {/* Title */}
