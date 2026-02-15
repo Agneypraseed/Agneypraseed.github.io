@@ -280,24 +280,21 @@ const AboutPage = ({ darkMode }) => {
                     borderRadius: "16px",
                     padding: isMobile ? "1.25rem" : "2rem",
                     border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #e5e7eb",
+                    color: darkMode ? "rgba(255,255,255,0.85)" : "#4b5563",
+                    fontSize: isMobile ? "0.95rem" : "1.1rem",
+                    lineHeight: "1.9",
                 }}>
-                    <p style={{
-                        color: darkMode ? "#ffffff" : "#1a1a1a",
-                        fontSize: isMobile ? "1rem" : "1.2rem",
-                        lineHeight: "1.8",
-                        margin: 0,
-                    }}>
-                        Hi, I'm <strong>Agney</strong> (he/him), based in Berlin, Germany. 🇩🇪
-                    </p>
-                    <p style={{
-                        color: darkMode ? "rgba(255,255,255,0.8)" : "#4b5563",
-                        fontSize: isMobile ? "0.95rem" : "1.1rem",
-                        lineHeight: "1.8",
-                        marginTop: "1rem",
-                        marginBottom: 0,
-                    }}>
-                        I'm currently an <strong>MS student in AI</strong>. I'm a software developer interested in training deep neural networks. 🧠
-                    </p>
+                    Hi, I'm <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Agney</strong> (he/him), based in Berlin, Germany.
+                    <br /><br />
+                    I am currently pursuing a <strong>Master of Science in Artificial Intelligence</strong>.
+                    <br /><br />
+                    Previously, I worked as a <strong>Software Development Engineer at Publicis Sapient</strong> for nearly two years, where I built RESTful APIs with Spring Boot, developed full-stack features using React and Angular, and worked with PostgreSQL, MongoDB, and AWS for cloud-based solutions.
+                    <br /><br />
+                    Currently, I'm focusing on <strong>training large neural networks</strong>, enhancing my expertise in deep learning and AI model development.
+                    <br /><br />
+                    I'm an <strong>Azure Certified Data Scientist</strong> and <strong>AWS Certified Cloud Practitioner</strong>.
+                    <br /><br />
+                    Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
                 </div>
             </div>
             <Footer darkMode={darkMode} isHomePage={false} />
