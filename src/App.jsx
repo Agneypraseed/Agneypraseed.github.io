@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import DarkModeToggle from "./components/DarkModeToggle";
@@ -9,8 +9,10 @@ import FootprintsPage from "./pages/FootprintsPage";
 import AboutPage from "./pages/AboutPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
-const App = () => {
+const AppContent = () => {
     const [darkMode, setDarkMode] = useState(false);
+    const location = useLocation();
+    const isHomePage = location.pathname === "/";
 
     useEffect(() => {
         const savedMode = localStorage.getItem("darkMode");
@@ -36,9 +38,9 @@ const App = () => {
     }, [darkMode]);
 
     return (
-        <Router>
-            <Navbar darkMode={darkMode} />
-            <DarkModeToggle darkMode={darkMode} toggleDarkMode={handleDarkModeToggle} />
+        <>
+            <Navbar darkMode={darkMode} isHomePage={isHomePage} />
+            <DarkModeToggle darkMode={darkMode} toggleDarkMode={handleDarkModeToggle} isHomePage={isHomePage} />
             <Routes>
                 <Route path="/" element={<HomePage darkMode={darkMode} />} />
                 <Route path="/about" element={<AboutPage darkMode={darkMode} />} />
@@ -47,6 +49,14 @@ const App = () => {
                 <Route path="/footprints" element={<FootprintsPage darkMode={darkMode} />} />
                 <Route path="*" element={<NotFoundPage darkMode={darkMode} />} />
             </Routes>
+        </>
+    );
+};
+
+const App = () => {
+    return (
+        <Router>
+            <AppContent />
         </Router>
     );
 };

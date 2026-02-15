@@ -1,4 +1,3 @@
-import blue_bg from "../assets/blue_bg.png";
 import Footer from "../components/Footer";
 
 // Project data
@@ -50,35 +49,31 @@ const ProjectsPage = ({ darkMode }) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                backgroundColor: darkMode ? "#1a1a1a" : "transparent",
-                backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundAttachment: "fixed",
+                backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
                 padding: "100px 20px 20px",
                 cursor: `url(${catCursor}) 16 16, auto`,
+                transition: "background-color 0.3s ease",
             }}
         >
             {/* Title */}
             <h1 style={{ 
-                color: "#ffffff",
+                color: darkMode ? "#ffffff" : "#1a1a1a",
                 textAlign: "center",
                 marginBottom: "0.75rem",
                 fontSize: "2.5rem",
-                textShadow: "0 2px 10px rgba(0,0,0,0.3)",
             }}>
                 Projects
             </h1>
             <span style={{
                 display: "inline-block",
-                background: "rgba(255, 193, 7, 0.2)",
-                color: "#ffc107",
+                background: darkMode ? "rgba(255, 193, 7, 0.2)" : "rgba(255, 193, 7, 0.15)",
+                color: darkMode ? "#ffc107" : "#b8860b",
                 fontSize: "0.75rem",
                 fontWeight: "600",
                 padding: "4px 12px",
                 borderRadius: "12px",
                 marginBottom: "2rem",
-                border: "1px solid rgba(255, 193, 7, 0.3)",
+                border: darkMode ? "1px solid rgba(255, 193, 7, 0.3)" : "1px solid rgba(255, 193, 7, 0.4)",
             }}>
                 🚧 Work in Progress
             </span>
@@ -97,12 +92,12 @@ const ProjectsPage = ({ darkMode }) => {
                     <div
                         key={project.id}
                         style={{
-                            background: darkMode ? "rgba(30, 30, 30, 0.7)" : "rgba(255, 255, 255, 0.25)",
-                            backdropFilter: "blur(12px)",
-                            WebkitBackdropFilter: "blur(12px)",
+                            background: darkMode ? "rgba(30, 30, 30, 0.7)" : "#ffffff",
+                            backdropFilter: darkMode ? "blur(12px)" : "none",
+                            WebkitBackdropFilter: darkMode ? "blur(12px)" : "none",
                             borderRadius: "16px",
-                            border: darkMode ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid rgba(255, 255, 255, 0.3)",
-                            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15)",
+                            border: darkMode ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #e5e7eb",
+                            boxShadow: darkMode ? "0 8px 32px rgba(0, 0, 0, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04)",
                             padding: "1.5rem",
                             display: "flex",
                             flexDirection: "column",
@@ -110,16 +105,20 @@ const ProjectsPage = ({ darkMode }) => {
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = "translateY(-4px)";
-                            e.currentTarget.style.boxShadow = "0 12px 40px rgba(0, 0, 0, 0.25)";
+                            e.currentTarget.style.boxShadow = darkMode 
+                                ? "0 12px 40px rgba(0, 0, 0, 0.25)" 
+                                : "0 4px 12px rgba(0, 0, 0, 0.1), 0 8px 32px rgba(0, 0, 0, 0.06)";
                         }}
                         onMouseLeave={(e) => {
                             e.currentTarget.style.transform = "translateY(0)";
-                            e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 0, 0, 0.15)";
+                            e.currentTarget.style.boxShadow = darkMode 
+                                ? "0 8px 32px rgba(0, 0, 0, 0.15)" 
+                                : "0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04)";
                         }}
                     >
                         {/* Title */}
                         <h3 style={{
-                            color: darkMode ? "#ffffff" : "#333",
+                            color: darkMode ? "#ffffff" : "#1a1a1a",
                             margin: "0 0 0.75rem 0",
                             fontSize: "1.25rem",
                             fontWeight: "600",
@@ -131,7 +130,7 @@ const ProjectsPage = ({ darkMode }) => {
                         {project.course && (
                             <span style={{
                                 display: "inline-block",
-                                background: darkMode ? "rgba(139, 92, 246, 0.3)" : "rgba(139, 92, 246, 0.2)",
+                                background: darkMode ? "rgba(139, 92, 246, 0.3)" : "rgba(139, 92, 246, 0.1)",
                                 color: darkMode ? "#c4b5fd" : "#7c3aed",
                                 fontSize: "0.7rem",
                                 padding: "4px 10px",
@@ -145,7 +144,7 @@ const ProjectsPage = ({ darkMode }) => {
 
                         {/* Description */}
                         <p style={{
-                            color: darkMode ? "rgba(255, 255, 255, 0.7)" : "rgba(0, 0, 0, 0.7)",
+                            color: darkMode ? "rgba(255, 255, 255, 0.7)" : "#4b5563",
                             fontSize: "0.9rem",
                             lineHeight: "1.5",
                             margin: "0 0 1rem 0",
@@ -165,8 +164,8 @@ const ProjectsPage = ({ darkMode }) => {
                                 <span
                                     key={idx}
                                     style={{
-                                        background: darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
-                                        color: darkMode ? "rgba(255, 255, 255, 0.8)" : "rgba(0, 0, 0, 0.7)",
+                                        background: darkMode ? "rgba(255, 255, 255, 0.1)" : "#f3f4f6",
+                                        color: darkMode ? "rgba(255, 255, 255, 0.8)" : "#374151",
                                         fontSize: "0.75rem",
                                         padding: "4px 10px",
                                         borderRadius: "8px",
@@ -187,8 +186,8 @@ const ProjectsPage = ({ darkMode }) => {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 gap: "0.5rem",
-                                background: darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.8)",
-                                color: darkMode ? "#ffffff" : "#ffffff",
+                                background: darkMode ? "rgba(255, 255, 255, 0.1)" : "#1a1a1a",
+                                color: "#ffffff",
                                 textDecoration: "none",
                                 padding: "10px 20px",
                                 borderRadius: "8px",
@@ -197,10 +196,10 @@ const ProjectsPage = ({ darkMode }) => {
                                 transition: "background 0.2s ease",
                             }}
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.9)";
+                                e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.2)" : "#333";
                             }}
                             onMouseLeave={(e) => {
-                                e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.8)";
+                                e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.1)" : "#1a1a1a";
                             }}
                         >
                             <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
@@ -213,7 +212,7 @@ const ProjectsPage = ({ darkMode }) => {
             </div>
 
             <div style={{ marginTop: "auto", paddingTop: "2rem" }}>
-                <Footer darkMode={darkMode} />
+                <Footer darkMode={darkMode} isHomePage={false} />
             </div>
         </div>
     );

@@ -1,4 +1,3 @@
-import blue_bg from "../assets/blue_bg.png";
 import Footer from "../components/Footer";
 import AnimatedWaves from "../components/AnimatedWaves";
 
@@ -10,11 +9,9 @@ const BlogPage = ({ darkMode }) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                backgroundColor: darkMode ? "#1a1a1a" : "transparent",
-                backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
                 padding: "100px 40px 20px",
+                transition: "background-color 0.3s ease",
             }}
         >
             <div
@@ -29,36 +26,35 @@ const BlogPage = ({ darkMode }) => {
                 }}
             >
                 <h1 style={{ 
-                    color: "#ffffff",
+                    color: darkMode ? "#ffffff" : "#1a1a1a",
                     marginBottom: "0.75rem",
                     fontSize: "3rem",
-                    textShadow: "0 2px 10px rgba(0,0,0,0.3)",
                 }}>
                     Blog
                 </h1>
                 <span style={{
                     display: "inline-block",
-                    background: "rgba(255, 193, 7, 0.2)",
-                    color: "#ffc107",
+                    background: darkMode ? "rgba(255, 193, 7, 0.2)" : "rgba(255, 193, 7, 0.15)",
+                    color: darkMode ? "#ffc107" : "#b8860b",
                     fontSize: "0.75rem",
                     fontWeight: "600",
                     padding: "4px 12px",
                     borderRadius: "12px",
                     marginBottom: "1.5rem",
-                    border: "1px solid rgba(255, 193, 7, 0.3)",
+                    border: darkMode ? "1px solid rgba(255, 193, 7, 0.3)" : "1px solid rgba(255, 193, 7, 0.4)",
                 }}>
                     🚧 Work in Progress
                 </span>
                 <AnimatedWaves darkMode={darkMode} />
                 <p style={{ 
-                    color: darkMode ? "rgba(255, 255, 255, 0.8)" : "rgba(255, 255, 255, 0.95)",
+                    color: darkMode ? "rgba(255, 255, 255, 0.8)" : "#1a1a1a",
                     fontSize: "1.5rem",
                     marginBottom: "1.5rem"
                 }}>
                     ✍️ Coming Soon ✍️
                 </p>
                 <p style={{ 
-                    color: darkMode ? "rgba(255, 255, 255, 0.6)" : "rgba(255, 255, 255, 0.9)",
+                    color: darkMode ? "rgba(255, 255, 255, 0.6)" : "#6b7280",
                     fontSize: "1.1rem",
                     fontStyle: "italic",
                     lineHeight: "1.8",
@@ -68,7 +64,7 @@ const BlogPage = ({ darkMode }) => {
                     unlike, say, a brain surgeon."
                 </p>
                 <p style={{ 
-                    color: darkMode ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.8)",
+                    color: darkMode ? "rgba(255, 255, 255, 0.4)" : "#9ca3af",
                     fontSize: "0.95rem",
                     marginTop: "0.75rem",
                     marginBottom: "3rem",
@@ -85,7 +81,7 @@ const BlogPage = ({ darkMode }) => {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "0.5rem",
-                        color: "#ffffff",
+                        color: darkMode ? "#ffffff" : "#1a1a1a",
                         textDecoration: "none",
                         fontSize: "1.3rem",
                         fontWeight: "500",
@@ -107,7 +103,7 @@ const BlogPage = ({ darkMode }) => {
                     </svg>
                 </a>
             </div>
-            <Footer darkMode={darkMode} />
+            <Footer darkMode={darkMode} isHomePage={false} />
         </div>
     );
 };

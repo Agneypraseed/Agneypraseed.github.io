@@ -90,7 +90,7 @@ const HomePage = ({ darkMode }) => {
                 }}
             >
                 <Skills darkMode={darkMode} />
-                <Footer darkMode={darkMode} />
+                <Footer darkMode={darkMode} isHomePage={true} />
             </div>
         </>
     );

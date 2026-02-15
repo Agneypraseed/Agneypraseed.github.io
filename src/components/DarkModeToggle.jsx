@@ -1,6 +1,9 @@
 import React from "react";
 
-const DarkModeToggle = ({ darkMode, toggleDarkMode }) => {
+const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
+    // On non-home pages in light mode: adapted for white bg
+    const useWhiteBg = !darkMode && !isHomePage;
+
     return (
         <div className="header-controls" style={{ position: "fixed", top: 20, right: 20, zIndex: 100 }}>
             <button
@@ -10,12 +13,16 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode }) => {
                 style={{
                     background: darkMode 
                         ? "rgba(30, 30, 30, 0.6)" 
-                        : "rgba(255, 255, 255, 0.25)",
+                        : useWhiteBg
+                            ? "rgba(255, 255, 255, 0.9)"
+                            : "rgba(255, 255, 255, 0.25)",
                     backdropFilter: "blur(10px)",
                     WebkitBackdropFilter: "blur(10px)",
                     border: darkMode 
                         ? "1px solid rgba(255, 255, 255, 0.1)" 
-                        : "1px solid rgba(255, 255, 255, 0.4)",
+                        : useWhiteBg
+                            ? "1px solid rgba(0, 0, 0, 0.1)"
+                            : "1px solid rgba(255, 255, 255, 0.4)",
                     borderRadius: "50%",
                     width: "50px",
                     height: "50px",
@@ -26,7 +33,9 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode }) => {
                     transition: "all 0.4s ease",
                     boxShadow: darkMode 
                         ? "0 8px 32px rgba(0, 0, 0, 0.3)" 
-                        : "0 8px 32px rgba(0, 0, 0, 0.1)",
+                        : useWhiteBg
+                            ? "0 4px 16px rgba(0, 0, 0, 0.06)"
+                            : "0 8px 32px rgba(0, 0, 0, 0.1)",
                     transform: darkMode ? "rotate(360deg)" : "rotate(0deg)",
                 }}
                 onMouseEnter={(e) => {
@@ -39,7 +48,9 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode }) => {
                     e.currentTarget.style.transform = darkMode ? "rotate(360deg) scale(1)" : "rotate(0deg) scale(1)";
                     e.currentTarget.style.boxShadow = darkMode 
                         ? "0 8px 32px rgba(0, 0, 0, 0.3)" 
-                        : "0 8px 32px rgba(0, 0, 0, 0.1)";
+                        : useWhiteBg
+                            ? "0 4px 16px rgba(0, 0, 0, 0.06)"
+                            : "0 8px 32px rgba(0, 0, 0, 0.1)";
                 }}
             >
                 {darkMode ? (

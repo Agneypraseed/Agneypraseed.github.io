@@ -1,5 +1,4 @@
 import { useState } from "react";
-import blue_bg from "../assets/blue_bg.png";
 import Footer from "../components/Footer";
 import resume from "../assets/resume.pdf";
 
@@ -21,12 +20,9 @@ const AboutPage = ({ darkMode }) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                backgroundColor: darkMode ? "#1a1a1a" : "transparent",
-                backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundAttachment: "fixed",
+                backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
                 padding: "120px 40px 40px",
+                transition: "background-color 0.3s ease",
             }}
         >
             <div
@@ -50,11 +46,10 @@ const AboutPage = ({ darkMode }) => {
                     {/* Left Side - Name & Contact */}
                     <div>
                         <h1 style={{ 
-                            color: "#ffffff",
+                            color: darkMode ? "#ffffff" : "#1a1a1a",
                             marginBottom: "0.5rem",
                             fontSize: "2.8rem",
                             fontWeight: "700",
-                            textShadow: "0 2px 10px rgba(0,0,0,0.3)",
                             margin: 0,
                         }}>
                             Agney Praseed
@@ -66,7 +61,7 @@ const AboutPage = ({ darkMode }) => {
                             marginTop: "0.5rem",
                         }}>
                             <span style={{
-                                color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.9)",
+                                color: darkMode ? "rgba(255,255,255,0.7)" : "#6b7280",
                                 fontSize: "0.95rem",
                             }}>
                                 Contact: <span style={{ fontFamily: "monospace" }}>{displayEmail}</span>
@@ -75,12 +70,12 @@ const AboutPage = ({ darkMode }) => {
                                 onClick={copyEmail}
                                 title="Copy email"
                                 style={{
-                                    background: darkMode ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.25)",
-                                    border: "1px solid rgba(255,255,255,0.2)",
+                                    background: darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6",
+                                    border: darkMode ? "1px solid rgba(255,255,255,0.2)" : "1px solid #e5e7eb",
                                     borderRadius: "6px",
                                     padding: "6px",
                                     cursor: "pointer",
-                                    color: "#fff",
+                                    color: darkMode ? "#fff" : "#374151",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -89,10 +84,10 @@ const AboutPage = ({ darkMode }) => {
                                     minHeight: "28px",
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.4)";
+                                    e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.2)" : "#e5e7eb";
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.25)";
+                                    e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6";
                                 }}
                             >
                                 {copied ? (
@@ -128,26 +123,25 @@ const AboutPage = ({ darkMode }) => {
                                 gap: "0.5rem",
                                 background: darkMode 
                                     ? "linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(99, 102, 241, 0.4))" 
-                                    : "linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(99, 102, 241, 0.6))",
-                                backdropFilter: "blur(10px)",
+                                    : "linear-gradient(135deg, #8b5cf6, #6366f1)",
                                 color: "#ffffff",
                                 textDecoration: "none",
                                 padding: "12px 20px",
                                 fontSize: "0.95rem",
                                 fontWeight: "600",
-                                border: "1px solid rgba(139, 92, 246, 0.3)",
+                                border: darkMode ? "1px solid rgba(139, 92, 246, 0.3)" : "none",
                                 borderRight: "none",
                                 transition: "all 0.3s ease",
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.background = darkMode 
                                     ? "linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(99, 102, 241, 0.5))"
-                                    : "linear-gradient(135deg, rgba(139, 92, 246, 0.7), rgba(99, 102, 241, 0.7))";
+                                    : "linear-gradient(135deg, #7c3aed, #4f46e5)";
                             }}
                             onMouseLeave={(e) => {
                                 e.currentTarget.style.background = darkMode 
                                     ? "linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(99, 102, 241, 0.4))"
-                                    : "linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(99, 102, 241, 0.6))";
+                                    : "linear-gradient(135deg, #8b5cf6, #6366f1)";
                             }}
                         >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -172,24 +166,23 @@ const AboutPage = ({ darkMode }) => {
                                 justifyContent: "center",
                                 background: darkMode 
                                     ? "linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(99, 102, 241, 0.4))" 
-                                    : "linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(99, 102, 241, 0.6))",
-                                backdropFilter: "blur(10px)",
+                                    : "linear-gradient(135deg, #8b5cf6, #6366f1)",
                                 color: "#ffffff",
                                 textDecoration: "none",
                                 padding: "12px 14px",
-                                border: "1px solid rgba(139, 92, 246, 0.3)",
+                                border: darkMode ? "1px solid rgba(139, 92, 246, 0.3)" : "none",
                                 borderLeft: "none",
                                 transition: "all 0.3s ease",
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.background = darkMode 
                                     ? "linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(99, 102, 241, 0.5))"
-                                    : "linear-gradient(135deg, rgba(139, 92, 246, 0.7), rgba(99, 102, 241, 0.7))";
+                                    : "linear-gradient(135deg, #7c3aed, #4f46e5)";
                             }}
                             onMouseLeave={(e) => {
                                 e.currentTarget.style.background = darkMode 
                                     ? "linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(99, 102, 241, 0.4))"
-                                    : "linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(99, 102, 241, 0.6))";
+                                    : "linear-gradient(135deg, #8b5cf6, #6366f1)";
                             }}
                         >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -219,18 +212,19 @@ const AboutPage = ({ darkMode }) => {
                             width: "44px",
                             height: "44px",
                             borderRadius: "50%",
-                            background: darkMode ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.25)",
-                            backdropFilter: "blur(8px)",
-                            border: "1px solid rgba(255,255,255,0.2)",
-                            color: "#ffffff",
+                            background: darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6",
+                            border: darkMode ? "1px solid rgba(255,255,255,0.2)" : "1px solid #e5e7eb",
+                            color: darkMode ? "#ffffff" : "#374151",
                             transition: "all 0.2s ease",
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.background = "#0077b5";
+                            e.currentTarget.style.color = "#ffffff";
                             e.currentTarget.style.transform = "translateY(-2px)";
                         }}
                         onMouseLeave={(e) => {
-                            e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.25)";
+                            e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6";
+                            e.currentTarget.style.color = darkMode ? "#ffffff" : "#374151";
                             e.currentTarget.style.transform = "translateY(0)";
                         }}
                     >
@@ -251,18 +245,19 @@ const AboutPage = ({ darkMode }) => {
                             width: "44px",
                             height: "44px",
                             borderRadius: "50%",
-                            background: darkMode ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.25)",
-                            backdropFilter: "blur(8px)",
-                            border: "1px solid rgba(255,255,255,0.2)",
-                            color: "#ffffff",
+                            background: darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6",
+                            border: darkMode ? "1px solid rgba(255,255,255,0.2)" : "1px solid #e5e7eb",
+                            color: darkMode ? "#ffffff" : "#374151",
                             transition: "all 0.2s ease",
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.background = "#333";
+                            e.currentTarget.style.color = "#ffffff";
                             e.currentTarget.style.transform = "translateY(-2px)";
                         }}
                         onMouseLeave={(e) => {
-                            e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.25)";
+                            e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6";
+                            e.currentTarget.style.color = darkMode ? "#ffffff" : "#374151";
                             e.currentTarget.style.transform = "translateY(0)";
                         }}
                     >
@@ -274,14 +269,14 @@ const AboutPage = ({ darkMode }) => {
 
                 {/* Bio */}
                 <div style={{
-                    background: darkMode ? "rgba(30, 30, 30, 0.6)" : "rgba(255, 255, 255, 0.2)",
-                    backdropFilter: "blur(12px)",
+                    background: darkMode ? "rgba(30, 30, 30, 0.6)" : "#f9fafb",
+                    backdropFilter: darkMode ? "blur(12px)" : "none",
                     borderRadius: "16px",
                     padding: "2rem",
-                    border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.3)",
+                    border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #e5e7eb",
                 }}>
                     <p style={{
-                        color: "#ffffff",
+                        color: darkMode ? "#ffffff" : "#1a1a1a",
                         fontSize: "1.2rem",
                         lineHeight: "1.8",
                         margin: 0,
@@ -289,7 +284,7 @@ const AboutPage = ({ darkMode }) => {
                         Hi, I'm <strong>Agney</strong> (he/him), based in Berlin, Germany. 🇩🇪
                     </p>
                     <p style={{
-                        color: darkMode ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.95)",
+                        color: darkMode ? "rgba(255,255,255,0.8)" : "#4b5563",
                         fontSize: "1.1rem",
                         lineHeight: "1.8",
                         marginTop: "1rem",
@@ -299,7 +294,7 @@ const AboutPage = ({ darkMode }) => {
                     </p>
                 </div>
             </div>
-            <Footer darkMode={darkMode} />
+            <Footer darkMode={darkMode} isHomePage={false} />
         </div>
     );
 };

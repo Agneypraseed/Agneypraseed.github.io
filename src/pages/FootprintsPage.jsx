@@ -1,5 +1,4 @@
 import { useState } from "react";
-import blue_bg from "../assets/blue_bg.png";
 import Footer from "../components/Footer";
 import TravelGlobe from "../components/TravelGlobe";
 import travels from "../data/travels";
@@ -26,26 +25,22 @@ const FootprintsPage = ({ darkMode }) => {
                 minHeight: "100vh",
                 display: "flex",
                 flexDirection: "column",
-                backgroundColor: darkMode ? "#1a1a1a" : "transparent",
-                backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundAttachment: "fixed",
+                backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
                 padding: "100px 20px 20px",
+                transition: "background-color 0.3s ease",
             }}
         >
             {/* Title */}
             <h1 style={{ 
-                color: darkMode ? "#ffffff" : "#ffffff",
+                color: darkMode ? "#ffffff" : "#1a1a1a",
                 textAlign: "center",
                 marginBottom: "1rem",
                 fontSize: "2.5rem",
-                textShadow: "0 2px 10px rgba(0,0,0,0.3)",
             }}>
                 Footprints
             </h1>
             <p style={{
-                color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.9)",
+                color: darkMode ? "rgba(255,255,255,0.7)" : "#6b7280",
                 textAlign: "center",
                 marginBottom: "2rem",
                 fontSize: "1.1rem",
@@ -72,17 +67,18 @@ const FootprintsPage = ({ darkMode }) => {
                             display: "inline-flex",
                             alignItems: "center",
                             gap: "0.75rem",
-                            background: darkMode ? "rgba(0, 255, 136, 0.2)" : "rgba(0, 255, 136, 0.3)",
+                            background: darkMode ? "rgba(0, 255, 136, 0.2)" : "rgba(0, 200, 100, 0.1)",
                             padding: "0.75rem 1.5rem",
                             borderRadius: "50px",
-                            color: darkMode ? "#00ff88" : "#006633",
+                            color: darkMode ? "#00ff88" : "#047857",
                             fontWeight: "600",
+                            border: darkMode ? "none" : "1px solid rgba(0, 200, 100, 0.2)",
                         }}>
                             <span>📍 {selectedLocation}</span>
                             <button
                                 onClick={() => setSelectedLocation(null)}
                                 style={{
-                                    background: "rgba(255,255,255,0.2)",
+                                    background: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)",
                                     border: "none",
                                     borderRadius: "50%",
                                     width: "24px",
@@ -195,7 +191,7 @@ const FootprintsPage = ({ darkMode }) => {
                 <div style={{
                     textAlign: "center",
                     padding: "3rem",
-                    color: darkMode ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.9)",
+                    color: darkMode ? "rgba(255,255,255,0.6)" : "#9ca3af",
                 }}>
                     <p style={{ fontSize: "1.4rem", marginBottom: "0.5rem" }}>🌍</p>
                     <p style={{ fontSize: "1.1rem" }}>Add photos to src/data/travels.js</p>
@@ -244,7 +240,7 @@ const FootprintsPage = ({ darkMode }) => {
             )}
 
             <div style={{ marginTop: "auto", paddingTop: "2rem" }}>
-                <Footer darkMode={darkMode} />
+                <Footer darkMode={darkMode} isHomePage={false} />
             </div>
         </div>
     );

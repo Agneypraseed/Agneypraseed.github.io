@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import blue_bg from "../assets/blue_bg.png";
 
 const NotFoundPage = ({ darkMode }) => {
     return (
@@ -10,32 +9,29 @@ const NotFoundPage = ({ darkMode }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: darkMode ? "#1a1a1a" : "transparent",
-                backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
                 padding: "100px 40px 20px",
                 textAlign: "center",
+                transition: "background-color 0.3s ease",
             }}
         >
             <h1 style={{ 
-                color: "#ffffff",
+                color: darkMode ? "#ffffff" : "#1a1a1a",
                 fontSize: "8rem",
                 margin: "0",
-                textShadow: "0 4px 20px rgba(0,0,0,0.3)",
                 fontWeight: "700",
             }}>
                 404
             </h1>
             <p style={{
-                color: darkMode ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.9)",
+                color: darkMode ? "rgba(255,255,255,0.7)" : "#4b5563",
                 fontSize: "1.5rem",
                 marginBottom: "2rem",
             }}>
                 Oops! Page not found
             </p>
             <p style={{
-                color: darkMode ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.8)",
+                color: darkMode ? "rgba(255,255,255,0.5)" : "#9ca3af",
                 fontSize: "1rem",
                 marginBottom: "2rem",
                 maxWidth: "400px",
@@ -48,7 +44,7 @@ const NotFoundPage = ({ darkMode }) => {
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "0.5rem",
-                    background: darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.8)",
+                    background: darkMode ? "rgba(255, 255, 255, 0.1)" : "#1a1a1a",
                     color: "#ffffff",
                     textDecoration: "none",
                     padding: "12px 24px",
