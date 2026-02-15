@@ -2,10 +2,12 @@ import { useState } from "react";
 import Footer from "../components/Footer";
 import TravelGlobe from "../components/TravelGlobe";
 import travels from "../data/travels";
+import useIsMobile from "../hooks/useIsMobile";
 
 const FootprintsPage = ({ darkMode }) => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedLocation, setSelectedLocation] = useState(null);
+    const { isMobile } = useIsMobile();
 
     // Filter photos based on selected location, or show favorites if none selected
     const displayedPhotos = selectedLocation 
@@ -26,7 +28,7 @@ const FootprintsPage = ({ darkMode }) => {
                 display: "flex",
                 flexDirection: "column",
                 backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
-                padding: "100px 20px 20px",
+                padding: isMobile ? "80px 12px 16px" : "100px 20px 20px",
                 transition: "background-color 0.3s ease",
             }}
         >
@@ -35,7 +37,7 @@ const FootprintsPage = ({ darkMode }) => {
                 color: darkMode ? "#ffffff" : "#1a1a1a",
                 textAlign: "center",
                 marginBottom: "1rem",
-                fontSize: "2.5rem",
+                fontSize: isMobile ? "1.8rem" : "2.5rem",
             }}>
                 Footprints
             </h1>
@@ -43,7 +45,7 @@ const FootprintsPage = ({ darkMode }) => {
                 color: darkMode ? "rgba(255,255,255,0.7)" : "#6b7280",
                 textAlign: "center",
                 marginBottom: "2rem",
-                fontSize: "1.1rem",
+                fontSize: isMobile ? "0.95rem" : "1.1rem",
             }}>
                 Agney Around the World ✨
             </p>
@@ -102,11 +104,11 @@ const FootprintsPage = ({ darkMode }) => {
             {travels.length > 0 ? (
                 <div style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                    gap: "2rem",
+                    gridTemplateColumns: isMobile ? "repeat(auto-fill, minmax(140px, 1fr))" : "repeat(auto-fill, minmax(280px, 1fr))",
+                    gap: isMobile ? "1rem" : "2rem",
                     maxWidth: "1200px",
                     margin: "0 auto",
-                    padding: "0 1rem",
+                    padding: isMobile ? "0" : "0 1rem",
                     width: "100%",
                 }}>
                     {photosToShow.map((travel) => (
@@ -115,7 +117,7 @@ const FootprintsPage = ({ darkMode }) => {
                             onClick={() => setSelectedImage(travel)}
                             style={{
                                 background: "#ffffff",
-                                padding: "12px 12px 50px 12px",
+                                padding: isMobile ? "6px 6px 36px 6px" : "12px 12px 50px 12px",
                                 borderRadius: "4px",
                                 cursor: "pointer",
                                 boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15), 0 8px 40px rgba(0, 0, 0, 0.1)",
@@ -151,16 +153,16 @@ const FootprintsPage = ({ darkMode }) => {
                             {travel.isFavorite && (
                                 <div style={{
                                     position: "absolute",
-                                    top: "20px",
-                                    right: "20px",
+                                    top: isMobile ? "12px" : "20px",
+                                    right: isMobile ? "12px" : "20px",
                                     background: "rgba(255,255,255,0.9)",
                                     borderRadius: "50%",
-                                    width: "28px",
-                                    height: "28px",
+                                    width: isMobile ? "22px" : "28px",
+                                    height: isMobile ? "22px" : "28px",
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    fontSize: "14px",
+                                    fontSize: isMobile ? "11px" : "14px",
                                     boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
                                 }}>
                                     ⭐
@@ -169,15 +171,15 @@ const FootprintsPage = ({ darkMode }) => {
                             {/* Caption on white border */}
                             <div style={{
                                 position: "absolute",
-                                bottom: "10px",
-                                left: "12px",
-                                right: "12px",
+                                bottom: isMobile ? "4px" : "10px",
+                                left: isMobile ? "6px" : "12px",
+                                right: isMobile ? "6px" : "12px",
                                 textAlign: "center",
                             }}>
                                 <p style={{ 
                                     margin: 0, 
                                     fontWeight: "600", 
-                                    fontSize: "0.9rem",
+                                    fontSize: isMobile ? "0.7rem" : "0.9rem",
                                     color: "#333",
                                     fontFamily: "'Caveat', cursive, sans-serif",
                                 }}>
@@ -215,14 +217,14 @@ const FootprintsPage = ({ darkMode }) => {
                         justifyContent: "center",
                         zIndex: 2000,
                         cursor: "pointer",
-                        padding: "2rem",
+                        padding: isMobile ? "1rem" : "2rem",
                     }}
                 >
                     <img
                         src={selectedImage.image}
                         alt={selectedImage.location}
                         style={{
-                            maxWidth: "90%",
+                            maxWidth: isMobile ? "95%" : "90%",
                             maxHeight: "70vh",
                             borderRadius: "12px",
                             boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
@@ -233,7 +235,7 @@ const FootprintsPage = ({ darkMode }) => {
                         textAlign: "center", 
                         marginTop: "1.5rem" 
                     }}>
-                        <h2 style={{ margin: 0 }}>📍 {selectedImage.location}</h2>
+                        <h2 style={{ margin: 0, fontSize: isMobile ? "1.2rem" : "1.5rem" }}>📍 {selectedImage.location}</h2>
                         <p style={{ opacity: 0.7, marginTop: "0.5rem" }}>{selectedImage.date}</p>
                     </div>
                 </div>

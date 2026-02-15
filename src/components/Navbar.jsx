@@ -1,19 +1,29 @@
-import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import useIsMobile from "../hooks/useIsMobile";
 
 const Navbar = ({ darkMode, isHomePage }) => {
-    // On home page or dark mode: white text on blue/dark bg
-    // On other pages in light mode: dark text on white bg
+    const [menuOpen, setMenuOpen] = useState(false);
+    const { isMobile } = useIsMobile();
+    const location = useLocation();
+
+    // Close menu on route change
+    useEffect(() => {
+        setMenuOpen(false);
+    }, [location.pathname]);
+
     const useWhiteBg = !darkMode && !isHomePage;
 
     const linkStyle = {
         color: useWhiteBg ? "#374151" : "rgba(255, 255, 255, 0.95)",
         textDecoration: "none",
-        padding: "0.5rem 1rem",
+        padding: isMobile ? "0.65rem 1rem" : "0.5rem 1rem",
         borderRadius: "8px",
         transition: "all 0.3s ease",
-        fontSize: "0.95rem",
+        fontSize: isMobile ? "1rem" : "0.95rem",
         fontWeight: "500",
         cursor: "pointer",
+        display: "block",
     };
 
     const activeLinkStyle = {
@@ -31,6 +41,26 @@ const Navbar = ({ darkMode, isHomePage }) => {
             ? "rgba(255, 255, 255, 0.1)"
             : "rgba(255, 255, 255, 0.15)";
 
+    const navBg = useWhiteBg
+        ? "rgba(255, 255, 255, 0.85)"
+        : darkMode
+            ? "rgba(30, 30, 30, 0.7)"
+            : "rgba(255, 255, 255, 0.2)";
+
+    const navBorder = useWhiteBg
+        ? "1px solid rgba(0, 0, 0, 0.08)"
+        : darkMode
+            ? "1px solid rgba(255, 255, 255, 0.1)"
+            : "1px solid rgba(255, 255, 255, 0.3)";
+
+    const links = [
+        { to: "/", label: "Home" },
+        { to: "/about", label: "About" },
+        { to: "/projects", label: "Projects" },
+        { to: "/blog", label: "Blog" },
+        { to: "/footprints", label: "Footprints" },
+    ];
+
     return (
         <nav style={{
             position: "fixed",
@@ -38,107 +68,74 @@ const Navbar = ({ darkMode, isHomePage }) => {
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 1000,
-            display: "flex",
-            gap: "0.5rem",
-            padding: "0.75rem 1.5rem",
-            background: useWhiteBg
-                ? "rgba(255, 255, 255, 0.85)"
-                : darkMode
-                    ? "rgba(30, 30, 30, 0.7)"
-                    : "rgba(255, 255, 255, 0.2)",
+            padding: isMobile ? "0.6rem 1rem" : "0.75rem 1.5rem",
+            background: navBg,
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
             borderRadius: "50px",
-            border: useWhiteBg
-                ? "1px solid rgba(0, 0, 0, 0.08)"
-                : darkMode
-                    ? "1px solid rgba(255, 255, 255, 0.1)"
-                    : "1px solid rgba(255, 255, 255, 0.3)",
+            border: navBorder,
             boxShadow: useWhiteBg
                 ? "0 4px 24px rgba(0, 0, 0, 0.06)"
                 : "0 8px 32px rgba(0, 0, 0, 0.15)",
             transition: "all 0.3s ease",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
         }}>
-            <NavLink 
-                to="/" 
-                style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
-                onMouseEnter={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = hoverBg;
-                    }
-                }}
-                onMouseLeave={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = "transparent";
-                    }
-                }}
+            {/* Hamburger button — mobile only */}
+            <button
+                className="hamburger-btn"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Toggle menu"
+                style={{ color: useWhiteBg ? "#374151" : "#fff" }}
             >
-                Home
-            </NavLink>
-            <NavLink 
-                to="/about" 
-                style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
-                onMouseEnter={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = hoverBg;
-                    }
-                }}
-                onMouseLeave={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = "transparent";
-                    }
-                }}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    {menuOpen ? (
+                        <>
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </>
+                    ) : (
+                        <>
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </>
+                    )}
+                </svg>
+            </button>
+
+            {/* Nav links — desktop visible, mobile: toggled */}
+            <div
+                className={`nav-links${menuOpen ? " open" : ""}`}
+                style={isMobile && menuOpen ? {
+                    background: navBg,
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    border: navBorder,
+                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15)",
+                } : {}}
             >
-                About
-            </NavLink>
-            <NavLink 
-                to="/projects" 
-                style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
-                onMouseEnter={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = hoverBg;
-                    }
-                }}
-                onMouseLeave={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = "transparent";
-                    }
-                }}
-            >
-                Projects
-            </NavLink>
-            <NavLink 
-                to="/blog" 
-                style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
-                onMouseEnter={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = hoverBg;
-                    }
-                }}
-                onMouseLeave={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = "transparent";
-                    }
-                }}
-            >
-                Blog
-            </NavLink>
-            <NavLink 
-                to="/footprints" 
-                style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
-                onMouseEnter={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = hoverBg;
-                    }
-                }}
-                onMouseLeave={(e) => {
-                    if (!e.currentTarget.classList.contains('active')) {
-                        e.currentTarget.style.background = "transparent";
-                    }
-                }}
-            >
-                Footprints
-            </NavLink>
+                {links.map(({ to, label }) => (
+                    <NavLink
+                        key={to}
+                        to={to}
+                        style={({ isActive }) => isActive ? activeLinkStyle : linkStyle}
+                        onMouseEnter={(e) => {
+                            if (!e.currentTarget.classList.contains("active")) {
+                                e.currentTarget.style.background = hoverBg;
+                            }
+                        }}
+                        onMouseLeave={(e) => {
+                            if (!e.currentTarget.classList.contains("active")) {
+                                e.currentTarget.style.background = "transparent";
+                            }
+                        }}
+                    >
+                        {label}
+                    </NavLink>
+                ))}
+            </div>
         </nav>
     );
 };

@@ -1,11 +1,18 @@
 import React from "react";
+import useIsMobile from "../hooks/useIsMobile";
 
 const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
-    // On non-home pages in light mode: adapted for white bg
+    const { isMobile } = useIsMobile();
     const useWhiteBg = !darkMode && !isHomePage;
+    const btnSize = isMobile ? "42px" : "50px";
 
     return (
-        <div className="header-controls" style={{ position: "fixed", top: 20, right: 20, zIndex: 100 }}>
+        <div className="header-controls" style={{
+            position: "fixed",
+            top: isMobile ? 14 : 20,
+            right: isMobile ? 14 : 20,
+            zIndex: 100,
+        }}>
             <button
                 className="dark-mode-toggle"
                 onClick={toggleDarkMode}
@@ -24,8 +31,8 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
                             ? "1px solid rgba(0, 0, 0, 0.1)"
                             : "1px solid rgba(255, 255, 255, 0.4)",
                     borderRadius: "50%",
-                    width: "50px",
-                    height: "50px",
+                    width: btnSize,
+                    height: btnSize,
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
@@ -54,10 +61,9 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
                 }}
             >
                 {darkMode ? (
-                    // Moon icon for dark mode
                     <svg
-                        width="24"
-                        height="24"
+                        width={isMobile ? "20" : "24"}
+                        height={isMobile ? "20" : "24"}
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -76,10 +82,9 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
                         />
                     </svg>
                 ) : (
-                    // Sun icon for light mode
                     <svg
-                        width="24"
-                        height="24"
+                        width={isMobile ? "20" : "24"}
+                        height={isMobile ? "20" : "24"}
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"

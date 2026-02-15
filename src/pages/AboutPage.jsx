@@ -1,9 +1,11 @@
 import { useState } from "react";
 import Footer from "../components/Footer";
 import resume from "../assets/resume.pdf";
+import useIsMobile from "../hooks/useIsMobile";
 
 const AboutPage = ({ darkMode }) => {
     const [copied, setCopied] = useState(false);
+    const { isMobile } = useIsMobile();
     const email = "agneysince2000@gmail.com";
     const displayEmail = "agneysince2000[at]gmail[dot]com";
 
@@ -21,7 +23,7 @@ const AboutPage = ({ darkMode }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
-                padding: "120px 40px 40px",
+                padding: isMobile ? "80px 16px 20px" : "120px 40px 40px",
                 transition: "background-color 0.3s ease",
             }}
         >
@@ -38,9 +40,9 @@ const AboutPage = ({ darkMode }) => {
                 <div style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "flex-start",
+                    alignItems: isMobile ? "stretch" : "flex-start",
                     marginBottom: "2rem",
-                    flexWrap: "wrap",
+                    flexDirection: isMobile ? "column" : "row",
                     gap: "1.5rem",
                 }}>
                     {/* Left Side - Name & Contact */}
@@ -48,7 +50,7 @@ const AboutPage = ({ darkMode }) => {
                         <h1 style={{ 
                             color: darkMode ? "#ffffff" : "#1a1a1a",
                             marginBottom: "0.5rem",
-                            fontSize: "2.8rem",
+                            fontSize: isMobile ? "1.8rem" : "2.8rem",
                             fontWeight: "700",
                             margin: 0,
                         }}>
@@ -59,10 +61,12 @@ const AboutPage = ({ darkMode }) => {
                             alignItems: "center",
                             gap: "0.5rem",
                             marginTop: "0.5rem",
+                            flexWrap: "wrap",
                         }}>
                             <span style={{
                                 color: darkMode ? "rgba(255,255,255,0.7)" : "#6b7280",
-                                fontSize: "0.95rem",
+                                fontSize: isMobile ? "0.8rem" : "0.95rem",
+                                wordBreak: "break-all",
                             }}>
                                 Contact: <span style={{ fontFamily: "monospace" }}>{displayEmail}</span>
                             </span>
@@ -82,6 +86,7 @@ const AboutPage = ({ darkMode }) => {
                                     transition: "all 0.2s ease",
                                     minWidth: "28px",
                                     minHeight: "28px",
+                                    flexShrink: 0,
                                 }}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.2)" : "#e5e7eb";
@@ -111,6 +116,7 @@ const AboutPage = ({ darkMode }) => {
                         borderRadius: "10px",
                         overflow: "hidden",
                         boxShadow: "0 4px 20px rgba(139, 92, 246, 0.3)",
+                        alignSelf: isMobile ? "flex-start" : "auto",
                     }}>
                         {/* View CV - Opens in new tab */}
                         <a
@@ -272,12 +278,12 @@ const AboutPage = ({ darkMode }) => {
                     background: darkMode ? "rgba(30, 30, 30, 0.6)" : "#f9fafb",
                     backdropFilter: darkMode ? "blur(12px)" : "none",
                     borderRadius: "16px",
-                    padding: "2rem",
+                    padding: isMobile ? "1.25rem" : "2rem",
                     border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #e5e7eb",
                 }}>
                     <p style={{
                         color: darkMode ? "#ffffff" : "#1a1a1a",
-                        fontSize: "1.2rem",
+                        fontSize: isMobile ? "1rem" : "1.2rem",
                         lineHeight: "1.8",
                         margin: 0,
                     }}>
@@ -285,7 +291,7 @@ const AboutPage = ({ darkMode }) => {
                     </p>
                     <p style={{
                         color: darkMode ? "rgba(255,255,255,0.8)" : "#4b5563",
-                        fontSize: "1.1rem",
+                        fontSize: isMobile ? "0.95rem" : "1.1rem",
                         lineHeight: "1.8",
                         marginTop: "1rem",
                         marginBottom: 0,

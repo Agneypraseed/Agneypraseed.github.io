@@ -1,4 +1,5 @@
 import Footer from "../components/Footer";
+import useIsMobile from "../hooks/useIsMobile";
 
 // Project data
 const projects = [
@@ -42,6 +43,8 @@ const projects = [
 import catCursor from "../assets/paw-cursor-32.png";
 
 const ProjectsPage = ({ darkMode }) => {
+    const { isMobile } = useIsMobile();
+
     return (
         <div
             style={{
@@ -50,7 +53,7 @@ const ProjectsPage = ({ darkMode }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
-                padding: "100px 20px 20px",
+                padding: isMobile ? "80px 12px 16px" : "100px 20px 20px",
                 cursor: `url(${catCursor}) 16 16, auto`,
                 transition: "background-color 0.3s ease",
             }}
@@ -60,7 +63,7 @@ const ProjectsPage = ({ darkMode }) => {
                 color: darkMode ? "#ffffff" : "#1a1a1a",
                 textAlign: "center",
                 marginBottom: "0.75rem",
-                fontSize: "2.5rem",
+                fontSize: isMobile ? "1.8rem" : "2.5rem",
             }}>
                 Projects
             </h1>
@@ -81,11 +84,11 @@ const ProjectsPage = ({ darkMode }) => {
             {/* Project Cards Grid */}
             <div style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-                gap: "1.5rem",
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(320px, 1fr))",
+                gap: isMobile ? "1rem" : "1.5rem",
                 maxWidth: "1100px",
                 margin: "0 auto",
-                padding: "0 1rem",
+                padding: isMobile ? "0" : "0 1rem",
                 width: "100%",
             }}>
                 {projects.map((project) => (
@@ -98,7 +101,7 @@ const ProjectsPage = ({ darkMode }) => {
                             borderRadius: "16px",
                             border: darkMode ? "1px solid rgba(255, 255, 255, 0.1)" : "1px solid #e5e7eb",
                             boxShadow: darkMode ? "0 8px 32px rgba(0, 0, 0, 0.15)" : "0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.04)",
-                            padding: "1.5rem",
+                            padding: isMobile ? "1.25rem" : "1.5rem",
                             display: "flex",
                             flexDirection: "column",
                             transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -120,7 +123,7 @@ const ProjectsPage = ({ darkMode }) => {
                         <h3 style={{
                             color: darkMode ? "#ffffff" : "#1a1a1a",
                             margin: "0 0 0.75rem 0",
-                            fontSize: "1.25rem",
+                            fontSize: isMobile ? "1.1rem" : "1.25rem",
                             fontWeight: "600",
                         }}>
                             {project.title}
@@ -145,7 +148,7 @@ const ProjectsPage = ({ darkMode }) => {
                         {/* Description */}
                         <p style={{
                             color: darkMode ? "rgba(255, 255, 255, 0.7)" : "#4b5563",
-                            fontSize: "0.9rem",
+                            fontSize: isMobile ? "0.85rem" : "0.9rem",
                             lineHeight: "1.5",
                             margin: "0 0 1rem 0",
                             flex: "1",

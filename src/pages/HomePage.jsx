@@ -4,8 +4,11 @@ import TypedText from "../components/TypedText";
 import Skills from "../components/Skills";
 import Footer from "../components/Footer";
 import CanvasBackground from "../components/CanvasBackground";
+import useIsMobile from "../hooks/useIsMobile";
 
 const HomePage = ({ darkMode }) => {
+    const { isMobile } = useIsMobile();
+
     return (
         <>
             <div
@@ -13,10 +16,11 @@ const HomePage = ({ darkMode }) => {
                     position: "relative",
                     margin: 0,
                     height: "100vh",
-                    display: "grid",
+                    display: "flex",
+                    flexDirection: isMobile ? "column" : "row",
                     color: darkMode ? "rgba(255, 255, 255, 0.87)" : "rgba(255, 255, 255, 0.87)",
-                    gridTemplateColumns: "1fr auto",
                     alignItems: "center",
+                    justifyContent: isMobile ? "center" : "space-between",
                     backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
@@ -28,19 +32,22 @@ const HomePage = ({ darkMode }) => {
             >
                 <CanvasBackground darkMode={darkMode} />
                 <div style={{ padding: "0 20px", overflow: "hidden", zIndex: 20 }}>
-                    <div style={{ padding: "120px", textAlign: "left" }}>
+                    <div style={{
+                        padding: isMobile ? "20px" : "120px",
+                        textAlign: isMobile ? "center" : "left",
+                    }}>
                         <h4>HELLO WORLD! 👋</h4>
                         I&apos;m{" "}
                         <strong style={{ color: "#66d4cf" }}>
                             <TypedText
-                                strings={["AGNEY", "अग्नेय", "АГНЕЙ", "അഗ്നെയ്"]}
+                                strings={["AGNEY", "अग्नेय", "アグネイ", "അഗ്നെയ്"]}
                                 startDelay={300}
                                 typeSpeed={100}
                                 backSpeed={100}
                                 backDelay={100}
                                 loop={true}
                                 cursorChar={""}
-                                fontSize={34}
+                                fontSize={isMobile ? 22 : 34}
                             />
                         </strong>
                         <h3>
@@ -52,7 +59,7 @@ const HomePage = ({ darkMode }) => {
                                 backDelay={100}
                                 loop={true}
                                 cursorChar={"|"}
-                                fontSize={54}
+                                fontSize={isMobile ? 24 : 54}
                             />
                         </h3>
                     </div>
@@ -60,8 +67,8 @@ const HomePage = ({ darkMode }) => {
                 <div
                     style={{
                         display: "flex",
-                        justifyContent: "flex-end",
-                        marginRight: "340px",
+                        justifyContent: isMobile ? "center" : "flex-end",
+                        marginRight: isMobile ? "0" : "340px",
                         overflow: "hidden",
                         zIndex: 20,
                     }}
@@ -69,7 +76,11 @@ const HomePage = ({ darkMode }) => {
                     <img
                         src={myAvatar}
                         alt="home pic"
-                        style={{ width: "200px", height: "200px", borderRadius: "50%" }}
+                        style={{
+                            width: isMobile ? "140px" : "200px",
+                            height: isMobile ? "140px" : "200px",
+                            borderRadius: "50%",
+                        }}
                     />
                 </div>
             </div>

@@ -1,7 +1,10 @@
 import Footer from "../components/Footer";
 import AnimatedWaves from "../components/AnimatedWaves";
+import useIsMobile from "../hooks/useIsMobile";
 
 const BlogPage = ({ darkMode }) => {
+    const { isMobile } = useIsMobile();
+
     return (
         <div
             style={{
@@ -10,7 +13,7 @@ const BlogPage = ({ darkMode }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
-                padding: "100px 40px 20px",
+                padding: isMobile ? "80px 16px 16px" : "100px 40px 20px",
                 transition: "background-color 0.3s ease",
             }}
         >
@@ -28,7 +31,7 @@ const BlogPage = ({ darkMode }) => {
                 <h1 style={{ 
                     color: darkMode ? "#ffffff" : "#1a1a1a",
                     marginBottom: "0.75rem",
-                    fontSize: "3rem",
+                    fontSize: isMobile ? "2rem" : "3rem",
                 }}>
                     Blog
                 </h1>
@@ -48,17 +51,18 @@ const BlogPage = ({ darkMode }) => {
                 <AnimatedWaves darkMode={darkMode} />
                 <p style={{ 
                     color: darkMode ? "rgba(255, 255, 255, 0.8)" : "#1a1a1a",
-                    fontSize: "1.5rem",
+                    fontSize: isMobile ? "1.2rem" : "1.5rem",
                     marginBottom: "1.5rem"
                 }}>
                     ✍️ Coming Soon ✍️
                 </p>
                 <p style={{ 
                     color: darkMode ? "rgba(255, 255, 255, 0.6)" : "#6b7280",
-                    fontSize: "1.1rem",
+                    fontSize: isMobile ? "0.95rem" : "1.1rem",
                     fontStyle: "italic",
                     lineHeight: "1.8",
                     maxWidth: "600px",
+                    padding: isMobile ? "0 0.5rem" : "0",
                 }}>
                     "The beautiful thing about writing is that you don't have to get it right the first time, 
                     unlike, say, a brain surgeon."
@@ -83,7 +87,7 @@ const BlogPage = ({ darkMode }) => {
                         gap: "0.5rem",
                         color: darkMode ? "#ffffff" : "#1a1a1a",
                         textDecoration: "none",
-                        fontSize: "1.3rem",
+                        fontSize: isMobile ? "1.1rem" : "1.3rem",
                         fontWeight: "500",
                         opacity: 0.9,
                         transition: "all 0.2s ease",

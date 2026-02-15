@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import useIsMobile from "../hooks/useIsMobile";
 
 const NotFoundPage = ({ darkMode }) => {
+    const { isMobile } = useIsMobile();
+
     return (
         <div
             style={{
@@ -10,14 +13,14 @@ const NotFoundPage = ({ darkMode }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
-                padding: "100px 40px 20px",
+                padding: isMobile ? "80px 20px 20px" : "100px 40px 20px",
                 textAlign: "center",
                 transition: "background-color 0.3s ease",
             }}
         >
             <h1 style={{ 
                 color: darkMode ? "#ffffff" : "#1a1a1a",
-                fontSize: "8rem",
+                fontSize: isMobile ? "4rem" : "8rem",
                 margin: "0",
                 fontWeight: "700",
             }}>
@@ -25,14 +28,14 @@ const NotFoundPage = ({ darkMode }) => {
             </h1>
             <p style={{
                 color: darkMode ? "rgba(255,255,255,0.7)" : "#4b5563",
-                fontSize: "1.5rem",
+                fontSize: isMobile ? "1.2rem" : "1.5rem",
                 marginBottom: "2rem",
             }}>
                 Oops! Page not found
             </p>
             <p style={{
                 color: darkMode ? "rgba(255,255,255,0.5)" : "#9ca3af",
-                fontSize: "1rem",
+                fontSize: isMobile ? "0.9rem" : "1rem",
                 marginBottom: "2rem",
                 maxWidth: "400px",
             }}>
