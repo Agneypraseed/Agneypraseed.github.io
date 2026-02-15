@@ -52,7 +52,7 @@ const HomePage = ({ darkMode }) => {
                         </strong>
                         <h3>
                             <TypedText
-                                strings={["FULL STACK DEVELOPER", "Passionate About Deep Learning "]}
+                                strings={["FULL STACK DEVELOPER", "Building Intelligent Systems"]}
                                 startDelay={300}
                                 typeSpeed={100}
                                 backSpeed={100}

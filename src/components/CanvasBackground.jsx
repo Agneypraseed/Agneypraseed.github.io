@@ -1,55 +1,88 @@
-import React, { useRef, useEffect } from "react";
-import p5 from "p5";
+import { useRef, useEffect } from "react";
 
 const CanvasBackground = ({ darkMode }) => {
-    const canvasRef = useRef();
+    const canvasRef = useRef(null);
+    const animRef = useRef(null);
 
     useEffect(() => {
-        const sketch = (p) => {
-            let phase = 0;            
-            
-            p.setup = () => {
-                const canvas = p.createCanvas(p.windowWidth, p.windowHeight);
-                canvas.parent(canvasRef.current);                
-            };
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
 
-            p.draw = () => {
-                p.clear();                
-                p.noFill();
-                // Adjust stroke color based on dark mode
-                const strokeOpacity = darkMode ? 40 : 60;
-                p.stroke(255, 255, 255, strokeOpacity);
-                p.strokeWeight(1.5);
+        const resize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        resize();
+        window.addEventListener("resize", resize);
 
-                // Draw multiple wave lines
-                for (let i = 0; i < 60; i++) { // Increased number of lines
-                    p.beginShape();
-                    for (let x = 0; x < p.width + 100; x += 5) { // Smaller step for smoother curves
-                        // Calculate y position using sine wave and noise
-                        const baseY = i * 10; // Spacing between lines
-                        const noiseVal = p.noise(x * 0.002 + phase, i * 0.002, phase);
-                        const y = baseY + p.sin(x * 0.01 + phase) * 50 + noiseVal * 100;
-                        
-                        p.vertex(x, y);
-                    }
-                    p.endShape();
-                }
-                
-                phase += 1.003; // Faster Fan like movement
-            };
+        let time = 0;
 
-            p.windowResized = () => {
-                p.resizeCanvas(p.windowWidth, p.windowHeight);
-            };
+        const drawWave = (yBase, amplitude, wavelength, speed, opacity, lineWidth) => {
+            ctx.beginPath();
+            ctx.strokeStyle = darkMode
+                ? `rgba(160, 140, 255, ${opacity})`
+                : `rgba(255, 255, 255, ${opacity})`;
+            ctx.lineWidth = lineWidth;
+
+            for (let x = 0; x <= canvas.width; x += 2) {
+                const y =
+                    yBase +
+                    Math.sin(x / wavelength + time * speed) * amplitude +
+                    Math.sin(x / (wavelength * 0.6) + time * speed * 1.3) * (amplitude * 0.3);
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
         };
 
-        const p5Instance = new p5(sketch);
+        const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const h = canvas.height;
+
+            // Layer 1 — slow, large, background waves
+            drawWave(h * 0.3, 40, 300, 0.4, 0.06, 1.5);
+            drawWave(h * 0.5, 50, 350, 0.35, 0.05, 1.5);
+            drawWave(h * 0.7, 45, 280, 0.45, 0.06, 1.5);
+
+            // Layer 2 — medium waves
+            drawWave(h * 0.25, 30, 200, 0.6, 0.1, 1.2);
+            drawWave(h * 0.45, 35, 220, 0.55, 0.08, 1.2);
+            drawWave(h * 0.6, 30, 250, 0.5, 0.1, 1.2);
+            drawWave(h * 0.8, 25, 180, 0.65, 0.08, 1.2);
+
+            // Layer 3 — foreground accent waves
+            drawWave(h * 0.35, 20, 150, 0.8, 0.15, 1);
+            drawWave(h * 0.55, 25, 170, 0.7, 0.12, 1);
+            drawWave(h * 0.75, 22, 160, 0.75, 0.14, 1);
+
+            time += 0.01;
+            animRef.current = requestAnimationFrame(animate);
+        };
+
+        animate();
+
         return () => {
-            p5Instance.remove();
+            window.removeEventListener("resize", resize);
+            if (animRef.current) cancelAnimationFrame(animRef.current);
         };
     }, [darkMode]);
 
-    return <div ref={canvasRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 10, pointerEvents: "none", overflow: "hidden" }} />;
+    return (
+        <canvas
+            ref={canvasRef}
+            style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 10,
+                pointerEvents: "none",
+            }}
+        />
+    );
 };
 
 export default CanvasBackground;
