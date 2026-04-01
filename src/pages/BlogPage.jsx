@@ -1,9 +1,35 @@
+import { useState, useEffect } from "react";
 import Footer from "../components/Footer";
 import AnimatedWaves from "../components/AnimatedWaves";
 import useIsMobile from "../hooks/useIsMobile";
 
 const BlogPage = ({ darkMode }) => {
     const { isMobile } = useIsMobile();
+    const [quoteIndex, setQuoteIndex] = useState(0);
+    const [fade, setFade] = useState(true);
+
+    const quotes = [
+        {
+            text: "As long as life continues, make love with the present moment while giving your unique gift.",
+            author: null
+        },
+        {
+            text: "You sensed that you should be following a different path, a more ambitious one. You felt that you were destined for other things, but you had no idea how to achieve them, and in your misery you began to hate everything around you.",
+            author: "Fyodor Dostoevsky"
+        }
+    ];
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFade(false); // fade out
+            setTimeout(() => {
+                setQuoteIndex((prev) => (prev + 1) % quotes.length);
+                setFade(true); // fade in
+            }, 600);
+        }, 8000); // Rotate every 8 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div
@@ -48,7 +74,7 @@ const BlogPage = ({ darkMode }) => {
                 }}>
                     🚧 Work in Progress
                 </span>
-                <AnimatedWaves darkMode={darkMode} />
+                {/* <AnimatedWaves darkMode={darkMode} /> */}
                 <p style={{ 
                     color: darkMode ? "rgba(255, 255, 255, 0.8)" : "#1a1a1a",
                     fontSize: isMobile ? "1.2rem" : "1.5rem",
@@ -56,25 +82,38 @@ const BlogPage = ({ darkMode }) => {
                 }}>
                     ✍️ Coming Soon ✍️
                 </p>
-                <p style={{ 
-                    color: darkMode ? "rgba(255, 255, 255, 0.6)" : "#6b7280",
-                    fontSize: isMobile ? "0.95rem" : "1.1rem",
-                    fontStyle: "italic",
-                    lineHeight: "1.8",
-                    maxWidth: "600px",
-                    padding: isMobile ? "0 0.5rem" : "0",
+                <div style={{
+                    opacity: fade ? 1 : 0,
+                    transition: "opacity 0.6s ease-in-out",
+                    minHeight: "180px", // Keeps layout stable as text switches
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    maxWidth: "700px"
                 }}>
-                    "The beautiful thing about writing is that you don't have to get it right the first time, 
-                    unlike, say, a brain surgeon."
-                </p>
-                <p style={{ 
-                    color: darkMode ? "rgba(255, 255, 255, 0.4)" : "#9ca3af",
-                    fontSize: "0.95rem",
-                    marginTop: "0.75rem",
-                    marginBottom: "3rem",
-                }}>
-                    — Robert Cormier
-                </p>
+                    <p style={{ 
+                        color: darkMode ? "rgba(255, 255, 255, 0.6)" : "#6b7280",
+                        fontSize: isMobile ? "0.95rem" : "1.1rem",
+                        fontStyle: "italic",
+                        lineHeight: "1.8",
+                        padding: isMobile ? "0 1rem" : "0",
+                        marginBottom: quotes[quoteIndex].author ? "0.75rem" : "3rem",
+                        textAlign: "center"
+                    }}>
+                        "{quotes[quoteIndex].text}"
+                    </p>
+                    {quotes[quoteIndex].author && (
+                        <p style={{ 
+                            color: darkMode ? "rgba(255, 255, 255, 0.4)" : "#9ca3af",
+                            fontSize: "0.95rem",
+                            marginBottom: "3rem",
+                            textAlign: "center"
+                        }}>
+                            — {quotes[quoteIndex].author}
+                        </p>
+                    )}
+                </div>
 
                 {/* Notes Link */}
                 <a
