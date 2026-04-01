@@ -5,6 +5,7 @@ const books = [
         author: "Valentino Braitenberg",
         description: "A playful thought experiment building increasingly complex vehicles from simple sensors and motors, revealing how intelligence can emerge from minimal wiring.",
         cover: "https://covers.openlibrary.org/b/id/4188823-L.jpg",
+        tags: ["Technical"]
     },
     {
         id: 2,

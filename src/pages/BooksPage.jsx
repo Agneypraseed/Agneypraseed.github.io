@@ -486,6 +486,12 @@ const BooksPage = ({ darkMode }) => {
     const [selectedBook, setSelectedBook] = useState(null);
     const detailRef = useRef(null);
 
+    const [activeTag, setActiveTag] = useState("All");
+
+    // Extract unique tags (excluding "All")
+    const allTags = [...new Set(books.flatMap((b) => b.tags || []))].filter(Boolean);
+    const filteredBooks = activeTag === "All" ? books : books.filter((b) => b.tags?.includes(activeTag));
+
     // Click pins a book (toggle on/off), works on both desktop and mobile
     const handleBookClick = (book) => {
         setSelectedBook(selectedBook?.id === book.id ? null : book);
@@ -565,6 +571,70 @@ const BooksPage = ({ darkMode }) => {
                 </div>
 
                 {/* Body */}
+                {/* Filter Tags */}
+                {allTags.length > 0 && (
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "0.8rem",
+                            marginBottom: "2rem",
+                            flexWrap: "wrap",
+                        }}
+                    >
+                        {allTags.map((tag) => {
+                            const isActive = activeTag === tag;
+                            return (
+                                <button
+                                    key={tag}
+                                    onClick={() => {
+                                        // Toggle off if already active
+                                        setActiveTag(isActive ? "All" : tag);
+                                        setSelectedBook(null); 
+                                        setHoveredBook(null);
+                                    }}
+                                    style={{
+                                        background: isActive
+                                            ? darkMode
+                                                ? "rgba(255,255,255,0.1)"
+                                                : "rgba(0,0,0,0.05)"
+                                            : "transparent",
+                                        border: `1px solid ${
+                                            isActive
+                                                ? darkMode
+                                                    ? "rgba(255,255,255,0.8)"
+                                                    : "rgba(0,0,0,0.8)"
+                                                : darkMode
+                                                ? "rgba(255,255,255,0.2)"
+                                                : "rgba(0,0,0,0.2)"
+                                        }`,
+                                        color: isActive
+                                            ? darkMode
+                                                ? "#fff"
+                                                : "#000"
+                                            : darkMode
+                                            ? "rgba(255,255,255,0.6)"
+                                            : "rgba(0,0,0,0.5)",
+                                        borderRadius: "4px", // Square box
+                                        padding: "0.3rem 0.8rem",
+                                        fontSize: "0.85rem",
+                                        fontFamily: "'Courier New', Courier, monospace",
+                                        cursor: "pointer",
+                                        transition: "all 0.2s ease",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                    }}
+                                >
+                                    <span>{tag}</span>
+                                    {isActive && (
+                                        <span style={{ fontSize: "0.9rem", lineHeight: 1 }}>×</span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+
                 {view === "list" ? (
                     <div
                         style={{
@@ -584,7 +654,7 @@ const BooksPage = ({ darkMode }) => {
                                 gap: "0.15rem",
                             }}
                         >
-                            {books.map((book) => (
+                            {filteredBooks.map((book) => (
                                 <div
                                     key={book.id}
                                     className="book-title-item"
@@ -644,7 +714,7 @@ const BooksPage = ({ darkMode }) => {
                     </div>
                 ) : (
                     /* Image grid view */
-                    <ImageGridView books={books} darkMode={darkMode} isMobile={isMobile} />
+                    <ImageGridView books={filteredBooks} darkMode={darkMode} isMobile={isMobile} />
                 )}
 
                 {/* Footer */}
