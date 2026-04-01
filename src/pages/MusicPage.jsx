@@ -77,13 +77,13 @@ const MusicDetailView = ({ playlist, darkMode, isMobile, onClose }) => {
                     justifyContent: "center",
                     gap: isMobile ? "2rem" : "4rem",
                     width: "100%",
-                    maxWidth: "1000px",
+                    maxWidth: "1200px",
                 }}
             >
                 {/* Spotify Player Area */}
                 <div
                     style={{
-                        width: isMobile ? "100%" : "340px",
+                        width: isMobile ? "100%" : "600px",
                         height: isMobile ? "380px" : "420px",
                         borderRadius: "12px",
                         overflow: "hidden",
@@ -132,7 +132,7 @@ const MusicDetailView = ({ playlist, darkMode, isMobile, onClose }) => {
                 {/* Text info */}
                 <div
                     style={{
-                        maxWidth: isMobile ? "100%" : "400px",
+                        width: isMobile ? "100%" : "300px",
                         textAlign: isMobile ? "center" : "left",
                     }}
                 >
@@ -149,16 +149,18 @@ const MusicDetailView = ({ playlist, darkMode, isMobile, onClose }) => {
                     >
                         {playlist.title}
                     </h2>
-                    <p
-                        style={{
-                            margin: 0,
-                            fontSize: isMobile ? "0.9rem" : "1rem",
-                            lineHeight: 1.7,
-                            color: darkMode ? "rgba(255,255,255,0.65)" : "#4b5563",
-                        }}
-                    >
-                        {playlist.description}
-                    </p>
+                    {playlist.description && (
+                        <p
+                            style={{
+                                margin: 0,
+                                fontSize: isMobile ? "0.9rem" : "1rem",
+                                lineHeight: 1.7,
+                                color: darkMode ? "rgba(255,255,255,0.65)" : "#4b5563",
+                            }}
+                        >
+                            {playlist.description}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>
