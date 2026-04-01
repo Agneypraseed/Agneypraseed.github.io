@@ -8,6 +8,9 @@ import BlogPage from "./pages/BlogPage";
 import FootprintsPage from "./pages/FootprintsPage";
 import AboutPage from "./pages/AboutPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import BooksPage from "./pages/BooksPage";
+import VideosPage from "./pages/VideosPage";
+import MusicPage from "./pages/MusicPage";
 
 const AppContent = () => {
     const [darkMode, setDarkMode] = useState(false);
@@ -47,6 +50,9 @@ const AppContent = () => {
                 <Route path="/projects" element={<ProjectsPage darkMode={darkMode} />} />
                 <Route path="/blog" element={<BlogPage darkMode={darkMode} />} />
                 <Route path="/footprints" element={<FootprintsPage darkMode={darkMode} />} />
+                <Route path="/books" element={<BooksPage darkMode={darkMode} />} />
+                <Route path="/videos" element={<VideosPage darkMode={darkMode} />} />
+                <Route path="/music" element={<MusicPage darkMode={darkMode} />} />
                 <Route path="*" element={<NotFoundPage darkMode={darkMode} />} />
             </Routes>
         </>
