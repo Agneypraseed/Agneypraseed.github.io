@@ -1,5 +1,7 @@
+import { useState, useEffect, useRef } from "react";
 import Footer from "../components/Footer";
 import useIsMobile from "../hooks/useIsMobile";
+import psyduckImg from "../assets/psyduck.png";
 
 // Project data
 const projects = [
@@ -44,6 +46,25 @@ import catCursor from "../assets/paw-cursor-32.png";
 
 const ProjectsPage = ({ darkMode }) => {
     const { isMobile } = useIsMobile();
+    const prevDarkMode = useRef(darkMode);
+    const [showPsyduck, setShowPsyduck] = useState(false);
+    const [psyduckPos, setPsyduckPos] = useState({ top: "50%", left: "50%" });
+
+    useEffect(() => {
+        // Trigger on transition from Dark (true) to Light (false)
+        if (prevDarkMode.current === true && darkMode === false) {
+            // Pick a random spot that stays mostly visible on-screen
+            const randomTop = Math.floor(Math.random() * 70 + 15) + "%";
+            const randomLeft = Math.floor(Math.random() * 70 + 15) + "%";
+            setPsyduckPos({ top: randomTop, left: randomLeft });
+            
+            setShowPsyduck(true);
+            setTimeout(() => {
+                setShowPsyduck(false);
+            }, 2500); // Shows for 2.5 seconds
+        }
+        prevDarkMode.current = darkMode;
+    }, [darkMode]);
 
     return (
         <div
@@ -217,6 +238,38 @@ const ProjectsPage = ({ darkMode }) => {
                         </a>
                     </div>
                 ))}
+            </div>
+
+            {/* Psyduck Easter Egg Animation */}
+            <div style={{
+                position: "fixed",
+                top: psyduckPos.top,
+                left: psyduckPos.left,
+                transform: "translate(-50%, -50%)",
+                zIndex: 9999,
+                pointerEvents: "none",
+                opacity: showPsyduck ? 1 : 0,
+                visibility: showPsyduck ? "visible" : "hidden",
+                transition: "opacity 0.4s ease-in-out, visibility 0.4s",
+                // A small rounded box like a sticker popping up
+                backgroundColor: "#dbe8d6", // Match the pale gameboy green background
+                padding: "8px",
+                borderRadius: "12px",
+                boxShadow: "0 8px 30px rgba(0,0,0,0.15)",
+                width: isMobile ? "140px" : "220px",
+            }}>
+                <img 
+                    src={psyduckImg} 
+                    alt="Psyduck" 
+                    style={{
+                        width: "100%",
+                        height: "auto",
+                        borderRadius: "8px",
+                        objectFit: "contain",
+                        transform: showPsyduck ? "rotate(3deg) scale(1)" : "rotate(-10deg) scale(0.8)",
+                        transition: "transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+                    }}
+                />
             </div>
 
             <div style={{ marginTop: "auto", paddingTop: "2rem" }}>
