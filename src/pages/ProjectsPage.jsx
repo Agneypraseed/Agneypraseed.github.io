@@ -60,10 +60,15 @@ const ProjectsPage = ({ darkMode }) => {
         >
             {/* Title */}
             <h1 style={{ 
-                color: darkMode ? "#ffffff" : "#1a1a1a",
-                textAlign: "center",
-                marginBottom: "0.75rem",
-                fontSize: isMobile ? "1.8rem" : "2.5rem",
+                position: 'absolute',
+                width: '1px',
+                height: '1px',
+                padding: '0',
+                margin: '-1px',
+                overflow: 'hidden',
+                clip: 'rect(0, 0, 0, 0)',
+                whiteSpace: 'nowrap',
+                borderWidth: '0'
             }}>
                 Projects
             </h1>
