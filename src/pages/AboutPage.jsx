@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import resume from "../assets/resume.pdf";
 import useIsMobile from "../hooks/useIsMobile";
@@ -14,6 +15,38 @@ const AboutPage = ({ darkMode }) => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
+
+    const HobbyLink = ({ to, text }) => (
+        <Link 
+            to={to} 
+            style={{ 
+                color: darkMode ? "#8b5cf6" : "#6366f1", 
+                textDecoration: "none", 
+                fontWeight: "600",
+                display: "inline",
+                whiteSpace: "nowrap",
+                transition: "all 0.2s ease"
+            }}
+            onMouseEnter={(e) => {
+                e.currentTarget.style.color = darkMode ? "#a78bfa" : "#4f46e5";
+                e.currentTarget.style.textDecoration = "underline";
+                e.currentTarget.style.textUnderlineOffset = "4px";
+            }}
+            onMouseLeave={(e) => {
+                e.currentTarget.style.color = darkMode ? "#8b5cf6" : "#6366f1";
+                e.currentTarget.style.textDecoration = "none";
+            }}
+        >
+            {text}
+            <span style={{ verticalAlign: "super", marginLeft: "1px", fontSize: "0.65em" }}>
+                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: "inline-block" }}>
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+            </span>
+        </Link>
+    );
 
     return (
         <div
@@ -294,7 +327,8 @@ const AboutPage = ({ darkMode }) => {
                     <br /><br />
                     I'm an <strong>Azure Certified Data Scientist</strong> and <strong>AWS Certified Cloud Practitioner</strong>.
                     <br /><br />
-                    Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
+                    Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.            
+                    Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="anime" />.
                 </div>
             </div>
             <Footer darkMode={darkMode} isHomePage={false} />

@@ -58,7 +58,6 @@ const Navbar = ({ darkMode, isHomePage }) => {
         { to: "/about", label: "About" },
         { to: "/projects", label: "Projects" },
         { to: "/blog", label: "Blog" },
-        { to: "/footprints", label: "Footprints" },
     ];
 
     const mobileLinkStyle = {
