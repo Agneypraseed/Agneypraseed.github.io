@@ -11,6 +11,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import BooksPage from "./pages/BooksPage";
 import VideosPage from "./pages/VideosPage";
 import MusicPage from "./pages/MusicPage";
+import CursorTrail from "./components/CursorTrail";
 
 const AppContent = () => {
     const [darkMode, setDarkMode] = useState(false);
@@ -42,6 +43,7 @@ const AppContent = () => {
 
     return (
         <>
+            <CursorTrail />
             <Navbar darkMode={darkMode} isHomePage={isHomePage} />
             <DarkModeToggle darkMode={darkMode} toggleDarkMode={handleDarkModeToggle} isHomePage={isHomePage} />
             <Routes>
