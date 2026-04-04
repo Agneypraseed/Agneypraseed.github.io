@@ -5,15 +5,19 @@ import resume from "../assets/resume.pdf";
 import useIsMobile from "../hooks/useIsMobile";
 
 const AboutPage = ({ darkMode }) => {
-    const [copied, setCopied] = useState(false);
+    const [copyStatus, setCopyStatus] = useState(null);
     const { isMobile } = useIsMobile();
     const email = "agneysince2000@gmail.com";
     const displayEmail = "agneysince2000[at]gmail[dot]com";
 
-    const copyEmail = () => {
-        navigator.clipboard.writeText(email);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+    const copyEmail = async () => {
+        try {
+            await navigator.clipboard.writeText(email);
+            setCopyStatus('success');
+        } catch (err) {
+            setCopyStatus('fail');
+        }
+        setTimeout(() => setCopyStatus(null), 3000);
     };
 
     const HobbyLink = ({ to, text }) => (
@@ -103,42 +107,56 @@ const AboutPage = ({ darkMode }) => {
                             }}>
                                 Contact: <span style={{ fontFamily: "monospace" }}>{displayEmail}</span>
                             </span>
-                            <button
-                                onClick={copyEmail}
-                                title="Copy email"
-                                style={{
-                                    background: darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6",
-                                    border: darkMode ? "1px solid rgba(255,255,255,0.2)" : "1px solid #e5e7eb",
-                                    borderRadius: "6px",
-                                    padding: "6px",
-                                    cursor: "pointer",
-                                    color: darkMode ? "#fff" : "#374151",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    transition: "all 0.2s ease",
-                                    minWidth: "28px",
-                                    minHeight: "28px",
-                                    flexShrink: 0,
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.2)" : "#e5e7eb";
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6";
-                                }}
-                            >
-                                {copied ? (
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                        <polyline points="20 6 9 17 4 12"/>
-                                    </svg>
-                                ) : (
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                    </svg>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                <button
+                                    onClick={copyEmail}
+                                    title="Copy email"
+                                    aria-label="Copy email address"
+                                    className="focus-ring"
+                                    style={{
+                                        background: darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6",
+                                        border: darkMode ? "1px solid rgba(255,255,255,0.2)" : "1px solid #e5e7eb",
+                                        borderRadius: "6px",
+                                        padding: "6px",
+                                        cursor: "pointer",
+                                        color: darkMode ? "#fff" : "#374151",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        transition: "all 0.2s ease",
+                                        minWidth: "28px",
+                                        minHeight: "28px",
+                                        flexShrink: 0,
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.2)" : "#e5e7eb";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = darkMode ? "rgba(255,255,255,0.1)" : "#f3f4f6";
+                                    }}
+                                >
+                                    {copyStatus === 'success' ? (
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                            <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                    ) : (
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                        </svg>
+                                    )}
+                                </button>
+                                {copyStatus && (
+                                    <span style={{ 
+                                        fontSize: "0.85rem", 
+                                        color: copyStatus === 'success' ? (darkMode ? "#4ade80" : "#16a34a") : "#ef4444",
+                                        fontWeight: "500",
+                                        animation: "fadeIn 0.3s ease-in-out"
+                                    }}>
+                                        {copyStatus === 'success' ? "Email copied" : "Copy failed"}
+                                    </span>
                                 )}
-                            </button>
+                            </div>
                         </div>
                     </div>
 
@@ -156,6 +174,8 @@ const AboutPage = ({ darkMode }) => {
                             href={resume}
                             target="_blank"
                             rel="noopener noreferrer"
+                            aria-label="View CV in full window"
+                            className="focus-ring"
                             style={{
                                 display: "inline-flex",
                                 alignItems: "center",
@@ -187,7 +207,7 @@ const AboutPage = ({ darkMode }) => {
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                                 <polyline points="14 2 14 8 20 8"/>
                             </svg>
-                            CV
+                            View CV
                         </a>
                         {/* Divider */}
                         <div style={{
@@ -199,6 +219,8 @@ const AboutPage = ({ darkMode }) => {
                             href={resume}
                             download="Agney_Praseed_CV.pdf"
                             title="Download CV"
+                            aria-label="Download CV"
+                            className="focus-ring"
                             style={{
                                 display: "inline-flex",
                                 alignItems: "center",
@@ -236,6 +258,7 @@ const AboutPage = ({ darkMode }) => {
                 {/* Social Links */}
                 <div style={{
                     display: "flex",
+                    flexWrap: "wrap",
                     gap: "1rem",
                     marginBottom: "2rem",
                 }}>
@@ -244,6 +267,8 @@ const AboutPage = ({ darkMode }) => {
                         href="https://www.linkedin.com/in/agney-praseed/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Visit my LinkedIn profile"
+                        className="focus-ring"
                         style={{
                             display: "flex",
                             alignItems: "center",
@@ -277,6 +302,8 @@ const AboutPage = ({ darkMode }) => {
                         href="https://github.com/Agneypraseed"
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label="Visit my GitHub profile"
+                        className="focus-ring"
                         style={{
                             display: "flex",
                             alignItems: "center",

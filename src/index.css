@@ -122,3 +122,13 @@ html, body, #root {
         display: flex;
     }
 }
+
+/* Accessibility Focus Ring */
+.focus-ring {
+    outline: none;
+}
+.focus-ring:focus-visible {
+    outline: 3px solid #8b5cf6;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+}
