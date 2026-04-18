@@ -2,9 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import Footer from "../components/Footer";
 import useIsMobile from "../hooks/useIsMobile";
 import psyduckImg from "../assets/psyduck.png";
+import nanoCuratorDemo from "../assets/nano-curator-demo.mp4";
 
 // Project data
 const projects = [
+    {
+        id: 6,
+        title: "Nano Curator",
+        description: "An AI-powered personal stylist. Upload your photo and get curated outfit makeovers, haircut suggestions, and a sustainable fashion report.",
+        tags: ["React", "TypeScript", "Gemini"],
+        github: "https://github.com/Agneypraseed/Nano-Curator",
+        video: nanoCuratorDemo,
+    },
     {
         id: 1,
         title: "Neural Style Transfer",
@@ -43,6 +52,75 @@ const projects = [
 ];
 
 import catCursor from "../assets/paw-cursor-32.png";
+
+// Clean video player — click to play/pause, no native controls
+const VideoPlayer = ({ src, darkMode }) => {
+    const videoRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    return (
+        <div
+            style={{
+                position: "relative",
+                cursor: "pointer",
+                borderRadius: "10px",
+                overflow: "hidden",
+                marginBottom: "0.75rem",
+                backgroundColor: darkMode ? "#111" : "#000",
+            }}
+            onClick={() => {
+                const v = videoRef.current;
+                if (!v) return;
+                if (v.paused) { v.play(); setIsPlaying(true); }
+                else { v.pause(); setIsPlaying(false); }
+            }}
+        >
+            <video
+                ref={videoRef}
+                preload="metadata"
+                playsInline
+                muted
+                loop
+                onEnded={() => setIsPlaying(false)}
+                style={{
+                    width: "100%",
+                    display: "block",
+                    borderRadius: "10px",
+                }}
+            >
+                <source src={src} type="video/mp4" />
+            </video>
+            {/* Play/Pause overlay */}
+            <div style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: isPlaying ? "transparent" : "rgba(0,0,0,0.2)",
+                opacity: isPlaying ? 0 : 1,
+                transition: "opacity 0.3s ease",
+                pointerEvents: "none",
+            }}>
+                <div style={{
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.9)",
+                    backdropFilter: "blur(8px)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
+                }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#1a1a1a">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const ProjectsPage = ({ darkMode }) => {
     const { isMobile } = useIsMobile();
@@ -154,6 +232,11 @@ const ProjectsPage = ({ darkMode }) => {
                         }}>
                             {project.title}
                         </h3>
+
+                        {/* Video demo if available */}
+                        {project.video && (
+                            <VideoPlayer src={project.video} darkMode={darkMode} />
+                        )}
 
                         {/* Course badge if applicable */}
                         {project.course && (
