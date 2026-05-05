@@ -14,8 +14,8 @@ const CATEGORIES = [
     {
         id: "languages",
         label: "LANGUAGES",
-        color: "#66d4cf",
-        darkColor: "#66d4cf",
+        color: "#dc2626",
+        darkColor: "#ef4444",
         skills: [
             { name: "Java", size: 1.0 },
             { name: "Python", size: 1.0 },
@@ -29,8 +29,8 @@ const CATEGORIES = [
     {
         id: "frameworks",
         label: "FRAMEWORKS & TOOLS",
-        color: "#8b5cf6",
-        darkColor: "#a78bfa",
+        color: "#334155",
+        darkColor: "#cbd5e1",
         skills: [
             { name: "Spring Boot", size: 0.9 },
             { name: "React", size: 0.85 },
@@ -45,8 +45,8 @@ const CATEGORIES = [
     {
         id: "data-cloud",
         label: "DATA & CLOUD",
-        color: "#6366f1",
-        darkColor: "#818cf8",
+        color: "#475569",
+        darkColor: "#94a3b8",
         skills: [
             { name: "PostgreSQL", size: 0.75 },
             { name: "MongoDB", size: 0.7 },
@@ -59,8 +59,8 @@ const CATEGORIES = [
     {
         id: "ai-ml",
         label: "AI & ML",
-        color: "#f472b6",
-        darkColor: "#f9a8d4",
+        color: "#78716c",
+        darkColor: "#a8a29e",
         skills: [
             { name: "PyTorch", size: 0.95 },
             { name: "TensorFlow", size: 0.7 },

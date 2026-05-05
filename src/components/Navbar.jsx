@@ -15,7 +15,7 @@ const Navbar = ({ darkMode, isHomePage }) => {
     const useWhiteBg = !darkMode && !isHomePage;
 
     const linkStyle = {
-        color: useWhiteBg ? "#374151" : "rgba(255, 255, 255, 0.95)",
+        color: darkMode ? "rgba(255, 255, 255, 0.95)" : "#374151",
         textDecoration: "none",
         padding: isMobile ? "0.65rem 1rem" : "0.5rem 1rem",
         borderRadius: "8px",
@@ -28,30 +28,24 @@ const Navbar = ({ darkMode, isHomePage }) => {
 
     const activeLinkStyle = {
         ...linkStyle,
-        background: useWhiteBg
-            ? "rgba(0, 0, 0, 0.08)"
-            : darkMode
-                ? "rgba(255, 255, 255, 0.15)"
-                : "rgba(255, 255, 255, 0.25)",
+        background: darkMode
+            ? "rgba(255, 255, 255, 0.15)"
+            : "rgba(0, 0, 0, 0.08)",
     };
 
-    const hoverBg = useWhiteBg
-        ? "rgba(0, 0, 0, 0.05)"
-        : darkMode
-            ? "rgba(255, 255, 255, 0.1)"
-            : "rgba(255, 255, 255, 0.15)";
+    const hoverBg = darkMode
+        ? "rgba(255, 255, 255, 0.1)"
+        : "rgba(0, 0, 0, 0.05)";
 
     const navBg = useWhiteBg
         ? "rgba(255, 255, 255, 0.85)"
         : darkMode
             ? "rgba(30, 30, 30, 0.7)"
-            : "rgba(255, 255, 255, 0.2)";
+            : "rgba(255, 255, 255, 0.75)";
 
-    const navBorder = useWhiteBg
-        ? "1px solid rgba(0, 0, 0, 0.08)"
-        : darkMode
-            ? "1px solid rgba(255, 255, 255, 0.1)"
-            : "1px solid rgba(255, 255, 255, 0.3)";
+    const navBorder = darkMode
+        ? "1px solid rgba(255, 255, 255, 0.1)"
+        : "1px solid rgba(0, 0, 0, 0.08)";
 
     const links = [
         { to: "/", label: "Home" },
@@ -68,11 +62,9 @@ const Navbar = ({ darkMode, isHomePage }) => {
 
     const mobileActiveLinkStyle = {
         ...mobileLinkStyle,
-        background: useWhiteBg
-            ? "rgba(0, 0, 0, 0.08)"
-            : darkMode
-                ? "rgba(255, 255, 255, 0.15)"
-                : "rgba(255, 255, 255, 0.25)",
+        background: darkMode
+            ? "rgba(255, 255, 255, 0.15)"
+            : "rgba(0, 0, 0, 0.08)",
     };
 
     return (
@@ -102,7 +94,7 @@ const Navbar = ({ darkMode, isHomePage }) => {
                     className="hamburger-btn"
                     onClick={() => setMenuOpen(!menuOpen)}
                     aria-label="Toggle menu"
-                    style={{ color: useWhiteBg ? "#374151" : "#fff" }}
+                    style={{ color: darkMode ? "#fff" : "#374151" }}
                 >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         {menuOpen ? (

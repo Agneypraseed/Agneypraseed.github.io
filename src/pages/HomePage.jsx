@@ -92,10 +92,7 @@ const HomePage = ({ darkMode }) => {
                     flexDirection: "column",
                     alignItems: "center",
                     width: "100%",
-                    backgroundColor: darkMode ? "#1a1a1a" : "transparent",
-                    backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
                     transition: "all 0.3s ease",
                     overflow: "hidden",
                 }}

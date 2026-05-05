@@ -16,7 +16,7 @@ import pytorch from "../assets/skills/pytorch.png";
 import springboot from "../assets/skills/springboot.svg";
 
 const Skills = ({ darkMode }) => {
-    const [viewMode, setViewMode] = useState("cards"); // "cards" | "graph"
+    const [viewMode, setViewMode] = useState("graph"); // "cards" | "graph"
     const { isMobile } = useIsMobile();
 
     return (
@@ -26,16 +26,16 @@ const Skills = ({ darkMode }) => {
                 margin: "2rem",
                 backgroundColor: darkMode
                     ? "rgba(30, 30, 30, 0.6)"
-                    : "rgba(255, 255, 255, 0.25)",
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
+                    : "rgba(255, 255, 255, 0.6)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
                 borderRadius: "20px",
                 border: darkMode
                     ? "1px solid rgba(255, 255, 255, 0.1)"
-                    : "1px solid rgba(255, 255, 255, 0.3)",
+                    : "1px solid rgba(0, 0, 0, 0.06)",
                 boxShadow: darkMode
                     ? "0 8px 32px rgba(0, 0, 0, 0.3)"
-                    : "0 8px 32px rgba(0, 0, 0, 0.1)",
+                    : "0 8px 32px rgba(0, 0, 0, 0.08)",
                 transition: "all 0.3s ease",
                 width: isMobile ? "calc(100% - 2rem)" : "auto",
                 maxWidth: "1000px",
