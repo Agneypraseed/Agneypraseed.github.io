@@ -32,10 +32,10 @@ const Skills = ({ darkMode }) => {
                 borderRadius: "20px",
                 border: darkMode
                     ? "1px solid rgba(255, 255, 255, 0.1)"
-                    : "1px solid rgba(0, 0, 0, 0.06)",
+                    : "1px solid rgba(255, 255, 255, 0.7)",
                 boxShadow: darkMode
                     ? "0 8px 32px rgba(0, 0, 0, 0.3)"
-                    : "0 8px 32px rgba(0, 0, 0, 0.08)",
+                    : "0 8px 32px rgba(100, 100, 180, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.3)",
                 transition: "all 0.3s ease",
                 width: isMobile ? "calc(100% - 2rem)" : "auto",
                 maxWidth: "1000px",

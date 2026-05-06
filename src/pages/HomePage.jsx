@@ -92,7 +92,10 @@ const HomePage = ({ darkMode }) => {
                     flexDirection: "column",
                     alignItems: "center",
                     width: "100%",
-                    backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
+                    backgroundColor: darkMode ? "#1a1a1a" : "#f8f9fc",
+                    background: darkMode
+                        ? "#1a1a1a"
+                        : "linear-gradient(180deg, #eef2ff 0%, #f8f9fc 40%, #faf5ff 70%, #f0f4ff 100%)",
                     transition: "all 0.3s ease",
                     overflow: "hidden",
                 }}
