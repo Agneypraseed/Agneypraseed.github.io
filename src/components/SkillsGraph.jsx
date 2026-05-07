@@ -1,441 +1,529 @@
-import { useRef, useEffect, useCallback, useState } from "react";
-import {
-    forceSimulation,
-    forceLink,
-    forceManyBody,
-    forceCenter,
-    forceCollide,
-    forceX,
-    forceY,
-} from "d3-force";
+/* eslint-disable react/prop-types, react/no-unknown-property */
+import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Billboard, Line, OrbitControls, Text } from "@react-three/drei";
+import * as THREE from "three";
+import useIsMobile from "../hooks/useIsMobile";
+import { CATEGORIES, getSkillNodeId } from "./skillsGraphData";
 
-// ── Skill data organized by category ──
-const CATEGORIES = [
-    {
-        id: "languages",
-        label: "LANGUAGES",
-        color: "#dc2626",
-        darkColor: "#ef4444",
-        skills: [
-            { name: "Java", size: 1.0 },
-            { name: "Python", size: 1.0 },
-            { name: "JavaScript", size: 0.85 },
-            { name: "C++", size: 0.7 },
-            { name: "SQL", size: 0.8 },
-            { name: "TypeScript", size: 0.7 },
-            { name: "Bash", size: 0.5 },
-        ],
-    },
-    {
-        id: "frameworks",
-        label: "FRAMEWORKS & TOOLS",
-        color: "#334155",
-        darkColor: "#cbd5e1",
-        skills: [
-            { name: "Spring Boot", size: 0.9 },
-            { name: "React", size: 0.85 },
-            { name: "Angular", size: 0.65 },
-            { name: "Node.js", size: 0.75 },
-            { name: "Express.js", size: 0.65 },
-            { name: "Docker", size: 0.7 },
-            { name: "Git", size: 0.8 },
-            { name: "REST APIs", size: 0.75 },
-        ],
-    },
-    {
-        id: "data-cloud",
-        label: "DATA & CLOUD",
-        color: "#475569",
-        darkColor: "#94a3b8",
-        skills: [
-            { name: "PostgreSQL", size: 0.75 },
-            { name: "MongoDB", size: 0.7 },
-            { name: "MySQL", size: 0.65 },
-            { name: "AWS", size: 0.8 },
-            { name: "Azure", size: 0.75 },
-            { name: "Elasticsearch", size: 0.55 },
-        ],
-    },
-    {
-        id: "ai-ml",
-        label: "AI & ML",
-        color: "#78716c",
-        darkColor: "#a8a29e",
-        skills: [
-            { name: "PyTorch", size: 0.95 },
-            { name: "TensorFlow", size: 0.7 },
-            { name: "OpenCV", size: 0.65 },
-            { name: "Hugging Face", size: 0.75 },
-            { name: "Scikit-learn", size: 0.7 },
-            { name: "LangChain", size: 0.65 },
-            { name: "Pandas", size: 0.7 },
-            { name: "NumPy", size: 0.65 },
-        ],
-    },
-];
-
-// ── Build graph data ──
-function buildGraph() {
-    const nodes = [];
-    const links = [];
-
-    CATEGORIES.forEach((cat) => {
-        // Hub node
-        nodes.push({
-            id: cat.id,
-            label: cat.label,
-            isHub: true,
-            color: cat.color,
-            darkColor: cat.darkColor,
-            radius: 28,
-            categoryId: cat.id,
-        });
-
-        cat.skills.forEach((skill) => {
-            const skillId = `${cat.id}--${skill.name}`;
-            nodes.push({
-                id: skillId,
-                label: skill.name,
-                isHub: false,
-                color: cat.color,
-                darkColor: cat.darkColor,
-                radius: 6 + skill.size * 12,
-                categoryId: cat.id,
-            });
-            links.push({ source: cat.id, target: skillId });
-        });
-    });
-
-    // Inter-category links for connected feel
-    const interLinks = [
-        ["languages--Python", "ai-ml--PyTorch"],
-        ["languages--Python", "ai-ml--Pandas"],
-        ["languages--JavaScript", "frameworks--React"],
-        ["languages--JavaScript", "frameworks--Node.js"],
-        ["languages--TypeScript", "frameworks--Angular"],
-        ["languages--SQL", "data-cloud--PostgreSQL"],
-        ["frameworks--Docker", "data-cloud--AWS"],
-        ["ai-ml--Hugging Face", "ai-ml--LangChain"],
-    ];
-
-    interLinks.forEach(([s, t]) => {
-        if (nodes.find((n) => n.id === s) && nodes.find((n) => n.id === t)) {
-            links.push({ source: s, target: t, inter: true });
-        }
-    });
-
-    return { nodes, links };
-}
-
-const SkillsGraph = ({ darkMode }) => {
-    const canvasRef = useRef(null);
-    const simRef = useRef(null);
-    const nodesRef = useRef([]);
-    const linksRef = useRef([]);
-    const frameRef = useRef(null);
-    const dragRef = useRef(null);
-    const hoveredRef = useRef(null);
-    const [dimensions, setDimensions] = useState({ width: 800, height: 500 });
-    const containerRef = useRef(null);
-
-    // ── Measure container ──
-    useEffect(() => {
-        const measure = () => {
-            if (containerRef.current) {
-                const rect = containerRef.current.getBoundingClientRect();
-                setDimensions({
-                    width: Math.max(rect.width, 300),
-                    height: Math.max(Math.min(rect.width * 0.75, 640), 380),
-                });
-            }
-        };
-        measure();
-        window.addEventListener("resize", measure);
-        return () => window.removeEventListener("resize", measure);
-    }, []);
-
-    // ── Initialize simulation ──
-    useEffect(() => {
-        const { nodes, links } = buildGraph();
-        nodesRef.current = nodes;
-        linksRef.current = links;
-
-        const sim = forceSimulation(nodes)
-            .force(
-                "link",
-                forceLink(links)
-                    .id((d) => d.id)
-                    .distance((d) => (d.inter ? 120 : d.source.isHub ? 65 : 45))
-                    .strength((d) => (d.inter ? 0.15 : 0.7))
-            )
-            .force("charge", forceManyBody().strength((d) => (d.isHub ? -300 : -50)))
-            .force("center", forceCenter(dimensions.width / 2, dimensions.height / 2))
-            .force("collide", forceCollide().radius((d) => d.radius + 4).strength(0.8))
-            .force("x", forceX(dimensions.width / 2).strength(0.06))
-            .force("y", forceY(dimensions.height / 2).strength(0.06))
-            .alpha(1)
-            .alphaDecay(0.015)
-            .velocityDecay(0.35);
-
-        simRef.current = sim;
-
-        return () => {
-            sim.stop();
-            if (frameRef.current) cancelAnimationFrame(frameRef.current);
-        };
-    }, [dimensions.width, dimensions.height]);
-
-    // ── Draw loop ──
-    const draw = useCallback(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-        const dpr = window.devicePixelRatio || 1;
-        const w = dimensions.width;
-        const h = dimensions.height;
-
-        canvas.width = w * dpr;
-        canvas.height = h * dpr;
-        canvas.style.width = `${w}px`;
-        canvas.style.height = `${h}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-        // Clear
-        ctx.clearRect(0, 0, w, h);
-
-        const nodes = nodesRef.current;
-        const links = linksRef.current;
-        const hovered = hoveredRef.current;
-
-        // Find highlighted set
-        const highlightedNodes = new Set();
-        const highlightedLinks = new Set();
-        if (hovered) {
-            highlightedNodes.add(hovered.id);
-            links.forEach((l, i) => {
-                const sid = typeof l.source === "object" ? l.source.id : l.source;
-                const tid = typeof l.target === "object" ? l.target.id : l.target;
-                if (sid === hovered.id || tid === hovered.id) {
-                    highlightedLinks.add(i);
-                    highlightedNodes.add(sid);
-                    highlightedNodes.add(tid);
-                }
-            });
-        }
-
-        // ── Draw links ──
-        links.forEach((l, i) => {
-            const sx = l.source.x, sy = l.source.y;
-            const tx = l.target.x, ty = l.target.y;
-            if (sx == null || tx == null) return;
-
-            const isHighlighted = highlightedLinks.has(i);
-            const dimmed = hovered && !isHighlighted;
-
-            ctx.beginPath();
-            ctx.moveTo(sx, sy);
-            ctx.lineTo(tx, ty);
-
-            if (l.inter) {
-                ctx.strokeStyle = dimmed
-                    ? (darkMode ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)")
-                    : (darkMode ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)");
-                ctx.setLineDash([4, 4]);
-            } else {
-                ctx.strokeStyle = dimmed
-                    ? (darkMode ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)")
-                    : isHighlighted
-                        ? (darkMode ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.25)")
-                        : (darkMode ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)");
-                ctx.setLineDash([]);
-            }
-            ctx.lineWidth = isHighlighted ? 1.8 : 1;
-            ctx.stroke();
-            ctx.setLineDash([]);
-        });
-
-        // ── Draw nodes ──
-        nodes.forEach((node) => {
-            if (node.x == null) return;
-
-            const isHighlighted = highlightedNodes.has(node.id);
-            const dimmed = hovered && !isHighlighted;
-            const color = darkMode ? node.darkColor : node.color;
-
-            // Glow for hubs or hovered
-            if ((node.isHub || isHighlighted) && !dimmed) {
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, node.radius + 8, 0, Math.PI * 2);
-                const grad = ctx.createRadialGradient(
-                    node.x, node.y, node.radius * 0.5,
-                    node.x, node.y, node.radius + 12
-                );
-                grad.addColorStop(0, color + "30");
-                grad.addColorStop(1, color + "00");
-                ctx.fillStyle = grad;
-                ctx.fill();
-                ctx.restore();
-            }
-
-            // Node circle
-            ctx.beginPath();
-            ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-            ctx.fillStyle = dimmed ? (darkMode ? "#333" : "#ddd") : color;
-            ctx.globalAlpha = dimmed ? 0.3 : 1;
-            ctx.fill();
-            ctx.globalAlpha = 1;
-
-            // Outline for hubs
-            if (node.isHub) {
-                ctx.strokeStyle = dimmed
-                    ? (darkMode ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)")
-                    : color + "60";
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            }
-
-            // ── Labels ──
-            const fontSize = node.isHub ? 11 : 10;
-            ctx.font = `${node.isHub ? "700" : "500"} ${fontSize}px Inter, system-ui, sans-serif`;
-            ctx.textAlign = "center";
-            ctx.textBaseline = "top";
-            ctx.fillStyle = dimmed
-                ? (darkMode ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)")
-                : (darkMode ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.7)");
-
-            if (node.isHub) {
-                ctx.fillText(node.label, node.x, node.y + node.radius + 6);
-            } else {
-                ctx.fillText(node.label, node.x, node.y + node.radius + 3);
-            }
-        });
-
-        frameRef.current = requestAnimationFrame(draw);
-    }, [darkMode, dimensions]);
-
-    // ── Start draw loop ──
-    useEffect(() => {
-        frameRef.current = requestAnimationFrame(draw);
-        return () => {
-            if (frameRef.current) cancelAnimationFrame(frameRef.current);
-        };
-    }, [draw]);
-
-    // ── Hit test ──
-    const hitTest = useCallback((x, y) => {
-        const nodes = nodesRef.current;
-        for (let i = nodes.length - 1; i >= 0; i--) {
-            const n = nodes[i];
-            const dx = x - n.x, dy = y - n.y;
-            if (dx * dx + dy * dy <= (n.radius + 4) * (n.radius + 4)) {
-                return n;
-            }
-        }
-        return null;
-    }, []);
-
-    const getCanvasCoords = useCallback((e) => {
-        const canvas = canvasRef.current;
-        if (!canvas) return { x: 0, y: 0 };
-        const rect = canvas.getBoundingClientRect();
-        return {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
-        };
-    }, []);
-
-    // ── Mouse handlers ──
-    const handleMouseDown = useCallback((e) => {
-        const { x, y } = getCanvasCoords(e);
-        const node = hitTest(x, y);
-        if (node) {
-            dragRef.current = node;
-            node.fx = node.x;
-            node.fy = node.y;
-            simRef.current?.alphaTarget(0.3).restart();
-        }
-    }, [hitTest, getCanvasCoords]);
-
-    const handleMouseMove = useCallback((e) => {
-        const { x, y } = getCanvasCoords(e);
-        const canvas = canvasRef.current;
-
-        if (dragRef.current) {
-            dragRef.current.fx = x;
-            dragRef.current.fy = y;
-        }
-
-        const node = hitTest(x, y);
-        hoveredRef.current = node;
-        if (canvas) canvas.style.cursor = node ? "grab" : "default";
-        if (dragRef.current && canvas) canvas.style.cursor = "grabbing";
-    }, [hitTest, getCanvasCoords]);
-
-    const handleMouseUp = useCallback(() => {
-        if (dragRef.current) {
-            dragRef.current.fx = null;
-            dragRef.current.fy = null;
-            dragRef.current = null;
-            simRef.current?.alphaTarget(0);
-        }
-    }, []);
-
-    const handleMouseLeave = useCallback(() => {
-        hoveredRef.current = null;
-        handleMouseUp();
-    }, [handleMouseUp]);
-
-    // ── Touch handlers ──
-    const handleTouchStart = useCallback((e) => {
-        e.preventDefault();
-        const touch = e.touches[0];
-        const { x, y } = getCanvasCoords(touch);
-        const node = hitTest(x, y);
-        if (node) {
-            dragRef.current = node;
-            node.fx = node.x;
-            node.fy = node.y;
-            simRef.current?.alphaTarget(0.3).restart();
-        }
-    }, [hitTest, getCanvasCoords]);
-
-    const handleTouchMove = useCallback((e) => {
-        e.preventDefault();
-        if (dragRef.current) {
-            const touch = e.touches[0];
-            const { x, y } = getCanvasCoords(touch);
-            dragRef.current.fx = x;
-            dragRef.current.fy = y;
-        }
-    }, [getCanvasCoords]);
-
-    const handleTouchEnd = useCallback((e) => {
-        e.preventDefault();
-        handleMouseUp();
-    }, [handleMouseUp]);
-
-    return (
-        <div ref={containerRef} style={{ width: "100%", position: "relative" }}>
-            <canvas
-                ref={canvasRef}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseLeave}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                style={{
-                    width: "100%",
-                    height: dimensions.height,
-                    borderRadius: "12px",
-                    touchAction: "none",
-                }}
-            />
-        </div>
-    );
+const HUB_POSITIONS = {
+  languages: [-3.25, 1.55, 0.65],
+  frameworks: [3.1, 1.2, -0.85],
+  "data-cloud": [-2.35, -2.05, -1.1],
+  "ai-ml": [2.45, -1.85, 1.15],
 };
 
-export { CATEGORIES };
+const HUB_LINKS = [
+  ["languages", "frameworks"],
+  ["languages", "data-cloud"],
+  ["languages", "ai-ml"],
+  ["frameworks", "data-cloud"],
+  ["frameworks", "ai-ml"],
+  ["data-cloud", "ai-ml"],
+];
+
+const DEFAULT_CAMERA_POSITION = [0, 0.38, 9.7];
+const MOBILE_CAMERA_POSITION = [0, 0.6, 11.6];
+const CONSTELLATION_SCALE = 0.88;
+const FOCUS_DIRECTION = new THREE.Vector3(0.85, 0.5, 1).normalize();
+
+const getCategoryIdFromNodeId = (nodeId) => {
+  if (!nodeId) return null;
+  return nodeId.includes("--") ? nodeId.split("--")[0] : nodeId;
+};
+
+const getNodeLabel = (nodeId) => {
+  if (!nodeId) return "";
+
+  const categoryId = getCategoryIdFromNodeId(nodeId);
+  const category = CATEGORIES.find((cat) => cat.id === categoryId);
+
+  if (!category) return "";
+  if (nodeId === category.id) return category.label;
+
+  return (
+    category.skills.find(
+      (skill) => getSkillNodeId(category.id, skill.name) === nodeId,
+    )?.name || ""
+  );
+};
+
+const buildConstellation = () =>
+  CATEGORIES.map((category, categoryIndex) => {
+    const skillCount = category.skills.length;
+    const orbitRadius = 1.08 + skillCount * 0.032;
+    const orbitDepth = 0.58 + (categoryIndex % 2) * 0.16;
+    const phase = categoryIndex * Math.PI * 0.47;
+    const tilt = [
+      categoryIndex % 2 === 0 ? 0.28 : -0.22,
+      categoryIndex % 3 === 0 ? -0.18 : 0.16,
+      categoryIndex % 2 === 0 ? 0.14 : -0.12,
+    ];
+
+    return {
+      ...category,
+      phase,
+      position: HUB_POSITIONS[category.id],
+      orbitSpeed: 0.13 + categoryIndex * 0.025,
+      tilt,
+      skills: category.skills.map((skill, skillIndex) => {
+        const angle = (skillIndex / skillCount) * Math.PI * 2 + phase * 0.55;
+        const wobble = skillIndex % 2 === 0 ? 0.28 : -0.2;
+
+        return {
+          ...skill,
+          id: getSkillNodeId(category.id, skill.name),
+          label: skill.name,
+          categoryId: category.id,
+          radius: 0.13 + skill.size * 0.085,
+          position: [
+            Math.cos(angle) * orbitRadius,
+            Math.sin(angle) * orbitRadius * 0.56 + wobble * 0.82,
+            Math.sin(angle * 1.35 + phase) * orbitDepth,
+          ],
+        };
+      }),
+    };
+  });
+
+function CameraRig({ isMobile, nodeRefs, selectedNodeId }) {
+  const controlsRef = useRef(null);
+  const { camera } = useThree();
+  const focusTarget = useMemo(() => new THREE.Vector3(), []);
+  const cameraGoal = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame((_, delta) => {
+    const controls = controlsRef.current;
+    if (!controls) return;
+
+    const selectedObject = selectedNodeId
+      ? nodeRefs.current[selectedNodeId]
+      : null;
+
+    if (selectedObject) {
+      selectedObject.getWorldPosition(focusTarget);
+      cameraGoal
+        .copy(focusTarget)
+        .addScaledVector(FOCUS_DIRECTION, isMobile ? 6.4 : 5.6);
+    } else {
+      focusTarget.set(0, 0, 0);
+    }
+
+    const targetLerp = 1 - Math.exp(-delta * (selectedObject ? 4.6 : 1.4));
+    const cameraLerp = 1 - Math.exp(-delta * 2.8);
+
+    controls.target.lerp(focusTarget, targetLerp);
+    if (selectedObject) {
+      camera.position.lerp(cameraGoal, cameraLerp);
+    }
+    controls.autoRotate = !selectedObject;
+    controls.update();
+  });
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      makeDefault
+      enableDamping
+      dampingFactor={0.08}
+      enablePan={false}
+      minDistance={4.4}
+      maxDistance={16}
+      autoRotate={!selectedNodeId}
+      autoRotateSpeed={0.55}
+    />
+  );
+}
+
+function HubNode({
+  category,
+  darkMode,
+  dimmed,
+  onSelectNode,
+  registerNode,
+  selected,
+}) {
+  const groupRef = useRef(null);
+  const torusRef = useRef(null);
+  const coreColor = category.color;
+  const accentColor = category.color;
+  const labelColor = darkMode
+    ? "rgba(255,255,255,0.88)"
+    : "rgba(15,23,42,0.78)";
+
+  useEffect(() => {
+    registerNode(category.id, groupRef.current);
+    return () => registerNode(category.id, null);
+  }, [category.id, registerNode]);
+
+  useFrame(({ clock }) => {
+    const elapsed = clock.elapsedTime;
+    const pulse = 1 + Math.sin(elapsed * 2.25 + category.phase) * 0.055;
+
+    if (groupRef.current) {
+      groupRef.current.scale.setScalar(pulse);
+    }
+
+    if (torusRef.current) {
+      torusRef.current.rotation.x = elapsed * 0.78 + category.phase;
+      torusRef.current.rotation.y = elapsed * 0.56;
+      torusRef.current.rotation.z = elapsed * 0.34;
+    }
+  });
+
+  return (
+    <group
+      ref={groupRef}
+      onClick={(event) => {
+        event.stopPropagation();
+        onSelectNode(null);
+      }}
+    >
+      <pointLight
+        color={accentColor}
+        distance={4.8}
+        intensity={dimmed ? 0.35 : darkMode ? 2.6 : 1.45}
+      />
+      <mesh castShadow receiveShadow>
+        <sphereGeometry args={[0.38, 40, 40]} />
+        <meshBasicMaterial
+          color={coreColor}
+          transparent
+          opacity={dimmed ? 0.46 : 1}
+          toneMapped={false}
+        />
+      </mesh>
+      <mesh ref={torusRef}>
+        <torusGeometry args={[0.58, 0.018, 16, 96]} />
+        <meshBasicMaterial
+          color={accentColor}
+          transparent
+          opacity={dimmed ? 0.12 : selected ? 0.78 : 0.55}
+          toneMapped={false}
+        />
+      </mesh>
+      <Billboard position={[0, -0.72, 0]}>
+        <Text
+          color={labelColor}
+          fillOpacity={dimmed ? 0.3 : 0.95}
+          fontSize={0.2}
+          letterSpacing={0.08}
+          maxWidth={1.9}
+          anchorX="center"
+          anchorY="middle"
+          outlineColor={darkMode ? "#020617" : "#ffffff"}
+          outlineWidth={0.006}
+        >
+          {category.label}
+        </Text>
+      </Billboard>
+    </group>
+  );
+}
+
+function SkillNode({
+  category,
+  darkMode,
+  dimmed,
+  onSelectNode,
+  registerNode,
+  selected,
+  skill,
+}) {
+  const groupRef = useRef(null);
+  const meshRef = useRef(null);
+  const skillColor = category.color;
+  const accentColor = category.color;
+  const labelColor = darkMode
+    ? "rgba(255,255,255,0.78)"
+    : "rgba(15,23,42,0.66)";
+
+  useEffect(() => {
+    registerNode(skill.id, groupRef.current);
+    return () => registerNode(skill.id, null);
+  }, [registerNode, skill.id]);
+
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return;
+
+    const elapsed = clock.elapsedTime;
+    const pulse = selected ? 1 + Math.sin(elapsed * 5) * 0.08 : 1;
+    meshRef.current.scale.setScalar(pulse);
+  });
+
+  return (
+    <group
+      ref={groupRef}
+      position={skill.position}
+      onClick={(event) => {
+        event.stopPropagation();
+        onSelectNode(skill.id);
+      }}
+    >
+      {selected && (
+        <pointLight
+          color={accentColor}
+          distance={1.6}
+          intensity={darkMode ? 1.2 : 0.65}
+        />
+      )}
+      <mesh ref={meshRef} castShadow receiveShadow>
+        <sphereGeometry args={[skill.radius, 24, 24]} />
+        <meshBasicMaterial
+          color={skillColor}
+          transparent
+          opacity={dimmed ? 0.28 : 0.95}
+          toneMapped={false}
+        />
+      </mesh>
+      <Billboard position={[0, skill.radius + 0.2, 0]}>
+        <Text
+          color={labelColor}
+          fillOpacity={dimmed ? 0.24 : selected ? 1 : 0.88}
+          fontSize={selected ? 0.19 : 0.145}
+          maxWidth={1.55}
+          anchorX="center"
+          anchorY="middle"
+          outlineColor={darkMode ? "#020617" : "#ffffff"}
+          outlineWidth={0.005}
+        >
+          {skill.label}
+        </Text>
+      </Billboard>
+    </group>
+  );
+}
+
+function SkillEdges({ category, darkMode, selectedNodeId }) {
+  const selectedCategoryId = getCategoryIdFromNodeId(selectedNodeId);
+  const selectedInCluster = selectedCategoryId === category.id;
+  const selectionActive = Boolean(selectedNodeId);
+  const edgeColor = darkMode ? "#e5e7eb" : "#0f172a";
+
+  return category.skills.map((skill) => {
+    const selected = selectedNodeId === skill.id;
+    const dimmed = selectionActive && !selectedInCluster;
+
+    return (
+      <Line
+        key={`${category.id}-${skill.id}-edge`}
+        points={[[0, 0, 0], skill.position]}
+        color={
+          selected
+            ? darkMode
+              ? category.lightColor
+              : category.color
+            : edgeColor
+        }
+        transparent
+        opacity={dimmed ? 0.045 : selected ? 0.62 : 0.18}
+        lineWidth={selected ? 1.45 : 0.7}
+      />
+    );
+  });
+}
+
+function CategoryCluster({
+  category,
+  darkMode,
+  onSelectNode,
+  registerNode,
+  selectedNodeId,
+}) {
+  const orbitRef = useRef(null);
+  const selectedCategoryId = getCategoryIdFromNodeId(selectedNodeId);
+  const selectedInCluster = selectedCategoryId === category.id;
+  const selectionActive = Boolean(selectedNodeId);
+  const dimCluster = selectionActive && !selectedInCluster;
+
+  useFrame(({ clock }, delta) => {
+    if (!orbitRef.current) return;
+
+    const elapsed = clock.elapsedTime;
+    const orbitMultiplier = selectedNodeId ? 0.58 : 1;
+    orbitRef.current.rotation.x =
+      category.tilt[0] + Math.sin(elapsed * 0.18 + category.phase) * 0.045;
+    orbitRef.current.rotation.y +=
+      delta * category.orbitSpeed * orbitMultiplier;
+    orbitRef.current.rotation.z =
+      category.tilt[2] + Math.cos(elapsed * 0.16 + category.phase) * 0.035;
+  });
+
+  return (
+    <group
+      position={category.position}
+      rotation={[category.tilt[0], category.tilt[1], category.tilt[2]]}
+    >
+      <HubNode
+        category={category}
+        darkMode={darkMode}
+        dimmed={dimCluster}
+        onSelectNode={onSelectNode}
+        registerNode={registerNode}
+        selected={selectedNodeId === category.id || selectedInCluster}
+      />
+      <group ref={orbitRef}>
+        <SkillEdges
+          category={category}
+          darkMode={darkMode}
+          selectedNodeId={selectedNodeId}
+        />
+        {category.skills.map((skill) => (
+          <SkillNode
+            key={skill.id}
+            category={category}
+            darkMode={darkMode}
+            dimmed={dimCluster}
+            onSelectNode={onSelectNode}
+            registerNode={registerNode}
+            selected={selectedNodeId === skill.id}
+            skill={skill}
+          />
+        ))}
+      </group>
+    </group>
+  );
+}
+
+function HubLinks({ categories, darkMode, selectedNodeId }) {
+  const categoryById = useMemo(
+    () => new Map(categories.map((category) => [category.id, category])),
+    [categories],
+  );
+  const selectedCategoryId = getCategoryIdFromNodeId(selectedNodeId);
+  const edgeColor = darkMode ? "#f8fafc" : "#111827";
+
+  return HUB_LINKS.map(([sourceId, targetId]) => {
+    const source = categoryById.get(sourceId);
+    const target = categoryById.get(targetId);
+    const selected =
+      selectedCategoryId === sourceId || selectedCategoryId === targetId;
+    const dimmed = selectedNodeId && !selected;
+
+    return (
+      <Line
+        key={`${sourceId}-${targetId}`}
+        points={[source.position, target.position]}
+        color={edgeColor}
+        transparent
+        opacity={dimmed ? 0.08 : selected ? 0.58 : 0.34}
+        lineWidth={selected ? 1.95 : 1.25}
+      />
+    );
+  });
+}
+
+function ConstellationScene({
+  darkMode,
+  isMobile,
+  onSelectNode,
+  selectedNodeId,
+}) {
+  const nodeRefs = useRef({});
+  const categories = useMemo(() => buildConstellation(), []);
+
+  const registerNode = useCallback((id, object) => {
+    if (object) {
+      nodeRefs.current[id] = object;
+      return;
+    }
+
+    delete nodeRefs.current[id];
+  }, []);
+
+  return (
+    <>
+      <fog attach="fog" args={[darkMode ? "#1f1f23" : "#f8fafc", 9, 18]} />
+      <ambientLight intensity={darkMode ? 0.52 : 0.85} />
+      <directionalLight
+        position={[5, 5, 7]}
+        intensity={darkMode ? 0.7 : 1.25}
+      />
+      <directionalLight
+        position={[-5, -3, -4]}
+        intensity={darkMode ? 0.22 : 0.35}
+      />
+
+      <Suspense fallback={null}>
+        <group scale={CONSTELLATION_SCALE} position={[0, -0.08, 0]}>
+          <HubLinks
+            categories={categories}
+            darkMode={darkMode}
+            selectedNodeId={selectedNodeId}
+          />
+          {categories.map((category) => (
+            <CategoryCluster
+              key={category.id}
+              category={category}
+              darkMode={darkMode}
+              onSelectNode={onSelectNode}
+              registerNode={registerNode}
+              selectedNodeId={selectedNodeId}
+            />
+          ))}
+        </group>
+      </Suspense>
+      <CameraRig
+        isMobile={isMobile}
+        nodeRefs={nodeRefs}
+        selectedNodeId={selectedNodeId}
+      />
+    </>
+  );
+}
+
+const SkillsGraph = ({
+  darkMode,
+  expanded = false,
+  onSelectNode = () => {},
+  selectedNodeId = null,
+}) => {
+  const { isMobile } = useIsMobile();
+  const height = isMobile ? 500 : expanded ? 720 : 680;
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        position: "relative",
+        minHeight: height,
+      }}
+    >
+      <Canvas
+        camera={{
+          position: isMobile ? MOBILE_CAMERA_POSITION : DEFAULT_CAMERA_POSITION,
+          fov: isMobile ? 52 : 48,
+          near: 0.1,
+          far: 100,
+        }}
+        dpr={[1, 1.75]}
+        gl={{ antialias: true, alpha: true }}
+        onPointerMissed={() => onSelectNode(null)}
+        shadows
+        style={{
+          width: "100%",
+          height,
+          borderRadius: "16px",
+          background: darkMode
+            ? "linear-gradient(135deg, rgba(23,23,23,0.42), rgba(63,63,70,0.16)), radial-gradient(circle at 18% 12%, rgba(255,255,255,0.08), transparent 34%), radial-gradient(circle at 78% 24%, rgba(161,161,170,0.12), transparent 32%)"
+            : "linear-gradient(135deg, rgba(255,255,255,0.34), rgba(244,244,245,0.2)), radial-gradient(circle at 18% 12%, rgba(255,255,255,0.72), transparent 34%), radial-gradient(circle at 78% 24%, rgba(228,228,231,0.36), transparent 32%)",
+          backdropFilter: "blur(18px) saturate(1.25)",
+          WebkitBackdropFilter: "blur(18px) saturate(1.25)",
+          boxShadow: darkMode
+            ? "inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.08), 0 18px 52px rgba(0,0,0,0.28)"
+            : "inset 0 1px 0 rgba(255,255,255,0.82), inset 0 0 0 1px rgba(15,23,42,0.06), 0 18px 44px rgba(100,116,139,0.14)",
+          overflow: "hidden",
+        }}
+      >
+        <ConstellationScene
+          darkMode={darkMode}
+          isMobile={isMobile}
+          onSelectNode={onSelectNode}
+          selectedNodeId={selectedNodeId}
+        />
+      </Canvas>
+    </div>
+  );
+};
+
 export default SkillsGraph;
