@@ -1,93 +1,107 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import useIsMobile from "../hooks/useIsMobile";
 
+const TRAIL_COUNT = 8;
+const TRAIL_DECAY = 0.7; // opacity multiplier per dot
+
 const CursorTrail = () => {
-    const canvasRef = useRef(null);
+    const dotsRef = useRef([]);
+    const mouseRef = useRef({ x: -100, y: -100 });
+    const positionsRef = useRef(
+        Array.from({ length: TRAIL_COUNT }, () => ({ x: -100, y: -100 }))
+    );
+    const rafRef = useRef(0);
+    const containerRef = useRef(null);
     const { isMobile } = useIsMobile();
 
-    useEffect(() => {
-        if (isMobile) return;
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        
-        let mouse = { x: -100, y: -100 };
-        const numDots = 8;
-        let dots = [];
-        for (let i = 0; i < numDots; i++) {
-            dots.push({ x: -100, y: -100 });
+    const animate = useCallback(() => {
+        const positions = positionsRef.current;
+        const dots = dotsRef.current;
+
+        // Lead dot follows mouse directly
+        positions[0].x += (mouseRef.current.x - positions[0].x) * 0.3;
+        positions[0].y += (mouseRef.current.y - positions[0].y) * 0.3;
+
+        // Each subsequent dot follows the one ahead of it
+        for (let i = 1; i < TRAIL_COUNT; i++) {
+            positions[i].x += (positions[i - 1].x - positions[i].x) * 0.2;
+            positions[i].y += (positions[i - 1].y - positions[i].y) * 0.2;
         }
 
-        const resize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
+        for (let i = 0; i < TRAIL_COUNT; i++) {
+            const dot = dots[i];
+            if (!dot) continue;
+            dot.style.transform = `translate(${positions[i].x}px, ${positions[i].y}px)`;
+        }
 
-        window.addEventListener('resize', resize);
-        resize();
+        rafRef.current = requestAnimationFrame(animate);
+    }, []);
+
+    useEffect(() => {
+        // Skip on touch devices or reduced motion
+        if (isMobile) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
         const onMouseMove = (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
+            mouseRef.current.x = e.clientX;
+            mouseRef.current.y = e.clientY;
         };
 
-        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener("mousemove", onMouseMove, { passive: true });
+        rafRef.current = requestAnimationFrame(animate);
 
-        const animate = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // First dot follows the actual mouse with easing
-            // Lower values stretch out the trail so it's less clumpy
-            dots[0].x += (mouse.x - dots[0].x) * 0.3;
-            dots[0].y += (mouse.y - dots[0].y) * 0.3;
-
-            // Subsequent dots follow the dot ahead of them with easing
-            for (let i = 1; i < numDots; i++) {
-                dots[i].x += (dots[i-1].x - dots[i].x) * 0.3;
-                dots[i].y += (dots[i-1].y - dots[i].y) * 0.3;
-            }
-
-            // Draw all dots
-            for (let i = 0; i < numDots; i++) {
-                // Exponential opacity fade (0.7 decay rate as observed)
-                const opacity = Math.pow(0.7, i); 
-                
-                ctx.beginPath();
-                // Fixed 6px diameter (3px radius) as observed
-                ctx.arc(dots[i].x, dots[i].y, 3, 0, Math.PI * 2);
-                
-                // Vibrant red #dc2626 matching the reference page exactly
-                ctx.fillStyle = `rgba(220, 38, 38, ${opacity})`;
-                ctx.fill();
-            }
-
-            requestAnimationFrame(animate);
-        };
-
-        let frameId = requestAnimationFrame(animate);
+        // Show container
+        if (containerRef.current) containerRef.current.style.display = "block";
 
         return () => {
-            window.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('resize', resize);
-            cancelAnimationFrame(frameId);
+            window.removeEventListener("mousemove", onMouseMove);
+            cancelAnimationFrame(rafRef.current);
         };
-    }, [isMobile]);
+    }, [animate, isMobile]);
 
     if (isMobile) return null;
 
     return (
-        <canvas
-            ref={canvasRef}
+        <div
+            ref={containerRef}
             style={{
-                position: 'fixed',
+                position: "fixed",
                 top: 0,
                 left: 0,
-                width: '100vw',
-                height: '100vh',
-                pointerEvents: 'none',
-                zIndex: 9998,
+                width: "100%",
+                height: "100%",
+                pointerEvents: "none",
+                zIndex: 9999,
+                display: "none",
             }}
-        />
+            aria-hidden="true"
+        >
+            {Array.from({ length: TRAIL_COUNT }, (_, i) => {
+                const opacity = Math.pow(TRAIL_DECAY, i) * 0.5; // Slightly boosted for visibility
+                const size = Math.max(3, 6 - i * 0.4);
+                return (
+                    <div
+                        key={i}
+                        ref={(el) => {
+                            if (el) dotsRef.current[i] = el;
+                        }}
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: size,
+                            height: size,
+                            backgroundColor: "#dc2626",
+                            borderRadius: "50%",
+                            opacity,
+                            marginLeft: -size / 2,
+                            marginTop: -size / 2,
+                            willChange: "transform",
+                        }}
+                    />
+                );
+            })}
+        </div>
     );
 };
 
