@@ -355,7 +355,7 @@ const AboutPage = ({ darkMode }) => {
                     I'm an <strong>Azure Certified Data Scientist</strong> and <strong>AWS Certified Cloud Practitioner</strong>.
                     <br /><br />
                     Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.            
-                    Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="anime" />.
+                    Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="movies/anime" />.
                 </div>
             </div>
             <Footer darkMode={darkMode} isHomePage={false} />

@@ -20,6 +20,13 @@ const videos = [
         description: "Denji is a teenage boy living with a Chainsaw Devil named Pochita. Due to the debt his father left behind, he has been living a rock-bottom life while repaying his debt by harvesting devil corpses.",
         cover: "https://cdn.myanimelist.net/images/anime/1806/126216l.jpg",
     },
+    {
+        id: 4,
+        title: "Pluto",
+        type: "anime",
+        description: "Gesicht, an android police detective of Europol, is tasked with finding the murderer of Montblanc, a retired war hero robot. Although it appears that only a robot could have committed this crime, the murder of a renowned robot rights activist casts doubts on the criminal's identity.",
+        cover: "https://cdn.myanimelist.net/images/anime/1021/138568l.jpg",
+    },
 ];
 
 export default videos;
