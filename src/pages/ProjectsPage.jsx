@@ -151,7 +151,7 @@ const ProjectsPage = ({ darkMode }) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
+                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
                 padding: isMobile ? "80px 12px 16px" : "100px 20px 20px",
                 cursor: `url(${catCursor}) 16 16, auto`,
                 transition: "background-color 0.3s ease",

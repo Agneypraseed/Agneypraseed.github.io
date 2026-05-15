@@ -36,7 +36,7 @@ const AppContent = () => {
             document.body.style.backgroundColor = "#1a1a1a";
             document.body.style.color = "#ffffff";
         } else {
-            document.body.style.backgroundColor = "";
+            document.body.style.backgroundColor = "#F5F0E8";
             document.body.style.color = "";
         }
     }, [darkMode]);

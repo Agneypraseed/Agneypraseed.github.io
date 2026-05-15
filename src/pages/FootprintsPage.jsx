@@ -25,7 +25,7 @@ const FootprintsPage = ({ darkMode }) => {
                 minHeight: "100vh",
                 display: "flex",
                 flexDirection: "column",
-                backgroundColor: darkMode ? "#1a1a1a" : "#ffffff",
+                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
                 padding: isMobile ? "80px 12px 16px" : "100px 20px 20px",
                 transition: "background-color 0.3s ease",
             }}

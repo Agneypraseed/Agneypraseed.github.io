@@ -27,7 +27,7 @@ const HomePage = ({ darkMode }) => {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          backgroundColor: darkMode ? "#1a1a1a" : "rgba(255, 255, 255, 0.9)",
+          backgroundColor: darkMode ? "#1a1a1a" : "rgba(245, 240, 232, 0.9)",
           transition: "background-color 0.3s ease, background-image 0.3s ease",
           overflow: "hidden",
         }}
