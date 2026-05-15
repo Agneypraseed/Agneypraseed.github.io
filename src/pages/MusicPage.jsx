@@ -330,8 +330,7 @@ const MusicPage = ({ darkMode }) => {
                 minHeight: "100vh",
                 display: "flex",
                 flexDirection: "column",
-                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
-                transition: "background-color 0.3s ease",
+
                 position: "relative",
                 overflow: "hidden",
             }}

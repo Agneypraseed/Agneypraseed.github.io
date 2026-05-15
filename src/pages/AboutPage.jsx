@@ -59,9 +59,7 @@ const AboutPage = ({ darkMode }) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
                 padding: isMobile ? "80px 16px 20px" : "120px 40px 40px",
-                transition: "background-color 0.3s ease",
             }}
         >
             <div
