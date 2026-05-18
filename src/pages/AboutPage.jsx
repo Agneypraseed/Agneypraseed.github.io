@@ -344,15 +344,11 @@ const AboutPage = ({ darkMode }) => {
                 }}>
                     Hi, I'm <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Agney</strong> (he/him), based in Berlin, Germany.
                     <br /><br />
-                    I am currently pursuing a <strong>Master of Science in Artificial Intelligence</strong>.
+                    A <strong>software engineer turned AI researcher</strong>, currently pursuing my Master's in Artificial Intelligence. Before diving into research, I spent nearly two years as a <strong>Software Development Engineer</strong> building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
                     <br /><br />
-                    Previously, I worked as a <strong>Software Development Engineer at Publicis Sapient</strong> for nearly two years, where I built RESTful APIs with Spring Boot, developed full-stack features using React and Angular, and worked with PostgreSQL, MongoDB, and AWS for cloud-based solutions.
+                    My current research interests lie in <strong>mechanistic interpretability</strong>, <strong>multimodality</strong>, and <strong>diffusion models</strong>.
                     <br /><br />
-                    Currently, I'm focusing on <strong>training large neural networks</strong>, enhancing my expertise in deep learning and AI model development.
-                    <br /><br />
-                    I'm an <strong>Azure Certified Data Scientist</strong> and <strong>AWS Certified Cloud Practitioner</strong>.
-                    <br /><br />
-                    Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.            
+                    Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
                     Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="movies/anime" />.
                 </div>
             </div>
