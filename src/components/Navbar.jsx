@@ -67,53 +67,115 @@ const Navbar = ({ darkMode, isHomePage }) => {
             : "rgba(0, 0, 0, 0.08)",
     };
 
+    // Mobile navbar colors matching the reference image
+    const mobileNavBg = darkMode
+        ? "rgba(30, 30, 30, 0.7)"
+        : "rgba(245, 237, 224, 0.95)";
+    const mobileNavBorder = darkMode
+        ? "1px solid rgba(255, 255, 255, 0.1)"
+        : "1px solid rgba(200, 185, 165, 0.5)";
+    const mobileDotsBoxBg = darkMode
+        ? "rgba(255, 255, 255, 0.12)"
+        : "rgba(255, 248, 238, 0.9)";
+    const mobileDotsBoxBorder = darkMode
+        ? "1px solid rgba(255, 255, 255, 0.15)"
+        : "1px solid rgba(210, 195, 175, 0.5)";
+
     return (
         <>
-            <nav style={{
-                position: "fixed",
-                top: "20px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                zIndex: 1000,
-                padding: isMobile ? "0.6rem 1rem" : "0.75rem 1.5rem",
-                background: navBg,
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                borderRadius: "50px",
-                border: navBorder,
-                boxShadow: useWhiteBg
-                    ? "0 4px 24px rgba(0, 0, 0, 0.06)"
-                    : "0 8px 32px rgba(0, 0, 0, 0.15)",
-                transition: "all 0.3s ease",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-            }}>
-                {/* Hamburger button — mobile only */}
-                <button
-                    className="hamburger-btn"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                    aria-label="Toggle menu"
-                    style={{ color: darkMode ? "#fff" : "#374151" }}
+            {/* Mobile navbar — pill bar with AP + three-dot menu */}
+            {isMobile && (
+                <nav
+                    className="mobile-nav-pill"
+                    style={{
+                        position: "fixed",
+                        top: "16px",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: "calc(100% - 32px)",
+                        maxWidth: "500px",
+                        zIndex: 1000,
+                        padding: "0.55rem 0.6rem 0.55rem 1.25rem",
+                        background: mobileNavBg,
+                        backdropFilter: "blur(12px)",
+                        WebkitBackdropFilter: "blur(12px)",
+                        borderRadius: "50px",
+                        border: mobileNavBorder,
+                        boxShadow: darkMode
+                            ? "0 8px 32px rgba(0, 0, 0, 0.25)"
+                            : "0 4px 20px rgba(0, 0, 0, 0.06)",
+                        transition: "all 0.3s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                    }}
                 >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        {menuOpen ? (
-                            <>
-                                <line x1="18" y1="6" x2="6" y2="18" />
-                                <line x1="6" y1="6" x2="18" y2="18" />
-                            </>
-                        ) : (
-                            <>
-                                <line x1="3" y1="6" x2="21" y2="6" />
-                                <line x1="3" y1="12" x2="21" y2="12" />
-                                <line x1="3" y1="18" x2="21" y2="18" />
-                            </>
-                        )}
-                    </svg>
-                </button>
+                    {/* AP logo text */}
+                    <span
+                        style={{
+                            fontSize: "1.15rem",
+                            fontWeight: "700",
+                            letterSpacing: "0.02em",
+                            color: darkMode ? "rgba(255, 255, 255, 0.95)" : "#2d2a26",
+                            userSelect: "none",
+                        }}
+                    >
+                        AP
+                    </span>
 
-                {/* Desktop nav links — inside the pill */}
-                {!isMobile && (
+                    {/* Three-dot menu button */}
+                    <button
+                        className="mobile-dots-btn"
+                        onClick={() => setMenuOpen(!menuOpen)}
+                        aria-label="Toggle menu"
+                        style={{
+                            background: mobileDotsBoxBg,
+                            border: mobileDotsBoxBorder,
+                            borderRadius: "20px",
+                            padding: "0.5rem 0.85rem",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            transition: "all 0.2s ease",
+                        }}
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill={darkMode ? "rgba(255,255,255,0.85)" : "#3d3832"}
+                        >
+                            <circle cx="4" cy="10" r="1.8" />
+                            <circle cx="10" cy="10" r="1.8" />
+                            <circle cx="16" cy="10" r="1.8" />
+                        </svg>
+                    </button>
+                </nav>
+            )}
+
+            {/* Desktop navbar — pill with links */}
+            {!isMobile && (
+                <nav style={{
+                    position: "fixed",
+                    top: "20px",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    zIndex: 1000,
+                    padding: "0.75rem 1.5rem",
+                    background: navBg,
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    borderRadius: "50px",
+                    border: navBorder,
+                    boxShadow: useWhiteBg
+                        ? "0 4px 24px rgba(0, 0, 0, 0.06)"
+                        : "0 8px 32px rgba(0, 0, 0, 0.15)",
+                    transition: "all 0.3s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                }}>
                     <div className="nav-links" style={{ display: "flex" }}>
                         {links.map(({ to, label }) => (
                             <NavLink
@@ -135,8 +197,8 @@ const Navbar = ({ darkMode, isHomePage }) => {
                             </NavLink>
                         ))}
                     </div>
-                )}
-            </nav>
+                </nav>
+            )}
 
             {/* Mobile fullscreen overlay — rendered OUTSIDE the nav pill */}
             {isMobile && menuOpen && (
@@ -147,11 +209,9 @@ const Navbar = ({ darkMode, isHomePage }) => {
                         left: 0,
                         width: "100vw",
                         height: "100vh",
-                        background: useWhiteBg
-                            ? "#ffffff"
-                            : darkMode
-                                ? "#1a1a1a"
-                                : "#0f1b33",
+                        background: darkMode
+                            ? "#1a1a1a"
+                            : "#ffffff",
                         zIndex: 999,
                         display: "flex",
                         flexDirection: "column",

@@ -60,8 +60,45 @@ const AboutPage = ({ darkMode }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 padding: isMobile ? "80px 16px 20px" : "120px 40px 40px",
+                position: "relative",
+                overflow: "hidden",
             }}
         >
+            <style>{`
+                @keyframes fadeInAbout {
+                    from { opacity: 0; transform: translateY(16px); }
+                    to   { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
+
+            {/* Ambient Background Glows to enhance glassmorphism refraction */}
+            <div style={{
+                position: "absolute",
+                top: "20%",
+                left: "10%",
+                width: isMobile ? "200px" : "400px",
+                height: isMobile ? "200px" : "400px",
+                background: darkMode 
+                    ? "radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)"
+                    : "radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)",
+                filter: "blur(40px)",
+                pointerEvents: "none",
+                zIndex: 0,
+            }} />
+            <div style={{
+                position: "absolute",
+                bottom: "10%",
+                right: "10%",
+                width: isMobile ? "250px" : "450px",
+                height: isMobile ? "250px" : "450px",
+                background: darkMode 
+                    ? "radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%)"
+                    : "radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 70%)",
+                filter: "blur(50px)",
+                pointerEvents: "none",
+                zIndex: 0,
+            }} />
+
             <div
                 style={{
                     flex: "1",
@@ -69,6 +106,9 @@ const AboutPage = ({ darkMode }) => {
                     flexDirection: "column",
                     width: "100%",
                     maxWidth: "900px",
+                    animation: "fadeInAbout 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+                    position: "relative",
+                    zIndex: 1,
                 }}
             >
                 {/* Header Row - Name/Contact on left, Download CV on right */}
@@ -333,20 +373,29 @@ const AboutPage = ({ darkMode }) => {
 
                 {/* Bio */}
                 <div style={{
-                    background: darkMode ? "rgba(30, 30, 30, 0.6)" : "#f9fafb",
-                    backdropFilter: darkMode ? "blur(12px)" : "none",
-                    borderRadius: "16px",
-                    padding: isMobile ? "1.25rem" : "2rem",
-                    border: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid #e5e7eb",
-                    color: darkMode ? "rgba(255,255,255,0.85)" : "#4b5563",
+                    background: darkMode
+                        ? "linear-gradient(135deg, rgba(26, 31, 41, 0.78), rgba(43, 48, 61, 0.5)), radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.08), transparent 35%)"
+                        : "linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.45)), radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.9), transparent 35%)",
+                    backdropFilter: "blur(32px) saturate(1.25)",
+                    WebkitBackdropFilter: "blur(32px) saturate(1.25)",
+                    borderRadius: "20px",
+                    padding: isMobile ? "1.5rem 1.25rem" : "2.5rem 2.25rem",
+                    border: darkMode
+                        ? "1px solid rgba(255, 255, 255, 0.08)"
+                        : "1px solid rgba(255, 255, 255, 0.6)",
+                    boxShadow: darkMode
+                        ? "0 30px 70px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.04)"
+                        : "0 24px 60px rgba(31, 38, 135, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.2)",
+                    color: darkMode ? "rgba(255, 255, 255, 0.9)" : "#4b5563",
                     fontSize: isMobile ? "0.95rem" : "1.1rem",
                     lineHeight: "1.9",
+                    transition: "all 0.3s ease",
                 }}>
                     Hi, I'm <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Agney</strong> (he/him), based in Berlin, Germany.
                     <br /><br />
-                    A <strong>software engineer turned AI researcher</strong>, currently pursuing my Master's in Artificial Intelligence. Before diving into research, I spent nearly two years as a <strong>Software Development Engineer</strong> building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
+                    A <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>software engineer turned AI researcher</strong>, currently pursuing my Master's in Artificial Intelligence. Before diving into research, I spent nearly two years as a <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Software Development Engineer</strong> building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
                     <br /><br />
-                    My current research interests lie in <strong>mechanistic interpretability</strong>, <strong>multimodality</strong>, and <strong>diffusion models</strong>.
+                    My current research interests lie in <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>mechanistic interpretability</strong>, <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>multimodality</strong>, and <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>diffusion models</strong>.
                     <br /><br />
                     Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
                     Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="movies/anime" />.
