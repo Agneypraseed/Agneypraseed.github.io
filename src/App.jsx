@@ -44,7 +44,7 @@ const AppContent = () => {
     return (
         <>
             <CursorTrail />
-            <Navbar darkMode={darkMode} isHomePage={isHomePage} />
+            <Navbar darkMode={darkMode} isHomePage={isHomePage} toggleDarkMode={handleDarkModeToggle} />
             <DarkModeToggle darkMode={darkMode} toggleDarkMode={handleDarkModeToggle} isHomePage={isHomePage} />
             <Routes>
                 <Route path="/" element={<HomePage darkMode={darkMode} />} />

@@ -6,6 +6,9 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
     const useWhiteBg = !darkMode && !isHomePage;
     const btnSize = isMobile ? "42px" : "50px";
 
+    // On mobile, the dark mode toggle is inside the Navbar pill
+    if (isMobile) return null;
+
     return (
         <div className="header-controls" style={{
             position: "fixed",

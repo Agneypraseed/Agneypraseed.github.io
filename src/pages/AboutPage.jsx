@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
+import PhotoGallery from "../components/PhotoGallery";
+import SakuraEffect from "../components/SakuraEffect";
 import resume from "../assets/resume.pdf";
 import useIsMobile from "../hooks/useIsMobile";
 
+import portraitImg from "../assets/portrait.jpg";
+import ghibliImg from "../assets/ghibli.jpg";
+
 const AboutPage = ({ darkMode }) => {
     const [copyStatus, setCopyStatus] = useState(null);
+    const [sakuraActive, setSakuraActive] = useState(false);
     const { isMobile } = useIsMobile();
     const email = "agneysince2000@gmail.com";
     const displayEmail = "agneysince2000[at]gmail[dot]com";
@@ -105,7 +111,7 @@ const AboutPage = ({ darkMode }) => {
                     display: "flex",
                     flexDirection: "column",
                     width: "100%",
-                    maxWidth: "900px",
+                    maxWidth: "1000px",
                     animation: "fadeInAbout 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
                     position: "relative",
                     zIndex: 1,
@@ -371,36 +377,66 @@ const AboutPage = ({ darkMode }) => {
                     </a>
                 </div>
 
-                {/* Bio */}
+                {/* ── Main content: Photo on side + Bio ── */}
                 <div style={{
-                    background: darkMode
-                        ? "linear-gradient(135deg, rgba(26, 31, 41, 0.78), rgba(43, 48, 61, 0.5)), radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.08), transparent 35%)"
-                        : "linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.45)), radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.9), transparent 35%)",
-                    backdropFilter: "blur(32px) saturate(1.25)",
-                    WebkitBackdropFilter: "blur(32px) saturate(1.25)",
-                    borderRadius: "20px",
-                    padding: isMobile ? "1.5rem 1.25rem" : "2.5rem 2.25rem",
-                    border: darkMode
-                        ? "1px solid rgba(255, 255, 255, 0.08)"
-                        : "1px solid rgba(255, 255, 255, 0.6)",
-                    boxShadow: darkMode
-                        ? "0 30px 70px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.04)"
-                        : "0 24px 60px rgba(31, 38, 135, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.2)",
-                    color: darkMode ? "rgba(255, 255, 255, 0.9)" : "#4b5563",
-                    fontSize: isMobile ? "0.95rem" : "1.1rem",
-                    lineHeight: "1.9",
-                    transition: "all 0.3s ease",
+                    display: "flex",
+                    flexDirection: isMobile ? "column" : "row",
+                    gap: isMobile ? "1.5rem" : "2.5rem",
+                    alignItems: isMobile ? "center" : "flex-start",
                 }}>
-                    Hi, I'm <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Agney</strong> (he/him), based in Berlin, Germany.
-                    <br /><br />
-                    A <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>software engineer turned AI researcher</strong>, currently pursuing my Master's in Artificial Intelligence. Before diving into research, I spent nearly two years as a <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Software Development Engineer</strong> building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
-                    <br /><br />
-                    My current research interests lie in <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>mechanistic interpretability</strong>, <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>multimodality</strong>, and <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>diffusion models</strong>.
-                    <br /><br />
-                    Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
-                    Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="movies/anime" />.
+                    {/* Photo Gallery — sidebar */}
+                    <div style={{
+                        width: isMobile ? "260px" : "360px",
+                        flexShrink: 0,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                    }}>
+                        <PhotoGallery 
+                            darkMode={darkMode} 
+                            sakuraActive={sakuraActive}
+                            onSakuraToggle={() => setSakuraActive(!sakuraActive)}
+                            photos={[
+                                { src: ghibliImg, alt: "Ghibli Style", label: "Ghibli" },
+                                { src: portraitImg, alt: "Portrait", label: "Portrait" },
+                            ]} 
+                        />
+                    </div>
+
+                    {/* Bio card — fills remaining space */}
+                    <div style={{
+                        flex: 1,
+                        background: darkMode
+                            ? "linear-gradient(135deg, rgba(26, 31, 41, 0.78), rgba(43, 48, 61, 0.5)), radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.08), transparent 35%)"
+                            : "linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.45)), radial-gradient(circle at 10% 10%, rgba(255, 255, 255, 0.9), transparent 35%)",
+                        backdropFilter: "blur(32px) saturate(1.25)",
+                        WebkitBackdropFilter: "blur(32px) saturate(1.25)",
+                        borderRadius: "20px",
+                        padding: isMobile ? "1.5rem 1.25rem" : "2rem 2rem",
+                        border: darkMode
+                            ? "1px solid rgba(255, 255, 255, 0.08)"
+                            : "1px solid rgba(255, 255, 255, 0.6)",
+                        boxShadow: darkMode
+                            ? "0 30px 70px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(255, 255, 255, 0.04)"
+                            : "0 24px 60px rgba(31, 38, 135, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85), inset 0 -1px 0 rgba(255, 255, 255, 0.2)",
+                        color: darkMode ? "rgba(255, 255, 255, 0.9)" : "#4b5563",
+                        fontSize: isMobile ? "0.95rem" : "1.05rem",
+                        lineHeight: "1.85",
+                        transition: "all 0.3s ease",
+                    }}>
+                        Hi, I'm <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Agney</strong> (he/him), based in Berlin, Germany.
+                        <br /><br />
+                        A <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>software engineer turned AI researcher</strong>, currently pursuing my Master's in Artificial Intelligence. Before diving into research, I spent nearly two years as a <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Software Development Engineer</strong> building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
+                        <br /><br />
+                        My current research interests lie in <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>mechanistic interpretability</strong>, <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>multimodality</strong>, and <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>diffusion models</strong>.
+                        <br /><br />
+                        Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
+                        Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="movies/anime" />.
+                    </div>
                 </div>
             </div>
+            
+            <SakuraEffect active={sakuraActive} />
             <Footer darkMode={darkMode} isHomePage={false} />
         </div>
     );

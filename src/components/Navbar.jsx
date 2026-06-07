@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import useIsMobile from "../hooks/useIsMobile";
 
-const Navbar = ({ darkMode, isHomePage }) => {
+const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const { isMobile } = useIsMobile();
     const location = useLocation();
@@ -123,6 +123,55 @@ const Navbar = ({ darkMode, isHomePage }) => {
                         AP
                     </span>
 
+                    {/* Right side: dark mode toggle + three-dot menu */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+
+                    {/* Dark mode toggle */}
+                    {toggleDarkMode && (
+                        <button
+                            onClick={toggleDarkMode}
+                            aria-label="Toggle dark mode"
+                            style={{
+                                background: mobileDotsBoxBg,
+                                border: mobileDotsBoxBorder,
+                                borderRadius: "50%",
+                                width: "36px",
+                                height: "36px",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                transition: "all 0.3s ease",
+                                padding: 0,
+                            }}
+                        >
+                            {darkMode ? (
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                                        fill="#a78bfa"
+                                        stroke="#a78bfa"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
+                            ) : (
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="5" fill="#f59e0b" stroke="#f59e0b" strokeWidth="2"/>
+                                    <line x1="12" y1="1" x2="12" y2="3" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+                                    <line x1="12" y1="21" x2="12" y2="23" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+                                    <line x1="1" y1="12" x2="3" y2="12" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+                                    <line x1="21" y1="12" x2="23" y2="12" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+                                </svg>
+                            )}
+                        </button>
+                    )}
+
                     {/* Three-dot menu button */}
                     <button
                         className="mobile-dots-btn"
@@ -151,6 +200,7 @@ const Navbar = ({ darkMode, isHomePage }) => {
                             <circle cx="16" cy="10" r="1.8" />
                         </svg>
                     </button>
+                    </div>
                 </nav>
             )}
 
