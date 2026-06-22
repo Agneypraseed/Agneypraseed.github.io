@@ -48,32 +48,6 @@ const projects = [
         description: "Implemented the Transformer architecture from scratch following the 'Attention is All You Need' paper for NLP tasks.",
         tags: ["Python", "PyTorch", "Transformers", "Attention", "NLP"],
         github: "https://github.com/Agneypraseed/Notebooks/blob/main/transformer.ipynb",
-    {
-        id: 7,
-        title: "Cloud-Native Travel Booking Platform",
-        description: `Full-Stack Developer — [add your dates here]
-
-Backend (Microservices Architecture):
-• Architected and built 3 independently deployable microservices: a Search Service (Spring Boot, port 8080), a Bookings Service (Spring Boot, port 9002), and a Payment Gateway (Node.js/Koa, port 5100)
-• Developed the Search Microservice as a gateway to AWS OpenSearch, exposing RESTful endpoints for flights, accommodations, trains, and packages; handled query proxying with OkHttp and Basic Auth
-• Built the Bookings Microservice with Spring Data JPA and MySQL (AWS RDS), implementing full CRUD for transportation and accommodation bookings, saved traveller profiles, and real-time seat selection synced with OpenSearch
-• Designed relational data models using JPA/Hibernate with OneToMany/ManyToOne relationships across 5 entities (AccommodationBooking, TransportBooking, TravellerDetails, SavedTraveller, SeatSelect)
-• Implemented a fake payment gateway in Node.js with OTP generation, email-based MFA, e-receipt delivery, and booking cancellation — all using KoaJS middleware and Nodemailer
-
-Frontend (React SPA):
-• Built a responsive React 17 SPA with 20+ routes (public and protected), using React Router v6 and a custom RequireAuth guard for session-protected pages
-• Managed complex application state across 7 React Contexts (App, Access/Auth, FlightBooking, TrainSearch, Cab, Coupon, Seat) — no Redux dependency
-• Constructed Elasticsearch DSL queries directly in the frontend using custom query builder utilities (esQ.js) for terms, range, match, sort, and bool filter clauses
-• Integrated Google Maps API for cab booking (distance/duration calculation, geolocation, place autocomplete)
-• Implemented Keycloak-based authentication (OAuth 2.0, JWT decode, admin-cli client credentials) with login, registration, email verification, forgot password, and profile management
-• Built a multi-method payment flow (Credit/Debit Card, UPI, EMI) with OTP verification and booking confirmation pages
-
-DevOps & Quality:
-• Dockerized all services with multi-stage builds; orchestrated local development with Docker Compose
-• Configured Jenkins CI/CD pipelines with stages for checkout, install, unit tests, Cobertura coverage, SonarQube analysis, build, S3 deployment, JMeter performance tests, and BDD/Cucumber tests
-• Performed load testing with JMeter simulating 3,000 concurrent users against the deployed AWS S3-hosted frontend
-• Authored Python scripts to bulk-load and manage ~30 MB of travel data across 5 OpenSearch indices`,
-        tags: ["React", "Spring Boot", "Node.js", "Microservices", "Docker", "AWS", "Jenkins", "OpenSearch"],
     },
 ];
 
