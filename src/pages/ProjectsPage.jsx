@@ -48,6 +48,32 @@ const projects = [
         description: "Implemented the Transformer architecture from scratch following the 'Attention is All You Need' paper for NLP tasks.",
         tags: ["Python", "PyTorch", "Transformers", "Attention", "NLP"],
         github: "https://github.com/Agneypraseed/Notebooks/blob/main/transformer.ipynb",
+    {
+        id: 7,
+        title: "Cloud-Native Travel Booking Platform",
+        description: `Full-Stack Developer — [add your dates here]
+
+Backend (Microservices Architecture):
+• Architected and built 3 independently deployable microservices: a Search Service (Spring Boot, port 8080), a Bookings Service (Spring Boot, port 9002), and a Payment Gateway (Node.js/Koa, port 5100)
+• Developed the Search Microservice as a gateway to AWS OpenSearch, exposing RESTful endpoints for flights, accommodations, trains, and packages; handled query proxying with OkHttp and Basic Auth
+• Built the Bookings Microservice with Spring Data JPA and MySQL (AWS RDS), implementing full CRUD for transportation and accommodation bookings, saved traveller profiles, and real-time seat selection synced with OpenSearch
+• Designed relational data models using JPA/Hibernate with OneToMany/ManyToOne relationships across 5 entities (AccommodationBooking, TransportBooking, TravellerDetails, SavedTraveller, SeatSelect)
+• Implemented a fake payment gateway in Node.js with OTP generation, email-based MFA, e-receipt delivery, and booking cancellation — all using KoaJS middleware and Nodemailer
+
+Frontend (React SPA):
+• Built a responsive React 17 SPA with 20+ routes (public and protected), using React Router v6 and a custom RequireAuth guard for session-protected pages
+• Managed complex application state across 7 React Contexts (App, Access/Auth, FlightBooking, TrainSearch, Cab, Coupon, Seat) — no Redux dependency
+• Constructed Elasticsearch DSL queries directly in the frontend using custom query builder utilities (esQ.js) for terms, range, match, sort, and bool filter clauses
+• Integrated Google Maps API for cab booking (distance/duration calculation, geolocation, place autocomplete)
+• Implemented Keycloak-based authentication (OAuth 2.0, JWT decode, admin-cli client credentials) with login, registration, email verification, forgot password, and profile management
+• Built a multi-method payment flow (Credit/Debit Card, UPI, EMI) with OTP verification and booking confirmation pages
+
+DevOps & Quality:
+• Dockerized all services with multi-stage builds; orchestrated local development with Docker Compose
+• Configured Jenkins CI/CD pipelines with stages for checkout, install, unit tests, Cobertura coverage, SonarQube analysis, build, S3 deployment, JMeter performance tests, and BDD/Cucumber tests
+• Performed load testing with JMeter simulating 3,000 concurrent users against the deployed AWS S3-hosted frontend
+• Authored Python scripts to bulk-load and manage ~30 MB of travel data across 5 OpenSearch indices`,
+        tags: ["React", "Spring Boot", "Node.js", "Microservices", "Docker", "AWS", "Jenkins", "OpenSearch"],
     },
 ];
 
@@ -259,6 +285,7 @@ const ProjectsPage = ({ darkMode }) => {
                             lineHeight: "1.5",
                             margin: "0 0 1rem 0",
                             flex: "1",
+                            whiteSpace: "pre-line",
                         }}>
                             {project.description}
                         </p>
@@ -287,36 +314,38 @@ const ProjectsPage = ({ darkMode }) => {
                         </div>
 
                         {/* GitHub Button */}
-                        <a
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                gap: "0.5rem",
-                                background: darkMode ? "rgba(255, 255, 255, 0.1)" : "#1a1a1a",
-                                color: "#ffffff",
-                                textDecoration: "none",
-                                padding: "10px 20px",
-                                borderRadius: "8px",
-                                fontSize: "0.9rem",
-                                fontWeight: "500",
-                                transition: "background 0.2s ease",
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.2)" : "#333";
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.1)" : "#1a1a1a";
-                            }}
-                        >
-                            <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
-                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                            </svg>
-                            View on GitHub
-                        </a>
+                        {project.github && (
+                            <a
+                                href={project.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: "0.5rem",
+                                    background: darkMode ? "rgba(255, 255, 255, 0.1)" : "#1a1a1a",
+                                    color: "#ffffff",
+                                    textDecoration: "none",
+                                    padding: "10px 20px",
+                                    borderRadius: "8px",
+                                    fontSize: "0.9rem",
+                                    fontWeight: "500",
+                                    transition: "background 0.2s ease",
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.2)" : "#333";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = darkMode ? "rgba(255, 255, 255, 0.1)" : "#1a1a1a";
+                                }}
+                            >
+                                <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                                </svg>
+                                View on GitHub
+                            </a>
+                        )}
                     </div>
                 ))}
             </div>
