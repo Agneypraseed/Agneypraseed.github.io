@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from "react-dom";
 import useIsMobile from "../hooks/useIsMobile";
 
@@ -12,6 +12,16 @@ const PhotoGallery = ({ darkMode, photos = [], sakuraActive, onSakuraToggle }) =
     const [activeIndex, setActiveIndex] = useState(0);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
+    const textPath1Ref = useRef(null);
+    const textPath2Ref = useRef(null);
+
+    // textLength must match exact path length so both copies tile with zero overlap/gaps
+    useEffect(() => {
+        const path = document.getElementById('rect-text-path');
+        if (!path) return;
+        const len = path.getTotalLength();
+        [textPath1Ref, textPath2Ref].forEach(r => r.current?.setAttribute('textLength', len));
+    }, []);
 
     // Default to 2 placeholder slots
     const items = photos.length > 0
@@ -67,13 +77,64 @@ const PhotoGallery = ({ darkMode, photos = [], sakuraActive, onSakuraToggle }) =
 
     return (
         <>
-            {/* Sidebar photo card */}
-            <div style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-            }}>
+            {/* Photo frame wrapper with spinning text */}
+                <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    width: "100%",
+                }}>
+                {/* Outer container that holds photo + spinning ring */}
+                <div style={{
+                    position: "relative",
+                    width: "100%",
+                    /* The ring needs breathing room around the photo */
+                    padding: isMobile ? "18px" : "16px",
+                }}>
+                    {/* Scrolling name text around the border */}
+                    {(() => {
+                        const nameText = "AGNEY PRASEED • ".repeat(12);
+                        const textStyle = {
+                            fontSize: "15px",
+                            fontWeight: 800,
+                            letterSpacing: "0.15em",
+                            fill: darkMode ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.3)",
+                        };
+                        return (
+                            <svg
+                                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 20 }}
+                                viewBox="0 0 408 528"
+                            >
+                                <defs>
+                                    <path id="rect-text-path" d="M 204,13 L 369,13 Q 394,13 394,38 L 394,490 Q 394,515 369,515 L 39,515 Q 14,515 14,490 L 14,38 Q 14,13 39,13 Z" />
+                                    <mask id="border-mask-rect">
+                                        <rect width="408" height="528" fill="black" />
+                                        <rect x="2" y="2" width="404" height="524" rx="30" fill="white" />
+                                        <rect x="24" y="24" width="360" height="480" rx="20" fill="black" />
+                                    </mask>
+                                </defs>
+                                <g mask="url(#border-mask-rect)">
+                                    {/* Two copies needed: SVG clips text at path end, so when copy 1 scrolls
+                                        forward leaving a gap at the start, copy 2 fills it. textLength (set via JS)
+                                        ensures they tile perfectly with zero overlap. */}
+                                    <text style={textStyle}>
+                                        <textPath ref={textPath1Ref} href="#rect-text-path" lengthAdjust="spacing">
+                                            {nameText}
+                                            <animate attributeName="startOffset" from="0%" to="100%" dur="25s" repeatCount="indefinite" />
+                                        </textPath>
+                                    </text>
+                                    <text style={textStyle}>
+                                        <textPath ref={textPath2Ref} href="#rect-text-path" lengthAdjust="spacing">
+                                            {nameText}
+                                            <animate attributeName="startOffset" from="-100%" to="0%" dur="25s" repeatCount="indefinite" />
+                                        </textPath>
+                                    </text>
+                                </g>
+                            </svg>
+                        );
+                    })()}
+
+
                 {/* Photo frame */}
                 <div
                     onClick={openLightbox}
@@ -243,6 +304,7 @@ const PhotoGallery = ({ darkMode, photos = [], sakuraActive, onSakuraToggle }) =
                             </svg>
                         </button>
                     )}
+                </div>
                 </div>
 
 
