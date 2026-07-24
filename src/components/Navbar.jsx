@@ -15,37 +15,41 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
     const useWhiteBg = !darkMode && !isHomePage;
 
     const linkStyle = {
-        color: darkMode ? "rgba(255, 255, 255, 0.95)" : "#374151",
+        color: darkMode ? "rgba(255, 255, 255, 0.65)" : "#6b7280",
         textDecoration: "none",
-        padding: isMobile ? "0.65rem 1rem" : "0.5rem 1rem",
-        borderRadius: "8px",
-        transition: "all 0.3s ease",
+        padding: isMobile ? "0.65rem 1rem" : "0.6rem 1.5rem",
+        borderRadius: "12px",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         fontSize: isMobile ? "1rem" : "0.95rem",
         fontWeight: "500",
         cursor: "pointer",
         display: "block",
+        letterSpacing: "0.02em",
     };
 
     const activeLinkStyle = {
         ...linkStyle,
+        color: darkMode ? "#1a1a2e" : "#1f2937",
         background: darkMode
-            ? "rgba(255, 255, 255, 0.15)"
-            : "rgba(0, 0, 0, 0.08)",
+            ? "rgba(255, 255, 255, 0.92)"
+            : "rgba(255, 255, 255, 0.95)",
+        boxShadow: darkMode
+            ? "0 2px 8px rgba(0, 0, 0, 0.2)"
+            : "0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)",
+        fontWeight: "600",
     };
 
     const hoverBg = darkMode
         ? "rgba(255, 255, 255, 0.1)"
-        : "rgba(0, 0, 0, 0.05)";
+        : "rgba(255, 255, 255, 0.5)";
 
-    const navBg = useWhiteBg
-        ? "rgba(255, 255, 255, 0.85)"
-        : darkMode
-            ? "rgba(30, 30, 30, 0.7)"
-            : "rgba(255, 255, 255, 0.75)";
+    const navBg = darkMode
+        ? "rgba(255, 255, 255, 0.1)"
+        : "rgba(255, 255, 255, 0.25)";
 
     const navBorder = darkMode
-        ? "1px solid rgba(255, 255, 255, 0.1)"
-        : "1px solid rgba(0, 0, 0, 0.08)";
+        ? "1px solid rgba(255, 255, 255, 0.15)"
+        : "1px solid rgba(255, 255, 255, 0.4)";
 
     const links = [
         { to: "/", label: "Home" },
@@ -58,13 +62,19 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
         ...linkStyle,
         fontSize: "1.25rem",
         padding: "1rem 1.5rem",
+        borderRadius: "16px",
     };
 
     const mobileActiveLinkStyle = {
         ...mobileLinkStyle,
+        color: darkMode ? "#1a1a2e" : "#1f2937",
         background: darkMode
-            ? "rgba(255, 255, 255, 0.15)"
-            : "rgba(0, 0, 0, 0.08)",
+            ? "rgba(255, 255, 255, 0.92)"
+            : "rgba(255, 255, 255, 0.95)",
+        boxShadow: darkMode
+            ? "0 2px 8px rgba(0, 0, 0, 0.2)"
+            : "0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06)",
+        fontWeight: "600",
     };
 
     // Mobile navbar colors matching the reference image
@@ -212,19 +222,19 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
                     left: "50%",
                     transform: "translateX(-50%)",
                     zIndex: 1000,
-                    padding: "0.75rem 1.5rem",
+                    padding: "0.4rem 0.45rem",
                     background: navBg,
-                    backdropFilter: "blur(12px)",
-                    WebkitBackdropFilter: "blur(12px)",
-                    borderRadius: "50px",
+                    backdropFilter: "blur(16px) saturate(180%)",
+                    WebkitBackdropFilter: "blur(16px) saturate(180%)",
+                    borderRadius: "18px",
                     border: navBorder,
-                    boxShadow: useWhiteBg
-                        ? "0 4px 24px rgba(0, 0, 0, 0.06)"
-                        : "0 8px 32px rgba(0, 0, 0, 0.15)",
+                    boxShadow: darkMode
+                        ? "0 8px 32px rgba(0, 0, 0, 0.3)"
+                        : "0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)",
                     transition: "all 0.3s ease",
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.5rem",
+                    gap: "0.2rem",
                 }}>
                     <div className="nav-links" style={{ display: "flex" }}>
                         {links.map(({ to, label }) => (

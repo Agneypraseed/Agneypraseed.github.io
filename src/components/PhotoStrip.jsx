@@ -12,6 +12,79 @@ const getRotation = (id) => {
     return (tiltSeed - 0.5) * 8;
 };
 
+const MagnifyingImage = ({ src, alt, isDraggingRef, isMobile }) => {
+    const imgRef = useRef(null);
+    const magnifierRef = useRef(null);
+
+    const handleMouseMove = (e) => {
+        if (isMobile || isDraggingRef.current) {
+            if (magnifierRef.current) magnifierRef.current.style.display = 'none';
+            return;
+        }
+        if (!imgRef.current || !magnifierRef.current) return;
+        const { left, top, width, height } = imgRef.current.getBoundingClientRect();
+        
+        const x = (e.clientX - left) / width;
+        const y = (e.clientY - top) / height;
+
+        const magSize = 90;
+
+        const mag = magnifierRef.current;
+        mag.style.display = 'block';
+        mag.style.backgroundSize = `${width * 2}px ${height * 2}px`;
+        mag.style.backgroundPosition = `${x * 100}% ${y * 100}%`;
+        mag.style.transform = `translate3d(${e.clientX - left - magSize / 2}px, ${e.clientY - top - magSize / 2}px, 0)`;
+    };
+
+    const handleMouseLeave = () => {
+        if (magnifierRef.current) magnifierRef.current.style.display = 'none';
+    };
+
+    return (
+        <div 
+            style={{ width: '100%', height: '100%', position: 'relative' }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            onMouseEnter={handleMouseMove}
+        >
+            <img
+                ref={imgRef}
+                src={src}
+                alt={alt}
+                draggable={false}
+                style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    pointerEvents: "none",
+                }}
+            />
+            <div 
+                ref={magnifierRef}
+                style={{
+                    display: 'none',
+                    position: 'absolute',
+                    pointerEvents: 'none',
+                    zIndex: 20,
+                    left: 0,
+                    top: 0,
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    backgroundColor: '#fff',
+                    backgroundImage: `url(${src})`,
+                    backgroundRepeat: 'no-repeat',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    border: '2px solid rgba(255,255,255,0.9)',
+                    willChange: 'transform, background-position',
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden'
+                }}
+            />
+        </div>
+    );
+};
+
 const PhotoStrip = ({ photos, onPhotoClick, darkMode }) => {
     const containerRef = useRef(null);
     const trackRef = useRef(null);
@@ -225,17 +298,13 @@ const PhotoStrip = ({ photos, onPhotoClick, darkMode }) => {
                                 aspectRatio: "1",
                                 overflow: "hidden",
                                 borderRadius: "2px",
+                                position: "relative"
                             }}>
-                                <img
+                                <MagnifyingImage 
                                     src={travel.image}
                                     alt={travel.location}
-                                    draggable={false}
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                        pointerEvents: "none",
-                                    }}
+                                    isDraggingRef={isDragging}
+                                    isMobile={isMobile}
                                 />
                             </div>
                             {/* Caption */}
