@@ -1,0 +1,60 @@
+# Agney Praseed — Personal Website
+
+> This is the personal website of Agney Praseed, a software engineer turned AI researcher based in Berlin, Germany. The site showcases his professional background, projects, skills, and personal interests.
+
+## About
+
+Agney Praseed (he/him) is currently pursuing a Master's in Artificial Intelligence. He previously worked for nearly two years as a Software Development Engineer building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
+
+His current research interests lie in mechanistic interpretability, multimodality, and diffusion models.
+
+- LinkedIn: https://www.linkedin.com/in/agney-praseed/
+- GitHub: https://github.com/Agneypraseed
+- Resume/CV: Available for download on the About page
+
+## Pages
+
+- [Home](https://agneypraseed.github.io/#/): Landing page with animated introduction and an interactive 3D/2D skills graph
+- [About](https://agneypraseed.github.io/#/about): Bio, contact info, social links, resume/CV download, and photo gallery
+- [Projects](https://agneypraseed.github.io/#/projects): Portfolio of AI/ML and software engineering projects
+- [Blog](https://agneypraseed.github.io/#/blog): Essays, notes, and experiments (work in progress); links to external notes site
+- [Footprints](https://agneypraseed.github.io/#/footprints): Interactive 3D globe with travel photography from visited cities
+- [Books (Pretrain-text)](https://agneypraseed.github.io/#/books): Reading list with cover art, switchable between list and image grid views
+- [Videos (Pretrain-video)](https://agneypraseed.github.io/#/videos): Favourite anime, movies, and series with cover art and scene galleries
+- [Music (Pretrain-music)](https://agneypraseed.github.io/#/music): Spotify playlists with embedded players
+
+## Skills
+
+### Languages
+- Java, Python, JavaScript, C++, SQL, TypeScript, Bash
+
+### Frameworks & Tools
+- Spring Boot, React, Angular, Node.js, Express.js, Docker, Git, REST APIs
+
+### Data & Cloud
+- PostgreSQL, MongoDB, MySQL, AWS, Azure, Elasticsearch
+
+### AI & ML
+- PyTorch, TensorFlow, OpenCV, Hugging Face, Scikit-learn, LangChain, Pandas, NumPy
+
+## Projects
+
+- **Nano Curator**: An AI-powered personal stylist. Upload your photo and get curated outfit makeovers, haircut suggestions, and a sustainable fashion report. Built with React, TypeScript, and Gemini. [GitHub](https://github.com/Agneypraseed/Nano-Curator)
+- **Neural Style Transfer**: Implemented artistic style transfer using CNNs. Combines content from one image with the style of another using VGG19 network and custom loss functions. Built with Python and TensorFlow. [GitHub](https://github.com/Agneypraseed/DL)
+- **RNN & LSTM Language Model**: Built recurrent neural networks for sequence modeling including character-level language models and LSTM networks for text generation. Built with Python and TensorFlow. [GitHub](https://github.com/Agneypraseed/DL)
+- **Vision Transformer Image Captioning**: Developed an image captioning model using Vision Transformers (ViT) that generates natural language descriptions for images. Built with Python and PyTorch. [GitHub](https://github.com/Agneypraseed/Notebooks/blob/main/vision-transformer-image-captioning.ipynb)
+- **LangChain Agents with Gemini**: Built AI agents using LangChain and Crew library integrated with Google's Gemini model for autonomous task execution. [GitHub](https://github.com/Agneypraseed/Notebooks/blob/main/LangChain_Agents_with_Crew_Lib_%2B_Gemini.ipynb)
+- **Transformer Architecture from Scratch**: Implemented the Transformer architecture from scratch following the "Attention is All You Need" paper for NLP tasks. Built with Python and PyTorch. [GitHub](https://github.com/Agneypraseed/Notebooks/blob/main/transformer.ipynb)
+
+
+## External Links
+
+- Notes: https://quartz-6zw.pages.dev/
+- GitHub: https://github.com/Agneypraseed
+- LinkedIn: https://www.linkedin.com/in/agney-praseed/
+
+## Technical Details
+
+- Built with React 18
+- Features: 3D skills graph (React Three Fiber/drei), interactive travel globe (react-globe.gl), animated text (Typed.js), dark/light mode toggle, responsive design
+- Hosted on GitHub Pages at https://agneypraseed.github.io
