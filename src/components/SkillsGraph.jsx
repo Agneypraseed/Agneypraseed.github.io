@@ -1,5 +1,12 @@
 /* eslint-disable react/prop-types, react/no-unknown-property */
-import { Suspense, useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Billboard, Line, OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
@@ -22,37 +29,37 @@ const HUB_LINKS = [
   ["data-cloud", "ai-ml"],
 ];
 
-const DEFAULT_CAMERA_POSITION = [0, 0.38, 9.7];
-const MOBILE_CAMERA_POSITION = [0, 0.6, 11.6];
-const CONSTELLATION_SCALE = 0.88;
+const DEFAULT_CAMERA_POSITION = [0, 0.38, 10.2];
+const MOBILE_CAMERA_POSITION = [0, 0.6, 12.2];
+const CONSTELLATION_SCALE = 0.9;
 const FOCUS_DIRECTION = new THREE.Vector3(0.85, 0.5, 1).normalize();
+
+const usePrefersReducedMotion = () => {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    updatePreference();
+    mediaQuery.addEventListener("change", updatePreference);
+
+    return () => mediaQuery.removeEventListener("change", updatePreference);
+  }, []);
+
+  return prefersReducedMotion;
+};
 
 const getCategoryIdFromNodeId = (nodeId) => {
   if (!nodeId) return null;
   return nodeId.includes("--") ? nodeId.split("--")[0] : nodeId;
 };
 
-const getNodeLabel = (nodeId) => {
-  if (!nodeId) return "";
-
-  const categoryId = getCategoryIdFromNodeId(nodeId);
-  const category = CATEGORIES.find((cat) => cat.id === categoryId);
-
-  if (!category) return "";
-  if (nodeId === category.id) return category.label;
-
-  return (
-    category.skills.find(
-      (skill) => getSkillNodeId(category.id, skill.name) === nodeId,
-    )?.name || ""
-  );
-};
-
 const buildConstellation = () =>
   CATEGORIES.map((category, categoryIndex) => {
     const skillCount = category.skills.length;
-    const orbitRadius = 1.08 + skillCount * 0.032;
-    const orbitDepth = 0.58 + (categoryIndex % 2) * 0.16;
+    const orbitRadius = 1.04 + skillCount * 0.03;
+    const orbitDepth = 0.48 + (categoryIndex % 2) * 0.14;
     const phase = categoryIndex * Math.PI * 0.47;
     const tilt = [
       categoryIndex % 2 === 0 ? 0.28 : -0.22,
@@ -64,7 +71,7 @@ const buildConstellation = () =>
       ...category,
       phase,
       position: HUB_POSITIONS[category.id],
-      orbitSpeed: 0.13 + categoryIndex * 0.025,
+      orbitSpeed: 0.085 + categoryIndex * 0.018,
       tilt,
       skills: category.skills.map((skill, skillIndex) => {
         const angle = (skillIndex / skillCount) * Math.PI * 2 + phase * 0.55;
@@ -75,7 +82,7 @@ const buildConstellation = () =>
           id: getSkillNodeId(category.id, skill.name),
           label: skill.name,
           categoryId: category.id,
-          radius: 0.13 + skill.size * 0.085,
+          radius: 0.11 + skill.size * 0.075,
           position: [
             Math.cos(angle) * orbitRadius,
             Math.sin(angle) * orbitRadius * 0.56 + wobble * 0.82,
@@ -86,7 +93,12 @@ const buildConstellation = () =>
     };
   });
 
-function CameraRig({ isMobile, nodeRefs, selectedNodeId }) {
+function CameraRig({
+  isMobile,
+  nodeRefs,
+  prefersReducedMotion,
+  selectedNodeId,
+}) {
   const controlsRef = useRef(null);
   const { camera } = useThree();
   const focusTarget = useMemo(() => new THREE.Vector3(), []);
@@ -104,7 +116,7 @@ function CameraRig({ isMobile, nodeRefs, selectedNodeId }) {
       selectedObject.getWorldPosition(focusTarget);
       cameraGoal
         .copy(focusTarget)
-        .addScaledVector(FOCUS_DIRECTION, isMobile ? 6.4 : 5.6);
+        .addScaledVector(FOCUS_DIRECTION, isMobile ? 7.6 : 6.8);
     } else {
       focusTarget.set(0, 0, 0);
     }
@@ -112,11 +124,20 @@ function CameraRig({ isMobile, nodeRefs, selectedNodeId }) {
     const targetLerp = 1 - Math.exp(-delta * (selectedObject ? 4.6 : 1.4));
     const cameraLerp = 1 - Math.exp(-delta * 2.8);
 
-    controls.target.lerp(focusTarget, targetLerp);
-    if (selectedObject) {
-      camera.position.lerp(cameraGoal, cameraLerp);
+    if (prefersReducedMotion) {
+      controls.target.copy(focusTarget);
+    } else {
+      controls.target.lerp(focusTarget, targetLerp);
     }
-    controls.autoRotate = !selectedObject;
+
+    if (selectedObject) {
+      if (prefersReducedMotion) {
+        camera.position.copy(cameraGoal);
+      } else {
+        camera.position.lerp(cameraGoal, cameraLerp);
+      }
+    }
+    controls.autoRotate = !selectedObject && !prefersReducedMotion;
     controls.update();
   });
 
@@ -129,8 +150,8 @@ function CameraRig({ isMobile, nodeRefs, selectedNodeId }) {
       enablePan={false}
       minDistance={4.4}
       maxDistance={16}
-      autoRotate={!selectedNodeId}
-      autoRotateSpeed={0.55}
+      autoRotate={!selectedNodeId && !prefersReducedMotion}
+      autoRotateSpeed={0.24}
     />
   );
 }
@@ -140,16 +161,15 @@ function HubNode({
   darkMode,
   dimmed,
   onSelectNode,
+  prefersReducedMotion,
   registerNode,
   selected,
 }) {
   const groupRef = useRef(null);
   const torusRef = useRef(null);
-  const coreColor = category.color;
-  const accentColor = category.color;
-  const labelColor = darkMode
-    ? "rgba(255,255,255,0.88)"
-    : "rgba(15,23,42,0.78)";
+  const coreColor = darkMode ? category.darkColor : category.color;
+  const accentColor = coreColor;
+  const labelColor = darkMode ? "#fafaf9" : "#171717";
 
   useEffect(() => {
     registerNode(category.id, groupRef.current);
@@ -157,17 +177,19 @@ function HubNode({
   }, [category.id, registerNode]);
 
   useFrame(({ clock }) => {
+    if (prefersReducedMotion) return;
+
     const elapsed = clock.elapsedTime;
-    const pulse = 1 + Math.sin(elapsed * 2.25 + category.phase) * 0.055;
+    const pulse = 1 + Math.sin(elapsed * 1.8 + category.phase) * 0.032;
 
     if (groupRef.current) {
       groupRef.current.scale.setScalar(pulse);
     }
 
     if (torusRef.current) {
-      torusRef.current.rotation.x = elapsed * 0.78 + category.phase;
-      torusRef.current.rotation.y = elapsed * 0.56;
-      torusRef.current.rotation.z = elapsed * 0.34;
+      torusRef.current.rotation.x = elapsed * 0.58 + category.phase;
+      torusRef.current.rotation.y = elapsed * 0.42;
+      torusRef.current.rotation.z = elapsed * 0.24;
     }
   });
 
@@ -181,8 +203,8 @@ function HubNode({
     >
       <pointLight
         color={accentColor}
-        distance={4.8}
-        intensity={dimmed ? 0.35 : darkMode ? 2.6 : 1.45}
+        distance={4.6}
+        intensity={dimmed ? 0.28 : darkMode ? 1.9 : 1.2}
       />
       <mesh castShadow receiveShadow>
         <sphereGeometry args={[0.38, 40, 40]} />
@@ -211,8 +233,8 @@ function HubNode({
           maxWidth={1.9}
           anchorX="center"
           anchorY="middle"
-          outlineColor={darkMode ? "#020617" : "#ffffff"}
-          outlineWidth={0.006}
+          outlineColor={darkMode ? "#171717" : "#fafaf9"}
+          outlineWidth={0.004}
         >
           {category.label}
         </Text>
@@ -226,17 +248,16 @@ function SkillNode({
   darkMode,
   dimmed,
   onSelectNode,
+  prefersReducedMotion,
   registerNode,
   selected,
   skill,
 }) {
   const groupRef = useRef(null);
   const meshRef = useRef(null);
-  const skillColor = category.color;
-  const accentColor = category.color;
-  const labelColor = darkMode
-    ? "rgba(255,255,255,0.78)"
-    : "rgba(15,23,42,0.66)";
+  const skillColor = darkMode ? category.darkColor : category.color;
+  const accentColor = skillColor;
+  const labelColor = darkMode ? "#e4e4e7" : "#71717a";
 
   useEffect(() => {
     registerNode(skill.id, groupRef.current);
@@ -247,7 +268,10 @@ function SkillNode({
     if (!meshRef.current) return;
 
     const elapsed = clock.elapsedTime;
-    const pulse = selected ? 1 + Math.sin(elapsed * 5) * 0.08 : 1;
+    const pulse =
+      selected && !prefersReducedMotion
+        ? 1 + Math.sin(elapsed * 4.2) * 0.055
+        : 1;
     meshRef.current.scale.setScalar(pulse);
   });
 
@@ -284,8 +308,8 @@ function SkillNode({
           maxWidth={1.55}
           anchorX="center"
           anchorY="middle"
-          outlineColor={darkMode ? "#020617" : "#ffffff"}
-          outlineWidth={0.005}
+          outlineColor={darkMode ? "#171717" : "#fafaf9"}
+          outlineWidth={0.004}
         >
           {skill.label}
         </Text>
@@ -298,7 +322,7 @@ function SkillEdges({ category, darkMode, selectedNodeId }) {
   const selectedCategoryId = getCategoryIdFromNodeId(selectedNodeId);
   const selectedInCluster = selectedCategoryId === category.id;
   const selectionActive = Boolean(selectedNodeId);
-  const edgeColor = darkMode ? "#e5e7eb" : "#0f172a";
+  const edgeColor = darkMode ? "#e4e4e7" : "#171717";
 
   return category.skills.map((skill) => {
     const selected = selectedNodeId === skill.id;
@@ -327,6 +351,7 @@ function CategoryCluster({
   category,
   darkMode,
   onSelectNode,
+  prefersReducedMotion,
   registerNode,
   selectedNodeId,
 }) {
@@ -337,10 +362,10 @@ function CategoryCluster({
   const dimCluster = selectionActive && !selectedInCluster;
 
   useFrame(({ clock }, delta) => {
-    if (!orbitRef.current) return;
+    if (!orbitRef.current || prefersReducedMotion) return;
 
     const elapsed = clock.elapsedTime;
-    const orbitMultiplier = selectedNodeId ? 0.58 : 1;
+    const orbitMultiplier = selectedNodeId ? 0 : 1;
     orbitRef.current.rotation.x =
       category.tilt[0] + Math.sin(elapsed * 0.18 + category.phase) * 0.045;
     orbitRef.current.rotation.y +=
@@ -359,6 +384,7 @@ function CategoryCluster({
         darkMode={darkMode}
         dimmed={dimCluster}
         onSelectNode={onSelectNode}
+        prefersReducedMotion={prefersReducedMotion}
         registerNode={registerNode}
         selected={selectedNodeId === category.id || selectedInCluster}
       />
@@ -375,6 +401,7 @@ function CategoryCluster({
             darkMode={darkMode}
             dimmed={dimCluster}
             onSelectNode={onSelectNode}
+            prefersReducedMotion={prefersReducedMotion}
             registerNode={registerNode}
             selected={selectedNodeId === skill.id}
             skill={skill}
@@ -391,7 +418,7 @@ function HubLinks({ categories, darkMode, selectedNodeId }) {
     [categories],
   );
   const selectedCategoryId = getCategoryIdFromNodeId(selectedNodeId);
-  const edgeColor = darkMode ? "#f8fafc" : "#111827";
+  const edgeColor = darkMode ? "#fafaf9" : "#171717";
 
   return HUB_LINKS.map(([sourceId, targetId]) => {
     const source = categoryById.get(sourceId);
@@ -417,6 +444,7 @@ function ConstellationScene({
   darkMode,
   isMobile,
   onSelectNode,
+  prefersReducedMotion,
   selectedNodeId,
 }) {
   const nodeRefs = useRef({});
@@ -433,7 +461,7 @@ function ConstellationScene({
 
   return (
     <>
-      <fog attach="fog" args={[darkMode ? "#1f1f23" : "#f8fafc", 9, 18]} />
+      <fog attach="fog" args={[darkMode ? "#171717" : "#fafaf9", 9, 18]} />
       <ambientLight intensity={darkMode ? 0.52 : 0.85} />
       <directionalLight
         position={[5, 5, 7]}
@@ -457,6 +485,7 @@ function ConstellationScene({
               category={category}
               darkMode={darkMode}
               onSelectNode={onSelectNode}
+              prefersReducedMotion={prefersReducedMotion}
               registerNode={registerNode}
               selectedNodeId={selectedNodeId}
             />
@@ -466,6 +495,7 @@ function ConstellationScene({
       <CameraRig
         isMobile={isMobile}
         nodeRefs={nodeRefs}
+        prefersReducedMotion={prefersReducedMotion}
         selectedNodeId={selectedNodeId}
       />
     </>
@@ -475,11 +505,13 @@ function ConstellationScene({
 const SkillsGraph = ({
   darkMode,
   expanded = false,
+  onInteract = () => {},
   onSelectNode = () => {},
   selectedNodeId = null,
 }) => {
   const { isMobile } = useIsMobile();
-  const height = isMobile ? 500 : expanded ? 720 : 680;
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const height = isMobile ? 500 : expanded ? 680 : 660;
 
   return (
     <div
@@ -498,27 +530,22 @@ const SkillsGraph = ({
         }}
         dpr={[1, 1.75]}
         gl={{ antialias: true, alpha: true }}
+        onPointerDown={onInteract}
+        onWheel={onInteract}
         onPointerMissed={() => onSelectNode(null)}
-        shadows
         style={{
           width: "100%",
           height,
-          borderRadius: "16px",
-          background: darkMode
-            ? "linear-gradient(135deg, rgba(23,23,23,0.42), rgba(63,63,70,0.16)), radial-gradient(circle at 18% 12%, rgba(255,255,255,0.08), transparent 34%), radial-gradient(circle at 78% 24%, rgba(161,161,170,0.12), transparent 32%)"
-            : "linear-gradient(135deg, rgba(255,255,255,0.34), rgba(244,244,245,0.2)), radial-gradient(circle at 18% 12%, rgba(255,255,255,0.72), transparent 34%), radial-gradient(circle at 78% 24%, rgba(228,228,231,0.36), transparent 32%)",
-          backdropFilter: "blur(18px) saturate(1.25)",
-          WebkitBackdropFilter: "blur(18px) saturate(1.25)",
-          boxShadow: darkMode
-            ? "inset 0 1px 0 rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.08), 0 18px 52px rgba(0,0,0,0.28)"
-            : "inset 0 1px 0 rgba(255,255,255,0.82), inset 0 0 0 1px rgba(15,23,42,0.06), 0 18px 44px rgba(100,116,139,0.14)",
+          background: darkMode ? "#171717" : "#fafaf9",
           overflow: "hidden",
+          cursor: selectedNodeId ? "default" : "grab",
         }}
       >
         <ConstellationScene
           darkMode={darkMode}
           isMobile={isMobile}
           onSelectNode={onSelectNode}
+          prefersReducedMotion={prefersReducedMotion}
           selectedNodeId={selectedNodeId}
         />
       </Canvas>

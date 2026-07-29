@@ -1,9 +1,10 @@
-const getSkillNodeId = (categoryId, skillName) => `${categoryId}--${skillName}`;
+const getSkillNodeId = (categoryId, skillName) =>
+  `${categoryId}--${skillName}`;
 
 const GRAPH_COLORS = {
   red: "#dc2626",
-  blue: "#2563eb",
   charcoal: "#171717",
+  zincDark: "#52525b",
   zinc: "#a1a1aa",
   zincLight: "#e4e4e7",
 };
@@ -13,9 +14,8 @@ const CATEGORIES = [
     id: "languages",
     label: "LANGUAGES",
     color: GRAPH_COLORS.red,
-    darkColor: "#f87171",
+    darkColor: GRAPH_COLORS.red,
     lightColor: GRAPH_COLORS.red,
-    hubTone: "charcoal",
     skills: [
       { name: "Java", size: 1.0 },
       { name: "Python", size: 1.0 },
@@ -29,10 +29,9 @@ const CATEGORIES = [
   {
     id: "frameworks",
     label: "FRAMEWORKS & TOOLS",
-    color: GRAPH_COLORS.blue,
-    darkColor: "#60a5fa",
-    lightColor: GRAPH_COLORS.blue,
-    hubTone: "zinc",
+    color: GRAPH_COLORS.charcoal,
+    darkColor: GRAPH_COLORS.zincLight,
+    lightColor: GRAPH_COLORS.charcoal,
     skills: [
       { name: "Spring Boot", size: 0.9 },
       { name: "React", size: 0.85 },
@@ -47,10 +46,9 @@ const CATEGORIES = [
   {
     id: "data-cloud",
     label: "DATA & CLOUD",
-    color: GRAPH_COLORS.charcoal,
-    darkColor: GRAPH_COLORS.zincLight,
-    lightColor: GRAPH_COLORS.charcoal,
-    hubTone: "charcoal",
+    color: GRAPH_COLORS.zincDark,
+    darkColor: GRAPH_COLORS.zinc,
+    lightColor: GRAPH_COLORS.zincDark,
     skills: [
       { name: "PostgreSQL", size: 0.75 },
       { name: "MongoDB", size: 0.7 },
@@ -64,9 +62,8 @@ const CATEGORIES = [
     id: "ai-ml",
     label: "AI & ML",
     color: GRAPH_COLORS.zinc,
-    darkColor: GRAPH_COLORS.zinc,
+    darkColor: GRAPH_COLORS.zincLight,
     lightColor: GRAPH_COLORS.zinc,
-    hubTone: "zinc",
     skills: [
       { name: "PyTorch", size: 0.95 },
       { name: "TensorFlow", size: 0.7 },

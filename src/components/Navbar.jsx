@@ -4,6 +4,7 @@ import useIsMobile from "../hooks/useIsMobile";
 
 const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [overSkills, setOverSkills] = useState(false);
     const { isMobile } = useIsMobile();
     const location = useLocation();
 
@@ -12,14 +13,52 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
         setMenuOpen(false);
     }, [location.pathname]);
 
-    const useWhiteBg = !darkMode && !isHomePage;
+    useEffect(() => {
+        if (!isHomePage) {
+            setOverSkills(false);
+            return undefined;
+        }
+
+        const skillsSection = document.getElementById("skills-section");
+        if (!skillsSection) return undefined;
+
+        let animationFrameId = null;
+        const updateNavbarSurface = () => {
+            if (animationFrameId !== null) return;
+
+            animationFrameId = window.requestAnimationFrame(() => {
+                const skillsTop = skillsSection.getBoundingClientRect().top;
+                setOverSkills(skillsTop <= 84);
+                animationFrameId = null;
+            });
+        };
+
+        updateNavbarSurface();
+        window.addEventListener("scroll", updateNavbarSurface, { passive: true });
+        window.addEventListener("resize", updateNavbarSurface);
+
+        return () => {
+            window.removeEventListener("scroll", updateNavbarSurface);
+            window.removeEventListener("resize", updateNavbarSurface);
+            if (animationFrameId !== null) {
+                window.cancelAnimationFrame(animationFrameId);
+            }
+        };
+    }, [isHomePage]);
 
     const linkStyle = {
-        color: darkMode ? "rgba(255, 255, 255, 0.65)" : "#6b7280",
+        color: overSkills
+            ? darkMode
+                ? "#d4d4d8"
+                : "#52525b"
+            : darkMode
+                ? "rgba(255, 255, 255, 0.65)"
+                : "#6b7280",
         textDecoration: "none",
         padding: isMobile ? "0.65rem 1rem" : "0.6rem 1.5rem",
         borderRadius: "12px",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition:
+            "color 160ms var(--ease-out), background-color 160ms var(--ease-out), transform 140ms var(--ease-out)",
         fontSize: isMobile ? "1rem" : "0.95rem",
         fontWeight: "500",
         cursor: "pointer",
@@ -40,16 +79,28 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
     };
 
     const hoverBg = darkMode
-        ? "rgba(255, 255, 255, 0.1)"
-        : "rgba(255, 255, 255, 0.5)";
+        ? overSkills
+            ? "rgba(250, 250, 249, 0.1)"
+            : "rgba(255, 255, 255, 0.1)"
+        : overSkills
+            ? "rgba(23, 23, 23, 0.06)"
+            : "rgba(255, 255, 255, 0.5)";
 
-    const navBg = darkMode
-        ? "rgba(255, 255, 255, 0.1)"
-        : "rgba(255, 255, 255, 0.25)";
+    const navBg = overSkills
+        ? darkMode
+            ? "rgba(23, 23, 23, 0.94)"
+            : "rgba(250, 250, 249, 0.94)"
+        : darkMode
+            ? "rgba(255, 255, 255, 0.1)"
+            : "rgba(255, 255, 255, 0.25)";
 
-    const navBorder = darkMode
-        ? "1px solid rgba(255, 255, 255, 0.15)"
-        : "1px solid rgba(255, 255, 255, 0.4)";
+    const navBorder = overSkills
+        ? darkMode
+            ? "1px solid #3f3f46"
+            : "1px solid #e4e4e7"
+        : darkMode
+            ? "1px solid rgba(255, 255, 255, 0.15)"
+            : "1px solid rgba(255, 255, 255, 0.4)";
 
     const links = [
         { to: "/", label: "Home" },
@@ -78,12 +129,20 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
     };
 
     // Mobile navbar colors matching the reference image
-    const mobileNavBg = darkMode
-        ? "rgba(30, 30, 30, 0.7)"
-        : "rgba(245, 237, 224, 0.95)";
-    const mobileNavBorder = darkMode
-        ? "1px solid rgba(255, 255, 255, 0.1)"
-        : "1px solid rgba(200, 185, 165, 0.5)";
+    const mobileNavBg = overSkills
+        ? darkMode
+            ? "rgba(23, 23, 23, 0.94)"
+            : "rgba(250, 250, 249, 0.94)"
+        : darkMode
+            ? "rgba(30, 30, 30, 0.7)"
+            : "rgba(245, 237, 224, 0.95)";
+    const mobileNavBorder = overSkills
+        ? darkMode
+            ? "1px solid #3f3f46"
+            : "1px solid #e4e4e7"
+        : darkMode
+            ? "1px solid rgba(255, 255, 255, 0.1)"
+            : "1px solid rgba(200, 185, 165, 0.5)";
     const mobileDotsBoxBg = darkMode
         ? "rgba(255, 255, 255, 0.12)"
         : "rgba(255, 248, 238, 0.9)";
@@ -114,7 +173,8 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
                         boxShadow: darkMode
                             ? "0 8px 32px rgba(0, 0, 0, 0.25)"
                             : "0 4px 20px rgba(0, 0, 0, 0.06)",
-                        transition: "all 0.3s ease",
+                        transition:
+                            "background-color 200ms var(--ease-out), border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
@@ -151,7 +211,8 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                transition: "all 0.3s ease",
+                                transition:
+                                    "background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), transform 140ms var(--ease-out)",
                                 padding: 0,
                             }}
                         >
@@ -196,7 +257,8 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            transition: "all 0.2s ease",
+                            transition:
+                                "background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), transform 140ms var(--ease-out)",
                         }}
                     >
                         <svg
@@ -231,7 +293,8 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
                     boxShadow: darkMode
                         ? "0 8px 32px rgba(0, 0, 0, 0.3)"
                         : "0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)",
-                    transition: "all 0.3s ease",
+                    transition:
+                        "background-color 200ms var(--ease-out), border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out)",
                     display: "flex",
                     alignItems: "center",
                     gap: "0.2rem",
@@ -263,6 +326,7 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
             {/* Mobile fullscreen overlay — rendered OUTSIDE the nav pill */}
             {isMobile && menuOpen && (
                 <div
+                    className="mobile-menu-overlay"
                     style={{
                         position: "fixed",
                         top: 0,

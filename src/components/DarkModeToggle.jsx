@@ -1,4 +1,3 @@
-import React from "react";
 import useIsMobile from "../hooks/useIsMobile";
 
 const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
@@ -40,22 +39,24 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: "all 0.4s ease",
+                    transition:
+                        "transform 420ms var(--ease-out), background-color 200ms var(--ease-out), border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out)",
                     boxShadow: darkMode 
                         ? "0 8px 32px rgba(0, 0, 0, 0.3)" 
                         : useWhiteBg
                             ? "0 4px 16px rgba(0, 0, 0, 0.06)"
                             : "0 8px 32px rgba(0, 0, 0, 0.1)",
-                    transform: darkMode ? "rotate(360deg)" : "rotate(0deg)",
+                    "--toggle-rotation": darkMode ? "360deg" : "0deg",
+                    transform: `rotate(${darkMode ? "360deg" : "0deg"}) scale(1)`,
                 }}
                 onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = darkMode ? "rotate(360deg) scale(1.1)" : "rotate(0deg) scale(1.1)";
+                    e.currentTarget.style.transform = `rotate(${darkMode ? "360deg" : "0deg"}) scale(1.04)`;
                     e.currentTarget.style.boxShadow = darkMode 
                         ? "0 8px 32px rgba(147, 112, 219, 0.4)" 
                         : "0 8px 32px rgba(255, 200, 50, 0.3)";
                 }}
                 onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = darkMode ? "rotate(360deg) scale(1)" : "rotate(0deg) scale(1)";
+                    e.currentTarget.style.transform = `rotate(${darkMode ? "360deg" : "0deg"}) scale(1)`;
                     e.currentTarget.style.boxShadow = darkMode 
                         ? "0 8px 32px rgba(0, 0, 0, 0.3)" 
                         : useWhiteBg
@@ -72,7 +73,8 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
                         xmlns="http://www.w3.org/2000/svg"
                         style={{
                             color: "#a78bfa",
-                            transition: "all 0.4s ease",
+                            transition:
+                                "color 180ms var(--ease-out), transform 220ms var(--ease-out)",
                         }}
                     >
                         <path
@@ -93,7 +95,8 @@ const DarkModeToggle = ({ darkMode, toggleDarkMode, isHomePage }) => {
                         xmlns="http://www.w3.org/2000/svg"
                         style={{
                             color: "#f59e0b",
-                            transition: "all 0.4s ease",
+                            transition:
+                                "color 180ms var(--ease-out), transform 220ms var(--ease-out)",
                         }}
                     >
                         <circle cx="12" cy="12" r="5" fill="currentColor" stroke="currentColor" strokeWidth="2"/>
