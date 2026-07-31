@@ -5,92 +5,93 @@ import Skills from "../components/Skills";
 import Footer from "../components/Footer";
 import CanvasBackground from "../components/CanvasBackground";
 import useIsMobile from "../hooks/useIsMobile";
+import "./HomePage.css";
+
+const desktopRoles = [
+  {
+    label: "FULL STACK DEVELOPER",
+    className: "home-orbit__slot--developer",
+  },
+  {
+    label: "AI RESEARCHER",
+    className: "home-orbit__slot--researcher",
+  },
+];
 
 const HomePage = ({ darkMode }) => {
   const { isMobile } = useIsMobile();
 
   return (
     <>
-      <div
+      <section
+        className={`home-hero ${
+          darkMode ? "home-hero--dark" : "home-hero--light"
+        }`}
+        aria-labelledby="home-hero-title"
         style={{
-          position: "relative",
-          margin: 0,
-          height: "100vh",
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          color: darkMode
-            ? "rgba(255, 255, 255, 0.87)"
-            : "rgba(255, 255, 255, 0.87)",
-          alignItems: "center",
-          justifyContent: isMobile ? "center" : "space-between",
           backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundColor: darkMode ? "#1a1a1a" : "rgba(245, 240, 232, 0.9)",
-          transition: "background-color 0.3s ease, background-image 0.3s ease",
-          overflow: "hidden",
         }}
       >
         <CanvasBackground darkMode={darkMode} />
-        <div style={{ padding: "0 20px", overflow: "hidden", zIndex: 20 }}>
-          <div
-            style={{
-              padding: isMobile ? "20px" : "120px",
-              textAlign: isMobile ? "center" : "left",
-            }}
-          >
-            <h4>HELLO WORLD! 👋</h4>
-            I&apos;m{" "}
-            <strong style={{ color: "#66d4cf" }}>
-              <TypedText
-                strings={["AGNEY", "अग्नेय", "アグネイ", "അഗ്നെയ്"]}
-                startDelay={300}
-                typeSpeed={100}
-                backSpeed={100}
-                backDelay={100}
-                loop={true}
-                cursorChar={""}
-                fontSize={isMobile ? 22 : 34}
-              />
-            </strong>
-            <h3>
-              <TypedText
-                strings={[
-                  "FULL STACK DEVELOPER",
-                  "Building Intelligent Systems",
-                ]}
-                startDelay={300}
-                typeSpeed={100}
-                backSpeed={100}
-                backDelay={100}
-                loop={true}
-                cursorChar={"|"}
-                fontSize={isMobile ? 24 : 54}
-              />
-            </h3>
+
+        <div className="home-hero__content">
+          <div className="home-hero__intro">
+            <p className="home-hero__eyebrow">HELLO WORLD! 👋</p>
+            <h1 id="home-hero-title" className="home-hero__title">
+              <span>I&apos;m</span>{" "}
+              <strong className="home-hero__name">
+                <TypedText
+                  strings={["AGNEY", "अग्नेय", "アグネイ", "അഗ്നേയ്"]}
+                  startDelay={300}
+                  typeSpeed={100}
+                  backSpeed={100}
+                  backDelay={100}
+                  loop={true}
+                  cursorChar={""}
+                  fontSize={isMobile ? 22 : 34}
+                />
+              </strong>
+            </h1>
+
+          </div>
+
+          <div className="home-portrait-stage">
+            <div
+              className="home-portrait-stage__glow"
+              aria-hidden="true"
+            />
+            <div
+              className="home-portrait-stage__track"
+              aria-hidden="true"
+            />
+            <img
+              className="home-portrait-stage__image"
+              src={myAvatar}
+              alt="Illustrated portrait of Agney"
+            />
+
+            <div
+              className="home-orbit"
+              role="group"
+              aria-label="Professional roles"
+            >
+              {desktopRoles.map(({ label, className }) => (
+                <div
+                  className={`home-orbit__slot ${className}`}
+                  key={label}
+                >
+                  <div className="home-orbit__anchor">
+                    <div className="home-orbit__counter">
+                      <span className="home-orbit__card">{label}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: isMobile ? "center" : "flex-end",
-            marginRight: isMobile ? "0" : "340px",
-            overflow: "hidden",
-            zIndex: 20,
-          }}
-        >
-          <img
-            src={myAvatar}
-            alt="home pic"
-            style={{
-              width: isMobile ? "140px" : "200px",
-              height: isMobile ? "140px" : "200px",
-              borderRadius: "50%",
-            }}
-          />
-        </div>
-      </div>
+      </section>
+
       <div
         id="skills-section"
         style={{
