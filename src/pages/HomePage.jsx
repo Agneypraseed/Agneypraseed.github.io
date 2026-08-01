@@ -29,7 +29,7 @@ const HomePage = ({ darkMode }) => {
         }`}
         aria-labelledby="home-hero-title"
         style={{
-          backgroundImage: darkMode ? "none" : `url(${blue_bg})`,
+          "--home-hero-artwork": `url(${blue_bg})`,
         }}
       >
         <CanvasBackground darkMode={darkMode} />
