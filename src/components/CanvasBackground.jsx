@@ -1,32 +1,51 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-/* ── loss landscape ── */
-const EXT = 1.15;
-const N = 32;
+const EXTENT = 1.32;
+const GRID_SIZE = 42;
 const THEME_TRANSITION_MS = 260;
 
 const mix = (from, to, progress) => from + (to - from) * progress;
+const clamp = (value, minimum, maximum) =>
+    Math.max(minimum, Math.min(maximum, value));
 
-const f = (x, y) =>
-    0.55 * (x * x + y * y) -
-    0.55 * Math.exp(-((x - 0.45) ** 2 + (y - 0.3) ** 2) / 0.085) -
-    0.4 * Math.exp(-((x + 0.5) ** 2 + (y + 0.35) ** 2) / 0.11);
+/* A broad loss surface with a shallow local basin and a deeper global basin. */
+const loss = (x, y) => {
+    const bowl =
+        0.34 * (0.72 * x * x + 1.04 * y * y) +
+        0.045 * x * y +
+        0.025 * x;
+    const globalMinimum =
+        -0.86 *
+        Math.exp(
+            -(
+                (x - 0.46) ** 2 / 0.04 +
+                (y + 0.04) ** 2 / 0.05
+            ),
+        );
+    const localMinimum =
+        -0.58 *
+        Math.exp(
+            -(
+                (x + 0.45) ** 2 / 0.05 +
+                (y + 0.04) ** 2 / 0.055
+            ),
+        );
 
-/* pre-compute grid heights once */
-const gx = [];
-for (let i = 0; i <= N; i++) gx.push(-EXT + (2 * EXT * i) / N);
-const gz = [];
-for (let i = 0; i <= N; i++) {
-    gz.push([]);
-    for (let j = 0; j <= N; j++) gz[i].push(f(gx[i], gx[j]));
-}
+    return bowl + globalMinimum + localMinimum;
+};
 
-/* ══════════════════════════════════════════ */
+const gridAxis = Array.from(
+    { length: GRID_SIZE + 1 },
+    (_, index) => -EXTENT + (2 * EXTENT * index) / GRID_SIZE,
+);
+const gridHeights = gridAxis.map((x) => gridAxis.map((y) => loss(x, y)));
 
 const CanvasBackground = ({ darkMode }) => {
     const canvasRef = useRef(null);
-    const animRef = useRef(null);
-    const yawRef = useRef(-0.5);
+    const animationRef = useRef(null);
+    const yawRef = useRef(-0.58);
+    const pitchRef = useRef(0.86);
+    const dragRef = useRef(null);
     const themeRef = useRef(darkMode ? 1 : 0);
     const themeTransitionRef = useRef({
         from: darkMode ? 1 : 0,
@@ -35,8 +54,8 @@ const CanvasBackground = ({ darkMode }) => {
     });
 
     const draw = useCallback((timestamp) => {
-        const cvs = canvasRef.current;
-        if (!cvs) return;
+        const canvas = canvasRef.current;
+        if (!canvas) return;
 
         const transition = themeTransitionRef.current;
         const elapsed = Math.max(0, timestamp - transition.startedAt);
@@ -49,113 +68,118 @@ const CanvasBackground = ({ darkMode }) => {
         );
         themeRef.current = themeProgress;
 
-        const ctx = cvs.getContext("2d");
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        const W = window.innerWidth;
-        const H = window.innerHeight;
-        const mob = W <= 768;
+        const context = canvas.getContext("2d");
+        const devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const isMobile = width <= 768;
 
-        cvs.width = Math.round(W * dpr);
-        cvs.height = Math.round(H * dpr);
-        cvs.style.width = `${W}px`;
-        cvs.style.height = `${H}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.clearRect(0, 0, W, H);
+        canvas.width = Math.round(width * devicePixelRatio);
+        canvas.height = Math.round(height * devicePixelRatio);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+        context.clearRect(0, 0, width, height);
 
-        /* ── camera ── */
-        const pitch = mob ? 0.92 : 1.02;
-        const zScale = 0.85;
+        const pitch = pitchRef.current;
         const yaw = yawRef.current;
-        yawRef.current += mob ? 0.0012 : 0.0016;
+        const cosinePitch = Math.cos(pitch);
+        const sinePitch = Math.sin(pitch);
+        const cosineYaw = Math.cos(yaw);
+        const sineYaw = Math.sin(yaw);
+        const zScale = 0.92;
 
-        const cp = Math.cos(pitch),
-            sp = Math.sin(pitch);
-        const cy = Math.cos(yaw),
-            sy = Math.sin(yaw);
+        const originX = isMobile ? width * 0.5 : width * 0.28;
+        const originY = isMobile
+            ? Math.min(height * 0.25, width * 0.5)
+            : height * 0.47;
+        const cameraScale = isMobile
+            ? 0.47
+            : width <= 1100
+              ? 0.61
+              : 0.7;
 
-        /* surface origin — left-center on desktop, top-center on mobile */
-        const originX = mob ? W * 0.5 : W * 0.28;
-        const originY = mob ? Math.min(H * 0.27, W * 0.55) : H * 0.48;
-        const camScale = mob ? 0.44 : 0.56;
+        const project = (x, y, z) => {
+            const rotatedX = x * cosineYaw - y * sineYaw;
+            const rotatedY = x * sineYaw + y * cosineYaw;
+            const raisedZ = z * zScale;
+            const tiltedY = rotatedY * cosinePitch - raisedZ * sinePitch;
+            const tiltedZ = rotatedY * sinePitch + raisedZ * cosinePitch;
+            const depth = 3.4 + tiltedY;
+            const perspective =
+                (Math.min(width, height) * cameraScale) / depth;
 
-        const proj = (x, y, z) => {
-            const rx = x * cy - y * sy;
-            const ry = x * sy + y * cy;
-            const rz = z * zScale;
-            const ty = ry * cp - rz * sp;
-            const tz = ry * sp + rz * cp;
-            const depth = 3.4 + ty;
-            const k = (Math.min(W, H) * camScale) / depth;
             return {
-                sx: originX + rx * k,
-                sy: originY - tz * k,
+                x: originX + rotatedX * perspective,
+                y: originY - tiltedZ * perspective,
                 depth,
             };
         };
 
-        /* ── wireframe colour ── */
-        const LINE = [
+        const lineColour = [
             Math.round(mix(255, 190, themeProgress)),
             Math.round(mix(255, 210, themeProgress)),
             Math.round(mix(255, 230, themeProgress)),
         ].join(",");
-        const minAlpha = mix(0.06, 0.04, themeProgress);
-        const maxAlpha = mix(0.32, 0.26, themeProgress);
-        const depthAlpha = mix(0.25, 0.2, themeProgress);
+        const minimumAlpha = mix(0.07, 0.055, themeProgress);
+        const maximumAlpha = mix(0.38, 0.31, themeProgress);
+        const depthAlpha = mix(0.28, 0.23, themeProgress);
 
-        ctx.lineWidth = mob ? 0.7 : 1;
-        ctx.lineCap = "round";
+        context.lineWidth = isMobile ? 0.72 : 0.9;
+        context.lineCap = "round";
 
-        /* draw both axis directions */
-        for (let axis = 0; axis < 2; axis++) {
-            for (let i = 0; i <= N; i++) {
-                ctx.beginPath();
-                let pd = 0;
+        for (let axis = 0; axis < 2; axis += 1) {
+            for (let line = 0; line <= GRID_SIZE; line += 1) {
+                context.beginPath();
+                let accumulatedDepth = 0;
 
-                for (let j = 0; j <= N; j++) {
-                    const x = axis ? gx[j] : gx[i];
-                    const y = axis ? gx[i] : gx[j];
-                    const z = axis ? gz[j][i] : gz[i][j];
-                    const p = proj(x, y, z);
+                for (let point = 0; point <= GRID_SIZE; point += 1) {
+                    const x = axis ? gridAxis[point] : gridAxis[line];
+                    const y = axis ? gridAxis[line] : gridAxis[point];
+                    const z = axis
+                        ? gridHeights[point][line]
+                        : gridHeights[line][point];
+                    const projected = project(x, y, z);
 
-                    j === 0
-                        ? ctx.moveTo(p.sx, p.sy)
-                        : ctx.lineTo(p.sx, p.sy);
-                    pd += p.depth;
+                    if (point === 0)
+                        context.moveTo(projected.x, projected.y);
+                    else context.lineTo(projected.x, projected.y);
+
+                    accumulatedDepth += projected.depth;
                 }
 
-                const avg = pd / (N + 1);
-                const a = Math.max(
-                    minAlpha,
-                    Math.min(maxAlpha, (4.5 - avg) * depthAlpha),
+                const averageDepth = accumulatedDepth / (GRID_SIZE + 1);
+                const alpha = clamp(
+                    (4.5 - averageDepth) * depthAlpha,
+                    minimumAlpha,
+                    maximumAlpha,
                 );
-                ctx.strokeStyle = `rgba(${LINE},${a})`;
-                ctx.stroke();
+                context.strokeStyle = `rgba(${lineColour},${alpha})`;
+                context.stroke();
             }
         }
 
-        /* ── edge vignette (centered on the surface origin) ── */
-        const fg = ctx.createRadialGradient(
+        const vignette = context.createRadialGradient(
             originX,
             originY,
-            Math.min(W, H) * (mob ? 0.14 : 0.18),
+            Math.min(width, height) * (isMobile ? 0.14 : 0.2),
             originX,
             originY,
-            Math.max(W, H) * (mob ? 0.52 : 0.48),
+            Math.max(width, height) * (isMobile ? 0.52 : 0.5),
         );
-        const bg = [
+        const backgroundColour = [
             Math.round(mix(100, 26, themeProgress)),
             Math.round(mix(82, 26, themeProgress)),
             Math.round(mix(168, 26, themeProgress)),
         ].join(",");
-        fg.addColorStop(0, `rgba(${bg},0)`);
-        fg.addColorStop(0.35, `rgba(${bg},0)`);
-        fg.addColorStop(0.7, `rgba(${bg},0.55)`);
-        fg.addColorStop(1, `rgba(${bg},0.97)`);
-        ctx.fillStyle = fg;
-        ctx.fillRect(0, 0, W, H);
+        vignette.addColorStop(0, `rgba(${backgroundColour},0)`);
+        vignette.addColorStop(0.35, `rgba(${backgroundColour},0)`);
+        vignette.addColorStop(0.7, `rgba(${backgroundColour},0.42)`);
+        vignette.addColorStop(1, `rgba(${backgroundColour},0.9)`);
+        context.fillStyle = vignette;
+        context.fillRect(0, 0, width, height);
 
-        animRef.current = requestAnimationFrame(draw);
+        animationRef.current = requestAnimationFrame(draw);
     }, []);
 
     useEffect(() => {
@@ -167,26 +191,105 @@ const CanvasBackground = ({ darkMode }) => {
     }, [darkMode]);
 
     useEffect(() => {
-        animRef.current = requestAnimationFrame(draw);
+        animationRef.current = requestAnimationFrame(draw);
+
         return () => {
-            if (animRef.current !== null)
-                cancelAnimationFrame(animRef.current);
+            if (animationRef.current !== null)
+                cancelAnimationFrame(animationRef.current);
         };
     }, [draw]);
 
+    const beginDrag = useCallback((event) => {
+        event.preventDefault();
+        event.currentTarget.setPointerCapture(event.pointerId);
+        event.currentTarget.dataset.dragging = "true";
+        dragRef.current = {
+            pointerId: event.pointerId,
+            x: event.clientX,
+            y: event.clientY,
+        };
+    }, []);
+
+    const moveDrag = useCallback((event) => {
+        const drag = dragRef.current;
+        if (!drag || drag.pointerId !== event.pointerId) return;
+
+        event.preventDefault();
+        const deltaX = event.clientX - drag.x;
+        const deltaY = event.clientY - drag.y;
+        const yawDelta = deltaX * 0.012;
+        const pitchDelta = deltaY * 0.006;
+
+        yawRef.current += yawDelta;
+        pitchRef.current = clamp(pitchRef.current + pitchDelta, 0.68, 1.28);
+        event.currentTarget.dataset.rotationYaw = yawRef.current.toFixed(3);
+        event.currentTarget.dataset.rotationPitch = pitchRef.current.toFixed(3);
+
+        drag.x = event.clientX;
+        drag.y = event.clientY;
+    }, []);
+
+    const finishDrag = useCallback((event) => {
+        const drag = dragRef.current;
+        if (!drag || drag.pointerId !== event.pointerId) return;
+
+        dragRef.current = null;
+        delete event.currentTarget.dataset.dragging;
+
+        if (event.currentTarget.hasPointerCapture(event.pointerId))
+            event.currentTarget.releasePointerCapture(event.pointerId);
+    }, []);
+
+    const cancelDrag = useCallback((event) => {
+        if (dragRef.current?.pointerId !== event.pointerId) return;
+        dragRef.current = null;
+        delete event.currentTarget.dataset.dragging;
+    }, []);
+
+    const handleKeyDown = useCallback((event) => {
+        const keyRotation = {
+            ArrowLeft: [-0.12, 0],
+            ArrowRight: [0.12, 0],
+            ArrowUp: [0, -0.08],
+            ArrowDown: [0, 0.08],
+        }[event.key];
+        if (!keyRotation) return;
+
+        event.preventDefault();
+        yawRef.current += keyRotation[0];
+        pitchRef.current = clamp(
+            pitchRef.current + keyRotation[1],
+            0.68,
+            1.28,
+        );
+    }, []);
+
     return (
-        <canvas
-            ref={canvasRef}
-            aria-hidden="true"
-            style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                zIndex: 1,
-                pointerEvents: "none",
-            }}
-        />
+        <>
+            <canvas
+                ref={canvasRef}
+                aria-hidden="true"
+                style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 1,
+                    pointerEvents: "none",
+                }}
+            />
+            <div
+                className="home-gd-interaction"
+                role="application"
+                tabIndex={0}
+                aria-label="Interactive gradient-descent landscape"
+                onPointerDown={beginDrag}
+                onPointerMove={moveDrag}
+                onPointerUp={finishDrag}
+                onPointerCancel={cancelDrag}
+                onKeyDown={handleKeyDown}
+            />
+        </>
     );
 };
 

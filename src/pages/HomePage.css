@@ -81,6 +81,35 @@
   font-weight: 750;
 }
 
+.home-gd-interaction {
+  position: absolute;
+  top: 47%;
+  left: 28%;
+  /* Keep the gesture plane above the full-height hero content stacking layer. */
+  z-index: 30;
+  width: min(54vw, 48rem);
+  height: min(60vh, 34rem);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  outline: none;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  transform: translate(-50%, -50%);
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.home-gd-interaction:active {
+  cursor: grabbing;
+}
+
+.home-gd-interaction:focus-visible {
+  outline: 2px solid rgba(102, 212, 207, 0.9);
+  outline-offset: -0.5rem;
+}
+
 .home-portrait-stage {
   --orbit-radius: clamp(9.5rem, 14vw, 12rem);
   position: relative;
@@ -271,6 +300,14 @@
 }
 
 @media (max-width: 768px) {
+  .home-gd-interaction {
+    top: clamp(5rem, 20vw, 6.25rem);
+    left: 50%;
+    width: min(94vw, 24rem);
+    height: clamp(10.5rem, 46vw, 12rem);
+    transform: translateX(-50%);
+  }
+
   .home-hero__content {
     display: flex;
     flex-direction: column;
@@ -339,6 +376,7 @@
   .home-orbit__counter {
     transform: rotate(var(--counter-angle));
   }
+
 }
 
 @media (prefers-reduced-transparency: reduce) {
