@@ -110,6 +110,92 @@
   outline-offset: -0.5rem;
 }
 
+/* ── Race legend: live loss readout ── */
+.gd-race-legend {
+  position: absolute;
+  right: 18px;
+  bottom: 14px;
+  z-index: 30;
+  font-family: Inter, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 0.66rem;
+  font-weight: 500;
+  color: rgba(154, 154, 154, 0.85);
+  font-feature-settings: "tnum" 1;
+  text-align: right;
+  line-height: 1.7;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 254, 252, 0),
+    rgba(255, 254, 252, 0.7)
+  );
+  padding: 4px 8px;
+  border-radius: 4px;
+  animation: gd-legend-appear 1.2s ease 1.8s both;
+}
+
+.home-hero--dark .gd-race-legend {
+  color: rgba(200, 200, 200, 0.7);
+  background: linear-gradient(
+    180deg,
+    rgba(26, 26, 26, 0),
+    rgba(26, 26, 26, 0.7)
+  );
+}
+
+.gd-race-legend__row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.gd-race-legend__swatch {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.gd-race-legend__swatch--mom {
+  background: rgb(200, 160, 110);
+  box-shadow: 0 0 5px rgba(200, 160, 110, 0.7);
+}
+
+.gd-race-legend__swatch--ada {
+  background: rgb(120, 110, 95);
+}
+
+.gd-race-legend__value {
+  font-feature-settings: "tnum" 1;
+  min-width: 3.5em;
+  display: inline-block;
+  text-align: right;
+}
+
+.gd-race-legend__hint {
+  display: block;
+  font-size: 0.6rem;
+  color: rgba(154, 154, 154, 0.55);
+  opacity: 0.7;
+  font-style: italic;
+  font-family: "Crimson Pro", Georgia, serif;
+  margin-top: 2px;
+}
+
+.home-hero--dark .gd-race-legend__hint {
+  color: rgba(200, 200, 200, 0.45);
+}
+
+@keyframes gd-legend-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .home-portrait-stage {
   --orbit-radius: clamp(9.5rem, 14vw, 12rem);
   position: relative;
@@ -306,6 +392,10 @@
     width: min(94vw, 24rem);
     height: clamp(10.5rem, 46vw, 12rem);
     transform: translateX(-50%);
+  }
+
+  .gd-race-legend {
+    display: none;
   }
 
   .home-hero__content {
