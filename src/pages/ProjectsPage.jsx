@@ -3,6 +3,8 @@ import Footer from "../components/Footer";
 import useIsMobile from "../hooks/useIsMobile";
 import psyduckImg from "../assets/psyduck.png";
 import nanoCuratorDemo from "../assets/nano-curator-demo.mp4";
+import neuralCanvasDemo from "../assets/neural-canvas-demo.mp4";
+import openMatchDemo from "../assets/openmatch-demo.mp4";
 
 // Project data
 const projects = [
@@ -15,43 +17,22 @@ const projects = [
         video: nanoCuratorDemo,
     },
     {
+        id: 7,
+        title: "OpenMatch",
+        description: "An explainable resume-to-role matching workspace for applicants and recruiters. Every score links back to evidence, with skill-gap analysis, resume guidance, and interview preparation.",
+        tags: ["React", "FastAPI", "Python", "LangChain", "FAISS"],
+        github: "https://github.com/Agneypraseed/OpenMatch",
+        video: openMatchDemo,
+    },
+    {
         id: 1,
-        title: "Neural Style Transfer",
-        description: "Implemented artistic style transfer using CNNs. Combines content from one image with the style of another using VGG19 network and custom loss functions.",
-        tags: ["Python", "TensorFlow", "CNN", "Computer Vision"],
-        github: "https://github.com/Agneypraseed/DL",
-    },
-    {
-        id: 2,
-        title: "RNN & LSTM Language Model",
-        description: "Built recurrent neural networks for sequence modeling including character-level language models and LSTM networks for text generation.",
-        tags: ["Python", "TensorFlow", "RNN", "LSTM", "NLP"],
-        github: "https://github.com/Agneypraseed/DL",
-    },
-    {
-        id: 3,
-        title: "Vision Transformer Image Captioning",
-        description: "Developed an image captioning model using Vision Transformers (ViT) that generates natural language descriptions for images.",
-        tags: ["Python", "PyTorch", "Transformers", "ViT", "NLP"],
-        github: "https://github.com/Agneypraseed/Notebooks/blob/main/vision-transformer-image-captioning.ipynb",
-    },
-    {
-        id: 4,
-        title: "LangChain Agents with Gemini",
-        description: "Built AI agents using LangChain and Crew library integrated with Google's Gemini model for autonomous task execution.",
-        tags: ["Python", "LangChain", "Gemini", "AI Agents", "LLM"],
-        github: "https://github.com/Agneypraseed/Notebooks/blob/main/LangChain_Agents_with_Crew_Lib_%2B_Gemini.ipynb",
-    },
-    {
-        id: 5,
-        title: "Transformer Architecture from Scratch",
-        description: "Implemented the Transformer architecture from scratch following the 'Attention is All You Need' paper for NLP tasks.",
-        tags: ["Python", "PyTorch", "Transformers", "Attention", "NLP"],
-        github: "https://github.com/Agneypraseed/Notebooks/blob/main/transformer.ipynb",
+        title: "Neural Canvas",
+        description: "Optimization-based neural style transfer that preserves a content image's structure while borrowing texture from a style reference. A frozen VGG-19 guides pixel optimization through content, style, and total-variation losses.",
+        tags: ["Python", "PyTorch", "VGG-19", "Gradio", "Computer Vision"],
+        github: "https://github.com/Agneypraseed/neural-canvas",
+        video: neuralCanvasDemo,
     },
 ];
-
-import catCursor from "../assets/paw-cursor-32.png";
 
 // Clean video player — click to play/pause, no native controls
 const VideoPlayer = ({ src, darkMode }) => {
@@ -152,7 +133,6 @@ const ProjectsPage = ({ darkMode }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 padding: isMobile ? "80px 12px 16px" : "100px 20px 20px",
-                cursor: `url(${catCursor}) 16 16, auto`,
             }}
         >
             {/* Title */}
