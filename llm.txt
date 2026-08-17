@@ -40,11 +40,8 @@ His current research interests lie in mechanistic interpretability, multimodalit
 ## Projects
 
 - **Nano Curator**: An AI-powered personal stylist. Upload your photo and get curated outfit makeovers, haircut suggestions, and a sustainable fashion report. Built with React, TypeScript, and Gemini. [GitHub](https://github.com/Agneypraseed/Nano-Curator)
-- **Neural Style Transfer**: Implemented artistic style transfer using CNNs. Combines content from one image with the style of another using VGG19 network and custom loss functions. Built with Python and TensorFlow. [GitHub](https://github.com/Agneypraseed/DL)
-- **RNN & LSTM Language Model**: Built recurrent neural networks for sequence modeling including character-level language models and LSTM networks for text generation. Built with Python and TensorFlow. [GitHub](https://github.com/Agneypraseed/DL)
-- **Vision Transformer Image Captioning**: Developed an image captioning model using Vision Transformers (ViT) that generates natural language descriptions for images. Built with Python and PyTorch. [GitHub](https://github.com/Agneypraseed/Notebooks/blob/main/vision-transformer-image-captioning.ipynb)
-- **LangChain Agents with Gemini**: Built AI agents using LangChain and Crew library integrated with Google's Gemini model for autonomous task execution. [GitHub](https://github.com/Agneypraseed/Notebooks/blob/main/LangChain_Agents_with_Crew_Lib_%2B_Gemini.ipynb)
-- **Transformer Architecture from Scratch**: Implemented the Transformer architecture from scratch following the "Attention is All You Need" paper for NLP tasks. Built with Python and PyTorch. [GitHub](https://github.com/Agneypraseed/Notebooks/blob/main/transformer.ipynb)
+- **OpenMatch**: An explainable resume-to-role matching workspace for applicants and recruiters. Every score links back to evidence, with skill-gap analysis, resume guidance, and interview preparation. Built with React, FastAPI, Python, LangChain, and FAISS. [GitHub](https://github.com/Agneypraseed/OpenMatch)
+- **Neural Canvas**: Optimization-based neural style transfer that preserves content structure while borrowing texture from a style reference. A frozen VGG-19 guides pixel optimization through content, style, and total-variation losses. Built with Python, PyTorch, and Gradio. [GitHub](https://github.com/Agneypraseed/neural-canvas)
 
 
 ## External Links
