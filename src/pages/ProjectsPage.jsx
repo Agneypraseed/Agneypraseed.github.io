@@ -133,6 +133,8 @@ const ProjectsPage = ({ darkMode }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 padding: isMobile ? "80px 12px 16px" : "100px 20px 20px",
+                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
+                transition: "background-color 0.3s ease",
             }}
         >
             {/* Title */}

@@ -68,6 +68,8 @@ const AboutPage = ({ darkMode }) => {
                 padding: isMobile ? "80px 16px 20px" : "120px 40px 40px",
                 position: "relative",
                 overflow: "hidden",
+                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
+                transition: "background-color 0.3s ease",
             }}
         >
             <style>{`
@@ -77,33 +79,7 @@ const AboutPage = ({ darkMode }) => {
                 }
             `}</style>
 
-            {/* Ambient Background Glows to enhance glassmorphism refraction */}
-            <div style={{
-                position: "absolute",
-                top: "20%",
-                left: "10%",
-                width: isMobile ? "200px" : "400px",
-                height: isMobile ? "200px" : "400px",
-                background: darkMode 
-                    ? "radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)"
-                    : "radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)",
-                filter: "blur(40px)",
-                pointerEvents: "none",
-                zIndex: 0,
-            }} />
-            <div style={{
-                position: "absolute",
-                bottom: "10%",
-                right: "10%",
-                width: isMobile ? "250px" : "450px",
-                height: isMobile ? "250px" : "450px",
-                background: darkMode 
-                    ? "radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%)"
-                    : "radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 70%)",
-                filter: "blur(50px)",
-                pointerEvents: "none",
-                zIndex: 0,
-            }} />
+
 
             <div
                 style={{

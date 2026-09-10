@@ -158,6 +158,8 @@ const VideosPage = ({ darkMode }) => {
 
                 position: "relative",
                 overflow: "hidden",
+                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
+                transition: "background-color 0.3s ease",
             }}
         >
             <style>{`

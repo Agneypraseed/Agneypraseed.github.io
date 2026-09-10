@@ -43,6 +43,8 @@ const BlogPage = ({ darkMode }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 padding: isMobile ? "80px 16px 16px" : "100px 40px 20px",
+                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
+                transition: "background-color 0.3s ease",
             }}
         >
             <div

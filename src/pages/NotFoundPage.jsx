@@ -14,6 +14,8 @@ const NotFoundPage = ({ darkMode }) => {
                 justifyContent: "center",
                 padding: isMobile ? "80px 20px 20px" : "100px 40px 20px",
                 textAlign: "center",
+                backgroundColor: darkMode ? "#1a1a1a" : "#F5F0E8",
+                transition: "background-color 0.3s ease",
             }}
         >
             <h1 style={{ 
