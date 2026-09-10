@@ -68,8 +68,8 @@ const makeWalker = (kind) => ({
 const CanvasBackground = ({ darkMode }) => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
-    const yawRef = useRef(-0.5);
-    const pitchRef = useRef(1.02);
+    const yawRef = useRef(-0.62);
+    const pitchRef = useRef(0.58);
     const dragRef = useRef(null);
     const idleRef = useRef(0);
     const themeRef = useRef(darkMode ? 1 : 0);
@@ -163,7 +163,7 @@ const CanvasBackground = ({ darkMode }) => {
             );
             themeRef.current = themeProgress;
 
-            const context = canvas.getContext("2d");
+            const context = canvas.getContext("2d", { colorSpace: "srgb" });
             const devicePixelRatio = Math.min(
                 window.devicePixelRatio || 1,
                 2,

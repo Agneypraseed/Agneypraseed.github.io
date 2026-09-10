@@ -466,7 +466,6 @@
   .home-orbit__counter {
     transform: rotate(var(--counter-angle));
   }
-
 }
 
 @media (prefers-reduced-transparency: reduce) {
@@ -480,5 +479,15 @@
     background: #312e4a;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+}
+
+/* ── Wide-gamut (Display P3) compensation ── */
+/* iPad and newer Mac displays render in P3, which makes the purple/blue */
+/* background image appear noticeably more saturated than on sRGB screens. */
+/* Dial back saturation so the hero looks the same on every device.       */
+@media (color-gamut: p3) {
+  .home-hero--light::before {
+    filter: saturate(0.85);
   }
 }
