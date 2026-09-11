@@ -11,6 +11,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import BooksPage from "./pages/BooksPage";
 import VideosPage from "./pages/VideosPage";
 import MusicPage from "./pages/MusicPage";
+import SeriesHubPage from "./pages/SeriesHubPage";
+import BlogPostPage from "./pages/BlogPostPage";
 import CursorTrail from "./components/CursorTrail";
 
 const AppContent = () => {
@@ -24,6 +26,10 @@ const AppContent = () => {
             setDarkMode(savedMode === "true");
         }
     }, []);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, [location.pathname]);
 
     const handleDarkModeToggle = () => {
         const newMode = !darkMode;
@@ -51,6 +57,8 @@ const AppContent = () => {
                 <Route path="/about" element={<AboutPage darkMode={darkMode} />} />
                 <Route path="/projects" element={<ProjectsPage darkMode={darkMode} />} />
                 <Route path="/blog" element={<BlogPage darkMode={darkMode} />} />
+                <Route path="/blog/:seriesId" element={<SeriesHubPage darkMode={darkMode} />} />
+                <Route path="/blog/:seriesId/:slug" element={<BlogPostPage darkMode={darkMode} />} />
                 <Route path="/footprints" element={<FootprintsPage darkMode={darkMode} />} />
                 <Route path="/books" element={<BooksPage darkMode={darkMode} />} />
                 <Route path="/videos" element={<VideosPage darkMode={darkMode} />} />
