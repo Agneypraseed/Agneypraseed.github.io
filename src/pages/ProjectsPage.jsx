@@ -4,10 +4,16 @@ import useIsMobile from "../hooks/useIsMobile";
 import psyduckImg from "../assets/psyduck.png";
 import nanoCuratorDemo from "../assets/nano-curator-demo.mp4";
 import neuralCanvasDemo from "../assets/neural-canvas-demo.mp4";
-import openMatchDemo from "../assets/openmatch-demo.mp4";
 
 // Project data
 const projects = [
+    {
+        id: 8,
+        title: "NemoDoc",
+        description: "A local workspace for PDFs and lecture slides. Read and annotate sources, ask questions about a passage or notebook, and create study materials with cited answers tied to source pages.",
+        tags: ["React", "TypeScript", "PDF.js", "NVIDIA Nemotron"],
+        github: "https://github.com/Agneypraseed/NemoDoc",
+    },
     {
         id: 6,
         title: "Nano Curator",
@@ -15,14 +21,6 @@ const projects = [
         tags: ["React", "TypeScript", "Gemini"],
         github: "https://github.com/Agneypraseed/Nano-Curator",
         video: nanoCuratorDemo,
-    },
-    {
-        id: 7,
-        title: "OpenMatch",
-        description: "An explainable resume-to-role matching workspace for applicants and recruiters. Every score links back to evidence, with skill-gap analysis, resume guidance, and interview preparation.",
-        tags: ["React", "FastAPI", "Python", "LangChain", "FAISS"],
-        github: "https://github.com/Agneypraseed/OpenMatch",
-        video: openMatchDemo,
     },
     {
         id: 1,

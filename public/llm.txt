@@ -39,8 +39,8 @@ His current research interests lie in mechanistic interpretability, multimodalit
 
 ## Projects
 
+- **NemoDoc**: A local workspace for PDFs and lecture slides. Read and annotate sources, ask questions about a passage or notebook, and create study materials with cited answers tied to source pages. Built with React, TypeScript, PDF.js, and NVIDIA Nemotron. [GitHub](https://github.com/Agneypraseed/NemoDoc)
 - **Nano Curator**: An AI-powered personal stylist. Upload your photo and get curated outfit makeovers, haircut suggestions, and a sustainable fashion report. Built with React, TypeScript, and Gemini. [GitHub](https://github.com/Agneypraseed/Nano-Curator)
-- **OpenMatch**: An explainable resume-to-role matching workspace for applicants and recruiters. Every score links back to evidence, with skill-gap analysis, resume guidance, and interview preparation. Built with React, FastAPI, Python, LangChain, and FAISS. [GitHub](https://github.com/Agneypraseed/OpenMatch)
 - **Neural Canvas**: Optimization-based neural style transfer that preserves content structure while borrowing texture from a style reference. A frozen VGG-19 guides pixel optimization through content, style, and total-variation losses. Built with Python, PyTorch, and Gradio. [GitHub](https://github.com/Agneypraseed/neural-canvas)
 
 
