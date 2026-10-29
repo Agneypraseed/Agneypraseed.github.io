@@ -402,9 +402,9 @@ const AboutPage = ({ darkMode }) => {
                     }}>
                         Hi, I'm <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Agney</strong> (he/him), based in Berlin, Germany.
                         <br /><br />
-                        A <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>software engineer turned AI researcher</strong>, currently pursuing my Master's in Artificial Intelligence. Before diving into research, I spent nearly two years as a <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Software Development Engineer</strong> building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
+                        A <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>software engineer turned AI researcher</strong>, currently pursuing my Master's in Artificial Intelligence. Before diving into research, I have two years of experience as a <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Software Development Engineer</strong> building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
                         <br /><br />
-                        My current research interests lie in <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>mechanistic interpretability</strong>, <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>multimodality</strong>, and <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>diffusion models</strong>.
+                        My research interests lie in <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>mechanistic interpretability</strong>, <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>multimodality</strong>.
                         <br /><br />
                         Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
                         Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="movies/anime" />.
