@@ -1,18 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 import Footer from "../components/Footer";
+import EventPhotoDialog from "../components/EventPhotoDialog";
 import useIsMobile from "../hooks/useIsMobile";
 import psyduckImg from "../assets/psyduck.png";
 import nanoCuratorDemo from "../assets/nano-curator-demo.mp4";
 import neuralCanvasDemo from "../assets/neural-canvas-demo.mp4";
+import nemodocDemo from "../assets/nemodoc-demo.mp4";
+import devdayPhoto1 from "../assets/onstage/devday1.jpeg";
+import devdayPhoto2 from "../assets/onstage/devday2.jpeg";
+import devdayPhoto3 from "../assets/onstage/devday3.jpeg";
+import devdayPhoto4 from "../assets/onstage/devday4.jpeg";
 
 // Project data
 const projects = [
     {
         id: 8,
         title: "NemoDoc",
-        description: "A local workspace for PDFs and lecture slides. Read and annotate sources, ask questions about a passage or notebook, and create study materials with cited answers tied to source pages.",
-        tags: ["React", "TypeScript", "PDF.js", "NVIDIA Nemotron"],
+        description: "AI document assistant with agent-powered cited retrieval, source permissions, and workflows for research and analysis, scheduled tasks, validated citations, and persisted run traces.",
+        tags: ["TypeScript", "React", "Node.js", "Express.js", "OpenAI Agents SDK", "PostgreSQL", "Zod"],
         github: "https://github.com/Agneypraseed/NemoDoc",
+        video: nemodocDemo,
+        event: {
+            title: "OpenAI DevDay Hackathon",
+            photos: [
+                { src: devdayPhoto1, alt: "Introducing NemoDoc on stage" },
+                { src: devdayPhoto2, alt: "Sharing the demo with fellow builders" },
+                { src: devdayPhoto3, alt: "Walking through the research workflow" },
+                { src: devdayPhoto4, alt: "Presenting the personal notebook experience" },
+            ],
+        },
     },
     {
         id: 6,
@@ -106,6 +122,7 @@ const ProjectsPage = ({ darkMode }) => {
     const prevDarkMode = useRef(darkMode);
     const [showPsyduck, setShowPsyduck] = useState(false);
     const [psyduckPos, setPsyduckPos] = useState({ top: "50%", left: "50%" });
+    const [activeEvent, setActiveEvent] = useState(null);
 
     useEffect(() => {
         // Trigger on transition from Dark (true) to Light (false)
@@ -265,6 +282,22 @@ const ProjectsPage = ({ darkMode }) => {
                                     {tag}
                                 </span>
                             ))}
+                            {project.event && (
+                                <button
+                                    type="button"
+                                    className={`event-photo-tag${darkMode ? " event-photo-tag--dark" : ""}`}
+                                    aria-haspopup="dialog"
+                                    onClick={() => setActiveEvent(project.event)}
+                                >
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                                        <rect x="3" y="5" width="18" height="15" rx="3" />
+                                        <circle cx="12" cy="12.5" r="3.5" />
+                                        <path d="m8 5 1-2h6l1 2" />
+                                    </svg>
+                                    {project.event.title}
+                                    <span aria-hidden="true">↗</span>
+                                </button>
+                            )}
                         </div>
 
                         {/* GitHub Button */}
@@ -303,6 +336,10 @@ const ProjectsPage = ({ darkMode }) => {
                     </div>
                 ))}
             </div>
+
+            {activeEvent && (
+                <EventPhotoDialog event={activeEvent} darkMode={darkMode} onClose={() => setActiveEvent(null)} />
+            )}
 
             {/* Psyduck Easter Egg Animation */}
             <div style={{
