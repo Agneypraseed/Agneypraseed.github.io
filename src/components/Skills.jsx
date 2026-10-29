@@ -1,10 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import SkillsGraph from "./SkillsGraph";
+import { lazy, Suspense, useState } from "react";
 import { CATEGORIES, getSkillNodeId } from "./skillsGraphData";
 import useIsMobile from "../hooks/useIsMobile";
 
+const SkillsGraph = lazy(() => import("./SkillsGraph"));
+
 const Skills = ({ darkMode }) => {
+  const [showGraph, setShowGraph] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [hasInteracted, setHasInteracted] = useState(false);
   const { isMobile, windowWidth } = useIsMobile();
@@ -30,7 +32,7 @@ const Skills = ({ darkMode }) => {
           style={{
             display: "flex",
             alignItems: isMobile ? "flex-start" : "flex-end",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
             flexDirection: isMobile ? "column" : "row",
             gap: "1rem",
             paddingBottom: isMobile ? "1.75rem" : "2.25rem",
@@ -63,12 +65,49 @@ const Skills = ({ darkMode }) => {
               Skills
             </h2>
           </div>
+          <button
+            type="button"
+            className="skills-view-toggle"
+            aria-pressed={showGraph}
+            aria-controls="skills-content"
+            onClick={() => setShowGraph((current) => !current)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.55rem",
+              padding: "0.65rem 0.9rem",
+              border: `1px solid ${darkMode ? "#52525b" : "#d4d4d8"}`,
+              borderRadius: "8px",
+              background: "transparent",
+              color: foreground,
+              font: "inherit",
+              fontSize: "0.8rem",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+              {showGraph ? (
+                <path d="M8 6h13M8 12h13M8 18h13M3 6h1M3 12h1M3 18h1" />
+              ) : (
+                <>
+                  <path d="m7 7 10 10M7 17 17 7M7 7h10v10H7z" />
+                  <circle cx="7" cy="7" r="2.5" fill={surface} />
+                  <circle cx="17" cy="7" r="2.5" fill={surface} />
+                  <circle cx="7" cy="17" r="2.5" fill={surface} />
+                  <circle cx="17" cy="17" r="2.5" fill={surface} />
+                </>
+              )}
+            </svg>
+            {showGraph ? "Show list view" : "Show graph view"}
+          </button>
         </div>
 
         <div
+          id="skills-content"
           style={{
             display: "grid",
-            gridTemplateColumns: stackGraphLayout
+            gridTemplateColumns: !showGraph || stackGraphLayout
               ? "1fr"
               : "minmax(0, 1fr) 255px",
             gap: stackGraphLayout ? "1.25rem" : "2.5rem",
@@ -76,7 +115,7 @@ const Skills = ({ darkMode }) => {
             paddingTop: isMobile ? "1rem" : "1.5rem",
           }}
         >
-          <div style={{ minWidth: 0, position: "relative" }}>
+          {showGraph && <div style={{ minWidth: 0, position: "relative" }}>
             <div
               className="skills-gesture-hint"
               data-hidden={hasInteracted}
@@ -93,7 +132,8 @@ const Skills = ({ darkMode }) => {
             >
               Drag to explore
             </div>
-            <SkillsGraph
+            <Suspense fallback={<p role="status" style={{ padding: "3rem 1rem", color: muted }}>Loading graph…</p>}>
+              <SkillsGraph
               darkMode={darkMode}
               selectedNodeId={selectedNodeId}
               onInteract={() => setHasInteracted(true)}
@@ -102,19 +142,21 @@ const Skills = ({ darkMode }) => {
                 setSelectedNodeId(nodeId);
               }}
               expanded={stackGraphLayout}
-            />
-          </div>
+              />
+            </Suspense>
+          </div>}
 
           <aside
             aria-label="Skills by category"
             style={{
               display: "grid",
-              gridTemplateColumns: stackGraphLayout
-                ? "repeat(auto-fit, minmax(220px, 1fr))"
+              gridTemplateColumns: !showGraph
+                ? windowWidth <= 520 ? "1fr" : "repeat(2, minmax(0, 1fr))"
+                : stackGraphLayout ? "repeat(auto-fit, minmax(220px, 1fr))"
                 : "1fr",
               alignContent: "start",
-              gap: "1.4rem",
-              padding: stackGraphLayout ? "0.5rem 0 0" : "1.25rem 0",
+              gap: showGraph ? "1.4rem" : "2.5rem 2rem",
+              padding: !showGraph || stackGraphLayout ? "0.5rem 0 0" : "1.25rem 0",
             }}
           >
             {CATEGORIES.map((cat) => (
@@ -122,7 +164,7 @@ const Skills = ({ darkMode }) => {
                 <h3
                   style={{
                     color: darkMode ? cat.darkColor : cat.color,
-                    fontSize: "0.66rem",
+                    fontSize: showGraph ? "0.66rem" : "0.78rem",
                     fontWeight: 800,
                     letterSpacing: "0.16em",
                     textTransform: "uppercase",
@@ -144,7 +186,7 @@ const Skills = ({ darkMode }) => {
 
                     return (
                       <li key={skill.name}>
-                        <button
+                        {showGraph ? <button
                           className="skill-list-button"
                           type="button"
                           onClick={() => {
@@ -181,7 +223,17 @@ const Skills = ({ darkMode }) => {
                           aria-label={`Focus ${skill.name} in the 3D skills graph`}
                         >
                           {skill.name}
-                        </button>
+                        </button> : (
+                          <span style={{
+                            display: "block",
+                            padding: "0.45rem 0.7rem",
+                            color: muted,
+                            fontSize: "0.9rem",
+                            lineHeight: 1.3,
+                          }}>
+                            {skill.name}
+                          </span>
+                        )}
                       </li>
                     );
                   })}
