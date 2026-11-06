@@ -1,0 +1,70 @@
+.technical-debt-section {
+    --debt-text: #1a1a1a;
+    --debt-muted: #6b655c;
+    --debt-border: #ded7cb;
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--debt-border);
+    color: var(--debt-text);
+}
+
+.technical-debt-section--dark {
+    --debt-text: #f5f0e8;
+    --debt-muted: #b5aea4;
+    --debt-border: #3e3a35;
+}
+
+.technical-debt-section h2 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+}
+
+.technical-debt-section p {
+    color: var(--debt-muted);
+    line-height: 1.7;
+    margin: 0;
+}
+
+.technical-debt-group {
+    margin-top: 3rem;
+}
+
+.technical-debt-section h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin: 0 0 0.75rem;
+}
+
+.technical-debt-section h4 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin: 0 0 0.5rem;
+}
+
+.technical-debt-list {
+    list-style: decimal-leading-zero;
+    padding-left: 2rem;
+    margin-top: 0.5rem;
+}
+
+.technical-debt-list li {
+    padding: 1.75rem 0 1.75rem 0.75rem;
+    border-bottom: 1px solid var(--debt-border);
+}
+
+.technical-debt-list li::marker {
+    color: var(--debt-muted);
+    font-family: monospace;
+}
+
+.technical-debt-author {
+    font-style: italic;
+}
+

@@ -404,7 +404,7 @@ const AboutPage = ({ darkMode }) => {
                         <br /><br />
                         A <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>software engineer turned AI researcher</strong>, currently pursuing my Master's in Artificial Intelligence. Before diving into research, I have two years of experience as a <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>Software Development Engineer</strong> building production-grade backend systems with Java, Spring Boot, and PostgreSQL, and shipping full-stack features across cloud platforms with AWS and Azure.
                         <br /><br />
-                        My research interests lie in <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>mechanistic interpretability</strong>, <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>multimodality</strong>.
+                        My research goal is to build more explainable and reliable intelligent systems. My primary focus lies in <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>machine learning and computer vision</strong>, especially understanding how vision language models reason and respond to structured guidance.
                         <br /><br />
                         Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
                         Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="movies/anime" />.

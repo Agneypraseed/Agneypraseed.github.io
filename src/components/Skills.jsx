@@ -40,18 +40,6 @@ const Skills = ({ darkMode }) => {
           }}
         >
           <div>
-            <p
-              style={{
-                color: "#dc2626",
-                fontSize: "0.72rem",
-                fontWeight: 800,
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-                margin: "0 0 0.65rem",
-              }}
-            >
-              Technical toolkit
-            </p>
             <h2
               style={{
                 color: foreground,

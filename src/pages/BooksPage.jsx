@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import Footer from "../components/Footer";
 import useIsMobile from "../hooks/useIsMobile";
 import books from "../data/books";
+import TechnicalDebtSection from "../components/TechnicalDebtSection";
 
 /* ── wireframe‑globe SVG for the decorative background ── */
 const GlobeSVG = ({ darkMode }) => {
@@ -642,7 +643,6 @@ const BooksPage = ({ darkMode }) => {
                             display: "flex",
                             flexDirection: isMobile ? "column" : "row",
                             gap: isMobile ? "2rem" : "2.5rem",
-                            flex: 1,
                             maxWidth: "900px",
                         }}
                     >
@@ -717,6 +717,8 @@ const BooksPage = ({ darkMode }) => {
                     /* Image grid view */
                     <ImageGridView books={filteredBooks} darkMode={darkMode} isMobile={isMobile} />
                 )}
+
+                <TechnicalDebtSection darkMode={darkMode} />
 
                 {/* Footer */}
                 <div style={{ marginTop: "auto", paddingTop: "3rem" }}>
