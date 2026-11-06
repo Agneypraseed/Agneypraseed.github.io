@@ -49,9 +49,81 @@ html {
 }
 
 .skill-list-button:focus-visible,
-.skills-view-toggle:focus-visible {
+.skills-view-option:focus-visible {
     outline: 2px solid #dc2626;
     outline-offset: 2px;
+}
+
+.skills-view-switch {
+    --view-track: #eeedeb;
+    --view-border: #deddda;
+    --view-active: #ffffff;
+    --view-text: #171717;
+    --view-muted: #62626b;
+    --view-accent: #dc2626;
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: repeat(2, 1fr);
+    flex-shrink: 0;
+    width: 192px;
+    padding: 4px;
+    border: 1px solid var(--view-border);
+    border-radius: 13px;
+    background: var(--view-track);
+    isolation: isolate;
+}
+
+.skills-view-switch[data-theme="dark"] {
+    --view-track: #202022;
+    --view-border: #3f3f46;
+    --view-active: #3f3f46;
+    --view-text: #fafaf9;
+    --view-muted: #a1a1aa;
+    --view-accent: #f87171;
+}
+
+.skills-view-switch::before {
+    content: "";
+    position: absolute;
+    inset: 4px auto 4px 4px;
+    width: calc((100% - 8px) / 2);
+    border-radius: 9px;
+    background: var(--view-active);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 10%), 0 0 0 1px rgb(0 0 0 / 3%);
+    transition: transform 200ms var(--ease-out);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.skills-view-switch[data-view="graph"]::before {
+    transform: translateX(100%);
+}
+
+.skills-view-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--view-muted);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 160ms ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.skills-view-option[aria-pressed="true"] {
+    color: var(--view-text);
+}
+
+.skills-view-option[aria-pressed="true"] svg {
+    color: var(--view-accent);
 }
 
 .skill-list-button:active {
@@ -109,6 +181,10 @@ html {
 }
 
 @media (hover: hover) and (pointer: fine) {
+    .skills-view-option:hover {
+        color: var(--view-text);
+    }
+
     .skill-list-button:hover {
         color: var(--skill-accent) !important;
         background: rgba(220, 38, 38, 0.06) !important;
@@ -121,6 +197,8 @@ html {
     }
 
     .skill-list-button,
+    .skills-view-option,
+    .skills-view-switch::before,
     .dark-mode-toggle,
     .mobile-dots-btn,
     .nav-links a {

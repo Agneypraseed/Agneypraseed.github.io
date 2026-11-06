@@ -31,9 +31,9 @@ const Skills = ({ darkMode }) => {
         <div
           style={{
             display: "flex",
-            alignItems: isMobile ? "flex-start" : "flex-end",
+            alignItems: "center",
             justifyContent: "space-between",
-            flexDirection: isMobile ? "column" : "row",
+            flexWrap: "wrap",
             gap: "1rem",
             paddingBottom: isMobile ? "1.75rem" : "2.25rem",
             borderBottom: `1px solid ${darkMode ? "#3f3f46" : "#e4e4e7"}`,
@@ -53,42 +53,38 @@ const Skills = ({ darkMode }) => {
               Skills
             </h2>
           </div>
-          <button
-            type="button"
-            className="skills-view-toggle"
-            aria-pressed={showGraph}
-            aria-controls="skills-content"
-            onClick={() => setShowGraph((current) => !current)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.55rem",
-              padding: "0.65rem 0.9rem",
-              border: `1px solid ${darkMode ? "#52525b" : "#d4d4d8"}`,
-              borderRadius: "8px",
-              background: "transparent",
-              color: foreground,
-              font: "inherit",
-              fontSize: "0.8rem",
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
+          <div
+            className="skills-view-switch"
+            role="group"
+            aria-label="Skills view"
+            data-theme={darkMode ? "dark" : "light"}
+            data-view={showGraph ? "graph" : "list"}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-              {showGraph ? (
-                <path d="M8 6h13M8 12h13M8 18h13M3 6h1M3 12h1M3 18h1" />
-              ) : (
-                <>
-                  <path d="m7 7 10 10M7 17 17 7M7 7h10v10H7z" />
-                  <circle cx="7" cy="7" r="2.5" fill={surface} />
-                  <circle cx="17" cy="7" r="2.5" fill={surface} />
-                  <circle cx="7" cy="17" r="2.5" fill={surface} />
-                  <circle cx="17" cy="17" r="2.5" fill={surface} />
-                </>
-              )}
-            </svg>
-            {showGraph ? "Show list view" : "Show graph view"}
-          </button>
+            {["list", "graph"].map((view) => (
+              <button
+                key={view}
+                type="button"
+                className="skills-view-option"
+                aria-pressed={showGraph === (view === "graph")}
+                aria-controls="skills-content"
+                onClick={() => setShowGraph(view === "graph")}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  {view === "list" ? (
+                    <path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" />
+                  ) : (
+                    <>
+                      <path d="m8 7 8 3M7 9l3 8m6-4-4 5" />
+                      <circle cx="6" cy="6" r="3" />
+                      <circle cx="18" cy="11" r="3" />
+                      <circle cx="11" cy="20" r="2" />
+                    </>
+                  )}
+                </svg>
+                {view === "list" ? "List" : "Graph"}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div
