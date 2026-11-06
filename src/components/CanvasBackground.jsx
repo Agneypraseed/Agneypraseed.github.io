@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 
 const THEME_TRANSITION_MS = 260;
 const FLOOR_Z = -0.62;
@@ -164,18 +164,19 @@ const CanvasBackground = ({ darkMode }) => {
             themeRef.current = themeProgress;
 
             const context = canvas.getContext("2d", { colorSpace: "srgb" });
+            if (!context) return;
             const devicePixelRatio = Math.min(
                 window.devicePixelRatio || 1,
                 2,
             );
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            const isMobile = width <= 768;
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+            const isMobile = window.innerWidth <= 768;
 
-            canvas.width = Math.round(width * devicePixelRatio);
-            canvas.height = Math.round(height * devicePixelRatio);
-            canvas.style.width = `${width}px`;
-            canvas.style.height = `${height}px`;
+            const pixelWidth = Math.round(width * devicePixelRatio);
+            const pixelHeight = Math.round(height * devicePixelRatio);
+            if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
+            if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
             context.setTransform(
                 devicePixelRatio,
                 0,
@@ -388,7 +389,7 @@ const CanvasBackground = ({ darkMode }) => {
         [stepAll],
     );
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         themeTransitionRef.current = {
             from: themeRef.current,
             to: darkMode ? 1 : 0,

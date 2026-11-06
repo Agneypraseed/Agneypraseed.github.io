@@ -16,16 +16,9 @@ import BlogPostPage from "./pages/BlogPostPage";
 import CursorTrail from "./components/CursorTrail";
 
 const AppContent = () => {
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
     const location = useLocation();
     const isHomePage = location.pathname === "/";
-
-    useEffect(() => {
-        const savedMode = localStorage.getItem("darkMode");
-        if (savedMode) {
-            setDarkMode(savedMode === "true");
-        }
-    }, []);
 
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: "auto" });
