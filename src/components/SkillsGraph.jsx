@@ -32,7 +32,8 @@ const HUB_LINKS = [
 const DEFAULT_CAMERA_POSITION = [0, 0.38, 10.2];
 const MOBILE_CAMERA_POSITION = [0, 0.6, 12.2];
 const CONSTELLATION_SCALE = 0.9;
-const FOCUS_DIRECTION = new THREE.Vector3(0.85, 0.5, 1).normalize();
+// Ignore time spent in a background tab or a stalled frame.
+const getMotionDelta = (delta) => Math.min(delta, 1 / 30);
 
 const usePrefersReducedMotion = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -103,55 +104,83 @@ function CameraRig({
   const { camera } = useThree();
   const focusTarget = useMemo(() => new THREE.Vector3(), []);
   const cameraGoal = useMemo(() => new THREE.Vector3(), []);
+  const focusDirection = useMemo(() => new THREE.Vector3(), []);
+  const transition = useRef({ active: false, started: false });
+  const interacting = useRef(false);
+  const idleSpeed = useRef(0);
+
+  useEffect(() => {
+    transition.current = { active: true, started: false };
+  }, [selectedNodeId, isMobile]);
 
   useFrame((_, delta) => {
     const controls = controlsRef.current;
     if (!controls) return;
 
+    const dt = getMotionDelta(delta);
+    // The installed Drei controls update once at priority -1 and assume 60 Hz.
+    // Set their inputs first; a second update here doubles damping/rotation.
+    controls.dampingFactor = 1 - Math.pow(1 - 0.08, dt * 60);
+    idleSpeed.current = THREE.MathUtils.damp(
+      idleSpeed.current,
+      selectedNodeId || prefersReducedMotion || interacting.current || transition.current.active
+        ? 0
+        : 0.24,
+      3,
+      dt,
+    );
+    controls.autoRotate = !prefersReducedMotion && !selectedNodeId && !transition.current.active;
+    controls.autoRotateSpeed = idleSpeed.current * dt * 60;
+
+    if (!transition.current.active || interacting.current) return;
+
     const selectedObject = selectedNodeId
       ? nodeRefs.current[selectedNodeId]
       : null;
+    // Text suspends while its font loads; wait for the nodes to mount.
+    if (selectedNodeId && !selectedObject) return;
+
+    if (!transition.current.started) {
+      focusDirection.copy(camera.position).sub(controls.target).normalize();
+      transition.current.started = true;
+    }
 
     if (selectedObject) {
       selectedObject.getWorldPosition(focusTarget);
       cameraGoal
         .copy(focusTarget)
-        .addScaledVector(FOCUS_DIRECTION, isMobile ? 7.6 : 6.8);
+        .addScaledVector(focusDirection, isMobile ? 7.6 : 6.8);
     } else {
       focusTarget.set(0, 0, 0);
+      cameraGoal.fromArray(isMobile ? MOBILE_CAMERA_POSITION : DEFAULT_CAMERA_POSITION);
     }
 
-    const targetLerp = 1 - Math.exp(-delta * (selectedObject ? 4.6 : 1.4));
-    const cameraLerp = 1 - Math.exp(-delta * 2.8);
+    const blend = prefersReducedMotion ? 1 : 1 - Math.exp(-dt * 4.6);
+    controls.target.lerp(focusTarget, blend);
+    camera.position.lerp(cameraGoal, blend);
 
-    if (prefersReducedMotion) {
-      controls.target.copy(focusTarget);
-    } else {
-      controls.target.lerp(focusTarget, targetLerp);
+    if (
+      camera.position.distanceToSquared(cameraGoal) < 0.000001 &&
+      controls.target.distanceToSquared(focusTarget) < 0.000001
+    ) {
+      transition.current.active = false;
     }
-
-    if (selectedObject) {
-      if (prefersReducedMotion) {
-        camera.position.copy(cameraGoal);
-      } else {
-        camera.position.lerp(cameraGoal, cameraLerp);
-      }
-    }
-    controls.autoRotate = !selectedObject && !prefersReducedMotion;
-    controls.update();
-  });
+  }, -2);
 
   return (
     <OrbitControls
       ref={controlsRef}
       makeDefault
-      enableDamping
+      enableDamping={!prefersReducedMotion}
       dampingFactor={0.08}
       enablePan={false}
       minDistance={4.4}
       maxDistance={16}
-      autoRotate={!selectedNodeId && !prefersReducedMotion}
-      autoRotateSpeed={0.24}
+      onStart={() => {
+        interacting.current = true;
+        transition.current.active = false;
+      }}
+      onEnd={() => { interacting.current = false; }}
     />
   );
 }
@@ -167,6 +196,7 @@ function HubNode({
 }) {
   const groupRef = useRef(null);
   const torusRef = useRef(null);
+  const animationTime = useRef(0);
   const coreColor = darkMode ? category.darkColor : category.color;
   const accentColor = coreColor;
   const labelColor = darkMode ? "#fafaf9" : "#171717";
@@ -176,10 +206,10 @@ function HubNode({
     return () => registerNode(category.id, null);
   }, [category.id, registerNode]);
 
-  useFrame(({ clock }) => {
+  useFrame((_, delta) => {
     if (prefersReducedMotion) return;
 
-    const elapsed = clock.elapsedTime;
+    const elapsed = (animationTime.current += getMotionDelta(delta));
     const pulse = 1 + Math.sin(elapsed * 1.8 + category.phase) * 0.032;
 
     if (groupRef.current) {
@@ -255,6 +285,7 @@ function SkillNode({
 }) {
   const groupRef = useRef(null);
   const meshRef = useRef(null);
+  const animationTime = useRef(0);
   const skillColor = darkMode ? category.darkColor : category.color;
   const accentColor = skillColor;
   const labelColor = darkMode ? "#e4e4e7" : "#71717a";
@@ -264,10 +295,11 @@ function SkillNode({
     return () => registerNode(skill.id, null);
   }, [registerNode, skill.id]);
 
-  useFrame(({ clock }) => {
+  useFrame((_, delta) => {
     if (!meshRef.current) return;
 
-    const elapsed = clock.elapsedTime;
+    if (!prefersReducedMotion) animationTime.current += getMotionDelta(delta);
+    const elapsed = animationTime.current;
     const pulse =
       selected && !prefersReducedMotion
         ? 1 + Math.sin(elapsed * 4.2) * 0.055
@@ -356,23 +388,27 @@ function CategoryCluster({
   selectedNodeId,
 }) {
   const orbitRef = useRef(null);
+  const orbitTime = useRef(0);
+  const orbitSpeed = useRef(1);
   const selectedCategoryId = getCategoryIdFromNodeId(selectedNodeId);
   const selectedInCluster = selectedCategoryId === category.id;
   const selectionActive = Boolean(selectedNodeId);
   const dimCluster = selectionActive && !selectedInCluster;
 
-  useFrame(({ clock }, delta) => {
+  useFrame((_, delta) => {
     if (!orbitRef.current || prefersReducedMotion) return;
 
-    const elapsed = clock.elapsedTime;
-    const orbitMultiplier = selectedNodeId ? 0 : 1;
+    const dt = getMotionDelta(delta);
+    orbitSpeed.current = THREE.MathUtils.damp(
+      orbitSpeed.current, selectedNodeId ? 0 : 1, 6, dt,
+    );
+    const elapsed = (orbitTime.current += dt * orbitSpeed.current);
     orbitRef.current.rotation.x =
       category.tilt[0] + Math.sin(elapsed * 0.18 + category.phase) * 0.045;
-    orbitRef.current.rotation.y +=
-      delta * category.orbitSpeed * orbitMultiplier;
+    orbitRef.current.rotation.y = elapsed * category.orbitSpeed;
     orbitRef.current.rotation.z =
       category.tilt[2] + Math.cos(elapsed * 0.16 + category.phase) * 0.035;
-  });
+  }, -3);
 
   return (
     <group
