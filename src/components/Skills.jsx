@@ -189,7 +189,7 @@ const Skills = ({ darkMode }) => {
                             textAlign: "left",
                             border: "none",
                             borderLeft: `2px solid ${
-                              isSelected ? "#dc2626" : "transparent"
+                              isSelected ? (darkMode ? cat.darkColor : cat.color) : "transparent"
                             }`,
                             padding: "0.28rem 0.55rem",
                             margin: "0.02rem 0",

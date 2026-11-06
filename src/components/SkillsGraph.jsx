@@ -367,7 +367,7 @@ function SkillEdges({ category, darkMode, selectedNodeId }) {
         color={
           selected
             ? darkMode
-              ? category.lightColor
+              ? category.darkColor
               : category.color
             : edgeColor
         }

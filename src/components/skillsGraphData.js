@@ -2,20 +2,19 @@ const getSkillNodeId = (categoryId, skillName) =>
   `${categoryId}--${skillName}`;
 
 const GRAPH_COLORS = {
-  red: "#dc2626",
-  charcoal: "#171717",
-  zincDark: "#52525b",
-  zinc: "#a1a1aa",
-  zincLight: "#e4e4e7",
+  // Muted accents on cream, softer tints on charcoal.
+  red: { light: "#dc2626", dark: "#f87171" },
+  charcoal: { light: "#3f3f46", dark: "#e4e4e7" },
+  slate: { light: "#52677c", dark: "#a5b4c7" },
+  plum: { light: "#80556e", dark: "#d2acc6" },
 };
 
 const CATEGORIES = [
   {
     id: "languages",
     label: "LANGUAGES",
-    color: GRAPH_COLORS.red,
-    darkColor: GRAPH_COLORS.red,
-    lightColor: GRAPH_COLORS.red,
+    color: GRAPH_COLORS.red.light,
+    darkColor: GRAPH_COLORS.red.dark,
     skills: [
       { name: "Java", size: 1.0 },
       { name: "Python", size: 1.0 },
@@ -29,9 +28,8 @@ const CATEGORIES = [
   {
     id: "frameworks",
     label: "FRAMEWORKS & TOOLS",
-    color: GRAPH_COLORS.charcoal,
-    darkColor: GRAPH_COLORS.zincLight,
-    lightColor: GRAPH_COLORS.charcoal,
+    color: GRAPH_COLORS.charcoal.light,
+    darkColor: GRAPH_COLORS.charcoal.dark,
     skills: [
       { name: "Spring Boot", size: 0.9 },
       { name: "React", size: 0.85 },
@@ -46,9 +44,8 @@ const CATEGORIES = [
   {
     id: "data-cloud",
     label: "DATA & CLOUD",
-    color: GRAPH_COLORS.zincDark,
-    darkColor: GRAPH_COLORS.zinc,
-    lightColor: GRAPH_COLORS.zincDark,
+    color: GRAPH_COLORS.slate.light,
+    darkColor: GRAPH_COLORS.slate.dark,
     skills: [
       { name: "PostgreSQL", size: 0.75 },
       { name: "MongoDB", size: 0.7 },
@@ -61,9 +58,8 @@ const CATEGORIES = [
   {
     id: "ai-ml",
     label: "AI & ML",
-    color: GRAPH_COLORS.zinc,
-    darkColor: GRAPH_COLORS.zincLight,
-    lightColor: GRAPH_COLORS.zinc,
+    color: GRAPH_COLORS.plum.light,
+    darkColor: GRAPH_COLORS.plum.dark,
     skills: [
       { name: "PyTorch", size: 0.95 },
       { name: "TensorFlow", size: 0.7 },
