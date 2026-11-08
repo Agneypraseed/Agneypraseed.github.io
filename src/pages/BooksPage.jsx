@@ -3,6 +3,7 @@ import Footer from "../components/Footer";
 import useIsMobile from "../hooks/useIsMobile";
 import books from "../data/books";
 import TechnicalDebtSection from "../components/TechnicalDebtSection";
+import ReadingShelf from "../components/ReadingShelf";
 
 /* ── wireframe‑globe SVG for the decorative background ── */
 const GlobeSVG = ({ darkMode }) => {
@@ -718,6 +719,7 @@ const BooksPage = ({ darkMode }) => {
                     <ImageGridView books={filteredBooks} darkMode={darkMode} isMobile={isMobile} />
                 )}
 
+                <ReadingShelf darkMode={darkMode} />
                 <TechnicalDebtSection darkMode={darkMode} />
 
                 {/* Footer */}

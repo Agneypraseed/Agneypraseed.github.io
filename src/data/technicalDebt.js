@@ -156,12 +156,6 @@ const technicalDebt = [
         author: "David Foster",
         notes: "Generative AI, variational autoencoders, GANs, transformers, diffusion models, and practical deep learning.",
     },
-    {
-        id: "why-machines-learn",
-        title: "Why Machines Learn: The Elegant Math Behind Modern AI",
-        author: "Anil Ananthaswamy",
-        notes: "Mathematical foundations of machine learning, optimization, linear algebra, probability, and neural networks.",
-    },
 ];
 
 // Order within each subject is a suggested route, not a requirement to finish
@@ -207,7 +201,6 @@ const readingGroups = [
         id: "machine-learning-foundations",
         title: "Machine-learning foundations",
         bookIds: [
-            "why-machines-learn",
             "learning-from-data",
             "understanding-machine-learning",
         ],
