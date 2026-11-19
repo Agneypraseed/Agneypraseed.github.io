@@ -7,5 +7,7 @@ export const essays = [
     {
         slug: "sample-essay",
         title: "Hello World",
+        // Set to true to show this essay in the blog listing.
+        showOnBlog: false,
     },
 ];

@@ -14,6 +14,13 @@ import devdayPhoto4 from "../assets/onstage/devday4.jpeg";
 // Project data
 const projects = [
     {
+        id: 9,
+        title: "TabPilot",
+        description: "A local-first browser agent for your existing Chrome tabs. It can read pages and work through tasks across tabs while keeping tab access and consequential actions under your control.",
+        tags: ["JavaScript", "Chrome Extension", "OpenAI Agents SDK", "MCP", "Node.js"],
+        github: "https://github.com/Agneypraseed/TabPilot",
+    },
+    {
         id: 8,
         title: "NemoDoc",
         description: "AI document assistant with agent-powered cited retrieval, source permissions, and workflows for research and analysis, scheduled tasks, validated citations, and persisted run traces.",
@@ -295,7 +302,6 @@ const ProjectsPage = ({ darkMode }) => {
                                         <path d="m8 5 1-2h6l1 2" />
                                     </svg>
                                     {project.event.title}
-                                    <span aria-hidden="true">↗</span>
                                 </button>
                             )}
                         </div>

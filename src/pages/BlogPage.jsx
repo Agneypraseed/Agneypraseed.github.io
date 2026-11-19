@@ -9,6 +9,9 @@ const BlogPage = ({ darkMode }) => {
     const { isMobile } = useIsMobile();
     const [quoteIndex, setQuoteIndex] = useState(0);
     const [fade, setFade] = useState(true);
+    const visibleSeries = series.filter((item) => item.showOnBlog);
+    const visibleEssays = essays.filter((item) => item.showOnBlog);
+    const hasVisibleBlogContent = visibleSeries.length > 0 || visibleEssays.length > 0;
 
     const quotes = [
         {
@@ -104,14 +107,15 @@ const BlogPage = ({ darkMode }) => {
                     ))}
                 </div>
 
-                {/* Divider */}
-                <div style={{
-                    borderTop: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
-                    marginBottom: "2.5rem",
-                }} />
+                {hasVisibleBlogContent && (
+                    <div style={{
+                        borderTop: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
+                        marginBottom: "2.5rem",
+                    }} />
+                )}
 
                 {/* Series List */}
-                {series.map((s) => (
+                {visibleSeries.map((s) => (
                     <div key={s.id} style={{ marginBottom: "2.5rem" }}>
                         <Link
                             to={`/blog/${s.id}`}
@@ -158,7 +162,7 @@ const BlogPage = ({ darkMode }) => {
                 ))}
 
                 {/* Standalone Essays */}
-                {essays.map((essay) => (
+                {visibleEssays.map((essay) => (
                     <div key={essay.slug} style={{ marginBottom: "2rem" }}>
                         <Link
                             to={`/blog/essays/${essay.slug}`}
@@ -211,11 +215,12 @@ const BlogPage = ({ darkMode }) => {
                     </div>
                 ))}
 
-                {/* Divider */}
-                <div style={{
-                    borderTop: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
-                    margin: "2rem 0 1.5rem",
-                }} />
+                {hasVisibleBlogContent && (
+                    <div style={{
+                        borderTop: darkMode ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.06)",
+                        margin: "2rem 0 1.5rem",
+                    }} />
+                )}
 
                 {/* Notes Link */}
                 <a
