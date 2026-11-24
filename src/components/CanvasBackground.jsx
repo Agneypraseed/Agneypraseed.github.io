@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 
 const THEME_TRANSITION_MS = 260;
-const FLOOR_Z = -0.62;
+const FRAME_MS = 1000 / 60;
 
 const mix = (from, to, progress) => from + (to - from) * progress;
 const clamp = (value, minimum, maximum) =>
@@ -68,6 +68,8 @@ const makeWalker = (kind) => ({
 const CanvasBackground = ({ darkMode }) => {
     const canvasRef = useRef(null);
     const animationRef = useRef(null);
+    const viewportRef = useRef(null);
+    const requestDrawRef = useRef(() => {});
     const yawRef = useRef(-0.62);
     const pitchRef = useRef(0.58);
     const dragRef = useRef(null);
@@ -128,7 +130,7 @@ const CanvasBackground = ({ darkMode }) => {
             }
         }
         w.trail.push([w.p[0], w.p[1], f(w.p[0], w.p[1])]);
-        if (w.trail.length > 200) w.trail.shift();
+        if (w.trail.length > 80) w.trail.shift();
         if (Math.hypot(w.v[0], w.v[1]) < 0.0006) w.settle++;
     }, []);
 
@@ -145,8 +147,9 @@ const CanvasBackground = ({ darkMode }) => {
     /* ── Main draw loop ── */
     const draw = useCallback(
         (timestamp) => {
-            const canvas = canvasRef.current;
-            if (!canvas) return;
+            const viewport = viewportRef.current;
+            if (!viewport) return;
+            const { context, width, height, devicePixelRatio, isMobile } = viewport;
 
             /* Theme transition */
             const transition = themeTransitionRef.current;
@@ -163,20 +166,6 @@ const CanvasBackground = ({ darkMode }) => {
             );
             themeRef.current = themeProgress;
 
-            const context = canvas.getContext("2d", { colorSpace: "srgb" });
-            if (!context) return;
-            const devicePixelRatio = Math.min(
-                window.devicePixelRatio || 1,
-                2,
-            );
-            const width = canvas.clientWidth;
-            const height = canvas.clientHeight;
-            const isMobile = window.innerWidth <= 768;
-
-            const pixelWidth = Math.round(width * devicePixelRatio);
-            const pixelHeight = Math.round(height * devicePixelRatio);
-            if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
-            if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
             context.setTransform(
                 devicePixelRatio,
                 0,
@@ -233,17 +222,17 @@ const CanvasBackground = ({ darkMode }) => {
             context.lineWidth = isMobile ? 0.72 : 1;
             context.lineCap = "round";
 
+            // Each vertex is shared by a row and column; project it only once.
+            const projectedGrid = gridAxis.map((x, i) =>
+                gridAxis.map((y, j) => project(x, y, gridHeights[i][j])),
+            );
+
             for (let axis = 0; axis < 2; axis++) {
                 for (let i = 0; i <= N; i++) {
                     context.beginPath();
                     let pd = 0;
                     for (let j = 0; j <= N; j++) {
-                        const x = axis ? gridAxis[j] : gridAxis[i];
-                        const y = axis ? gridAxis[i] : gridAxis[j];
-                        const z = axis
-                            ? gridHeights[j][i]
-                            : gridHeights[i][j];
-                        const pr = project(x, y, z);
+                        const pr = axis ? projectedGrid[j][i] : projectedGrid[i][j];
                         j
                             ? context.lineTo(pr[0], pr[1])
                             : context.moveTo(pr[0], pr[1]);
@@ -251,16 +240,16 @@ const CanvasBackground = ({ darkMode }) => {
                     }
                     const avg = pd / (N + 1);
                     const a = clamp(
-                        (4.5 - avg) * 0.28,
+                        (4.5 - avg) * 0.22,
                         0.06,
-                        0.38,
+                        0.3,
                     );
                     context.strokeStyle = `rgba(${LINE},${a})`;
                     context.stroke();
                 }
             }
 
-            /* ── Walkers: trail + drop line + ball ── */
+            /* ── Understated paths and matte markers ── */
             const walkers = walkersRef.current;
             const fade = fadeRef.current;
 
@@ -269,124 +258,29 @@ const CanvasBackground = ({ darkMode }) => {
 
                 /* Trail */
                 if (w.trail.length > 1) {
-                    context.lineWidth = wi === 0 ? 1.4 : 1.2;
-                    for (let i = 1; i < w.trail.length; i++) {
-                        const t0 = w.trail[i - 1];
-                        const t1 = w.trail[i];
-                        const p0 = project(
-                            t0[0],
-                            t0[1],
-                            t0[2] + 0.015,
-                        );
-                        const p1 = project(
-                            t1[0],
-                            t1[1],
-                            t1[2] + 0.015,
-                        );
-                        context.strokeStyle = `rgba(${col},${(i / w.trail.length) * 0.85 * fade})`;
-                        context.beginPath();
-                        context.moveTo(p0[0], p0[1]);
-                        context.lineTo(p1[0], p1[1]);
-                        context.stroke();
+                    context.lineWidth = 1.1;
+                    context.strokeStyle = `rgba(${col},${0.42 * fade})`;
+                    context.beginPath();
+                    for (let i = 0; i < w.trail.length; i++) {
+                        const point = w.trail[i];
+                        const pr = project(point[0], point[1], point[2] + 0.015);
+                        if (i === 0) context.moveTo(pr[0], pr[1]);
+                        else context.lineTo(pr[0], pr[1]);
                     }
+                    context.stroke();
                 }
 
                 const z = f(w.p[0], w.p[1]);
                 const pr = project(w.p[0], w.p[1], z + 0.02);
-                const fl = project(w.p[0], w.p[1], FLOOR_Z);
-
-                /* Drop line to the floor — depth cue */
-                context.strokeStyle = `rgba(${col},${0.14 * fade})`;
-                context.lineWidth = 1;
-                context.setLineDash([2, 4]);
-                context.beginPath();
-                context.moveTo(pr[0], pr[1]);
-                context.lineTo(fl[0], fl[1]);
-                context.stroke();
-                context.setLineDash([]);
-
-                /* Shadow ellipse on floor */
-                context.fillStyle = `rgba(${col},${0.2 * fade})`;
-                context.beginPath();
-                context.ellipse(fl[0], fl[1], 4, 1.6, 0, 0, Math.PI * 2);
-                context.fill();
-
-                /* Ball glow + solid ball */
-                const r =
-                    Math.min(width, height) * 0.01 +
-                    (wi === 0 ? 1.5 : 1.1);
-                const glow = context.createRadialGradient(
-                    pr[0],
-                    pr[1],
-                    0,
-                    pr[0],
-                    pr[1],
-                    r * 4,
-                );
-                glow.addColorStop(
-                    0,
-                    `rgba(${col},${0.3 * fade})`,
-                );
-                glow.addColorStop(1, `rgba(${col},0)`);
-                context.fillStyle = glow;
-                context.beginPath();
-                context.arc(pr[0], pr[1], r * 4, 0, Math.PI * 2);
-                context.fill();
-
-                context.fillStyle = `rgba(${col},${fade})`;
+                const r = clamp(Math.min(width, height) * 0.007, 3, 5.5);
+                context.fillStyle = `rgba(${col},${0.92 * fade})`;
                 context.beginPath();
                 context.arc(pr[0], pr[1], r, 0, Math.PI * 2);
                 context.fill();
             });
 
-            /* ── Vignette overlay ── */
-            const vignette = context.createRadialGradient(
-                originX,
-                originY,
-                Math.min(width, height) * (isMobile ? 0.14 : 0.2),
-                originX,
-                originY,
-                Math.max(width, height) * (isMobile ? 0.52 : 0.5),
-            );
-            const backgroundColour = [
-                Math.round(mix(100, 26, themeProgress)),
-                Math.round(mix(82, 26, themeProgress)),
-                Math.round(mix(168, 26, themeProgress)),
-            ].join(",");
-            vignette.addColorStop(
-                0,
-                `rgba(${backgroundColour},0)`,
-            );
-            vignette.addColorStop(
-                0.35,
-                `rgba(${backgroundColour},0)`,
-            );
-            vignette.addColorStop(
-                0.7,
-                `rgba(${backgroundColour},0.42)`,
-            );
-            vignette.addColorStop(
-                1,
-                `rgba(${backgroundColour},0.9)`,
-            );
-            context.fillStyle = vignette;
-            context.fillRect(0, 0, width, height);
-
-
-            /* ── Auto-rotation when idle ── */
-            if (!dragRef.current) {
-                idleRef.current++;
-                if (idleRef.current >= 90) {
-                    yawRef.current += 0.0016;
-                }
-            }
-
-            /* ── Step the optimizers ── */
-            stepAll();
-
-            animationRef.current = requestAnimationFrame(draw);
         },
-        [stepAll],
+        [],
     );
 
     useLayoutEffect(() => {
@@ -395,17 +289,89 @@ const CanvasBackground = ({ darkMode }) => {
             to: darkMode ? 1 : 0,
             startedAt: performance.now(),
         };
+        requestDrawRef.current();
     }, [darkMode]);
 
     useEffect(() => {
+        const canvas = canvasRef.current;
+        const context = canvas.getContext("2d", { colorSpace: "srgb" });
+        if (!context) return;
+        const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let visible = true;
+        let lastFrame = null;
+        let accumulator = 0;
+
+        const stop = () => {
+            cancelAnimationFrame(animationRef.current);
+            animationRef.current = null;
+            lastFrame = null;
+            accumulator = 0;
+        };
+        const requestDraw = () => {
+            if (visible && !document.hidden && animationRef.current === null) {
+                animationRef.current = requestAnimationFrame(frame);
+            }
+        };
+        const frame = (timestamp) => {
+            animationRef.current = null;
+            if (!visible || document.hidden) return;
+            accumulator += lastFrame === null ? FRAME_MS : Math.min(timestamp - lastFrame, 50);
+            lastFrame = timestamp;
+            if (accumulator >= FRAME_MS - 0.1) {
+                // Fixed simulation steps keep the same speed on 60/120 Hz displays.
+                const steps = Math.max(1, Math.floor((accumulator + 0.1) / FRAME_MS));
+                accumulator = Math.max(0, accumulator - steps * FRAME_MS);
+                if (!motionQuery.matches) {
+                    for (let i = 0; i < steps; i++) {
+                        if (!dragRef.current && ++idleRef.current >= 90) yawRef.current += 0.0016;
+                        stepAll();
+                    }
+                }
+                draw(timestamp);
+            }
+            if (!motionQuery.matches || themeRef.current !== themeTransitionRef.current.to) {
+                requestDraw();
+            } else {
+                lastFrame = null;
+            }
+        };
+        const resize = () => {
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+            const devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            const pixelWidth = Math.round(width * devicePixelRatio);
+            const pixelHeight = Math.round(height * devicePixelRatio);
+            if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
+            if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+            viewportRef.current = { context, width, height, devicePixelRatio, isMobile: window.innerWidth <= 768 };
+            requestDraw();
+        };
+        const resume = () => { stop(); requestDraw(); };
+        const observer = new IntersectionObserver(([entry]) => {
+            visible = entry.isIntersecting;
+            resume();
+        });
+        const resizeObserver = new ResizeObserver(resize);
+        requestDrawRef.current = requestDraw;
         respawnAll();
-        animationRef.current = requestAnimationFrame(draw);
+        resize();
+        observer.observe(canvas);
+        resizeObserver.observe(canvas);
+        window.addEventListener("resize", resize);
+        document.addEventListener("visibilitychange", resume);
+        motionQuery.addEventListener("change", resume);
 
         return () => {
-            if (animationRef.current !== null)
-                cancelAnimationFrame(animationRef.current);
+            stop();
+            observer.disconnect();
+            resizeObserver.disconnect();
+            window.removeEventListener("resize", resize);
+            document.removeEventListener("visibilitychange", resume);
+            motionQuery.removeEventListener("change", resume);
+            requestDrawRef.current = () => {};
+            viewportRef.current = null;
         };
-    }, [draw, respawnAll]);
+    }, [draw, respawnAll, stepAll]);
 
     const beginDrag = useCallback((event) => {
         event.preventDefault();
@@ -418,6 +384,7 @@ const CanvasBackground = ({ darkMode }) => {
             y: event.clientY,
         };
         idleRef.current = 0;
+        requestDrawRef.current();
     }, []);
 
     const moveDrag = useCallback((event) => {
@@ -434,6 +401,7 @@ const CanvasBackground = ({ darkMode }) => {
         drag.x = event.clientX;
         drag.y = event.clientY;
         idleRef.current = 0;
+        requestDrawRef.current();
     }, []);
 
     const finishDrag = useCallback((event) => {
@@ -472,6 +440,7 @@ const CanvasBackground = ({ darkMode }) => {
             1.45,
         );
         idleRef.current = 0;
+        requestDrawRef.current();
     }, []);
 
     return (

@@ -1,11 +1,10 @@
 import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import DarkModeToggle from "./components/DarkModeToggle";
 import HomePage from "./pages/HomePage";
 import ProjectsPage from "./pages/ProjectsPage";
 import BlogPage from "./pages/BlogPage";
-import FootprintsPage from "./pages/FootprintsPage";
 import AboutPage from "./pages/AboutPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import BooksPage from "./pages/BooksPage";
@@ -14,6 +13,9 @@ import MusicPage from "./pages/MusicPage";
 import SeriesHubPage from "./pages/SeriesHubPage";
 import BlogPostPage from "./pages/BlogPostPage";
 import CursorTrail from "./components/CursorTrail";
+
+// Load the travel globe only when its page is opened, keeping it off the home path.
+const FootprintsPage = lazy(() => import("./pages/FootprintsPage"));
 
 const AppContent = () => {
     const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "true");
@@ -52,7 +54,11 @@ const AppContent = () => {
                 <Route path="/blog" element={<BlogPage darkMode={darkMode} />} />
                 <Route path="/blog/:seriesId" element={<SeriesHubPage darkMode={darkMode} />} />
                 <Route path="/blog/:seriesId/:slug" element={<BlogPostPage darkMode={darkMode} />} />
-                <Route path="/footprints" element={<FootprintsPage darkMode={darkMode} />} />
+                <Route path="/footprints" element={
+                    <Suspense fallback={<p role="status" style={{ padding: "8rem 1.5rem", textAlign: "center" }}>Loading footprints…</p>}>
+                        <FootprintsPage darkMode={darkMode} />
+                    </Suspense>
+                } />
                 <Route path="/books" element={<BooksPage darkMode={darkMode} />} />
                 <Route path="/videos" element={<VideosPage darkMode={darkMode} />} />
                 <Route path="/music" element={<MusicPage darkMode={darkMode} />} />
