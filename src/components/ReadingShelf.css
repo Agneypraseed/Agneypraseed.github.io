@@ -14,6 +14,8 @@
 .reading-header h3 { margin: 0; }
 
 .reading-rail { overflow-x: auto; }
+.reading-rail--with-arrows { scrollbar-width: none; scroll-behavior: smooth; }
+.reading-rail--with-arrows::-webkit-scrollbar { display: none; }
 .reading-rail .reading-stage { min-width: var(--rack-width); }
 .reading-flow-viewport { container-type: inline-size; }
 
@@ -47,7 +49,7 @@
     border-color: currentColor;
 }
 
-.reading-control:disabled { opacity: 0.42; cursor: default; }
+.reading-control:is(:disabled, [aria-disabled="true"]) { opacity: 0.42; cursor: default; }
 .reading-control:focus-visible,
 .reading-book:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 
@@ -260,5 +262,6 @@
 .reading-controls p { min-width: 0; }
 
 @media (prefers-reduced-motion: reduce) {
+    .reading-rail--with-arrows { scroll-behavior: auto; }
     .reading-stage, .reading-stage::after, .reading-book, .reading-cover, .reading-spine { transition: none; }
 }

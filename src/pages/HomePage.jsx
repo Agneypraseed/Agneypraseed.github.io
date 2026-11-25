@@ -32,27 +32,29 @@ const HomePage = ({ darkMode }) => {
           "--home-hero-artwork": `url(${blue_bg})`,
         }}
       >
-        <CanvasBackground darkMode={darkMode} />
-
         <div className="home-hero__content">
-          <div className="home-hero__intro">
-            <p className="home-hero__eyebrow">HELLO WORLD! 👋</p>
-            <h1 id="home-hero-title" className="home-hero__title">
-              <span>I&apos;m</span>{" "}
-              <strong className="home-hero__name">
-                <TypedText
-                  strings={["AGNEY", "अग्नेय", "アグネイ", "അഗ്നേയ്"]}
-                  startDelay={300}
-                  typeSpeed={100}
-                  backSpeed={100}
-                  backDelay={100}
-                  loop={true}
-                  cursorChar={""}
-                  fontSize={isMobile ? 22 : 34}
-                />
-              </strong>
-            </h1>
-
+          <div className="home-hero__lead">
+            <div className="home-hero__landscape">
+              <CanvasBackground darkMode={darkMode} />
+            </div>
+            <div className="home-hero__intro">
+              <p className="home-hero__eyebrow">HELLO WORLD! 👋</p>
+              <h1 id="home-hero-title" className="home-hero__title">
+                <span>I&apos;m</span>{" "}
+                <strong className="home-hero__name">
+                  <TypedText
+                    strings={["AGNEY", "अग्नेय", "アグネイ", "അഗ്നേയ്"]}
+                    startDelay={300}
+                    typeSpeed={100}
+                    backSpeed={100}
+                    backDelay={100}
+                    loop={true}
+                    cursorChar={""}
+                    fontSize={isMobile ? 22 : 34}
+                  />
+                </strong>
+              </h1>
+            </div>
           </div>
 
           <div className="home-portrait-stage">

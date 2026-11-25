@@ -1,4 +1,4 @@
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
 import "./TechnicalDebtSection.css";
 import "./ReadingShelf.css";
 
@@ -13,17 +13,21 @@ const currentBooks = [
 ];
 
 const MAX_SPINES_PER_SIDE = 8;
+const SPINE_PITCH = 55;
 const SWIPE_START_DISTANCE = 8;
 const SWIPE_DISTANCE = 48;
 const FLICK_DISTANCE = 24;
 const FLICK_DURATION_MS = 250;
 
-const ReadingShelf = ({ darkMode, books = currentBooks, title = "Reading", nested = false }) => {
+const ReadingShelf = ({ darkMode, books = currentBooks, title = "Reading", nested = false, railNavigation = false }) => {
     const id = useId();
     const Heading = nested ? "h3" : "h2";
     const [flow, setFlow] = useState(false);
     const [position, setPosition] = useState(0);
     const [dragOffset, setDragOffset] = useState(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+    const rail = useRef(null);
     const selectedButton = useRef(null);
     const focusOnSelection = useRef(false);
     const swipe = useRef(null);
@@ -32,6 +36,22 @@ const ReadingShelf = ({ darkMode, books = currentBooks, title = "Reading", neste
     const wrapSpines = flow && bookCount > 2;
     const bookIndex = (slot) => ((slot % bookCount) + bookCount) % bookCount;
     const book = bookCount ? books[bookIndex(position)] : undefined;
+
+    const updateRailNavigation = useCallback(() => {
+        const element = rail.current;
+        if (!element) return;
+        const maxScroll = element.scrollWidth - element.clientWidth;
+        setCanScrollLeft(element.scrollLeft > 1);
+        setCanScrollRight(element.scrollLeft < maxScroll - 1);
+    }, []);
+
+    useLayoutEffect(() => {
+        if (!railNavigation || flow) return;
+        const observer = new ResizeObserver(updateRailNavigation);
+        observer.observe(rail.current);
+        updateRailNavigation();
+        return () => observer.disconnect();
+    }, [railNavigation, flow, bookCount, updateRailNavigation]);
 
     useLayoutEffect(() => {
         if (!flow || !focusOnSelection.current) return;
@@ -150,12 +170,17 @@ const ReadingShelf = ({ darkMode, books = currentBooks, title = "Reading", neste
                     </svg>
                 </button>
             </div>
-            <div className={flow ? "reading-flow-viewport" : "reading-rail"}>
+            <div
+                id={`${id}-viewport`}
+                ref={!flow && railNavigation ? rail : undefined}
+                className={flow ? "reading-flow-viewport" : `reading-rail${railNavigation ? " reading-rail--with-arrows" : ""}`}
+                onScroll={!flow && railNavigation ? updateRailNavigation : undefined}
+            >
                 <div
                     id={`${id}-stage`}
                     className={`reading-stage${flow ? " reading-stage--flow" : ""}${dragOffset !== null ? " reading-stage--dragging" : ""}`}
                     style={{
-                        "--rack-width": `${bookCount * 55 + 20}px`,
+                        "--rack-width": `${bookCount * SPINE_PITCH + 20}px`,
                         "--drag-offset": `${dragOffset ?? 0}px`,
                     }}
                     onPointerDown={startSwipe}
@@ -190,7 +215,7 @@ const ReadingShelf = ({ darkMode, books = currentBooks, title = "Reading", neste
                                 tabIndex={flow && !selected ? -1 : undefined}
                                 title={title}
                                 style={{
-                                    "--shelf-position": `${(index - (bookCount - 1) / 2) * 55}px`,
+                                    "--shelf-position": `${(index - (bookCount - 1) / 2) * SPINE_PITCH}px`,
                                     "--offset": offset,
                                     "--side": Math.sign(offset),
                                 }}
@@ -211,6 +236,26 @@ const ReadingShelf = ({ darkMode, books = currentBooks, title = "Reading", neste
                     })}
                 </div>
             </div>
+            {!flow && railNavigation && (canScrollLeft || canScrollRight) && (
+                <div className="reading-controls">
+                    <button
+                        type="button"
+                        className="reading-control"
+                        aria-label={`Scroll ${title} left`}
+                        aria-controls={`${id}-viewport`}
+                        aria-disabled={!canScrollLeft}
+                        onClick={() => canScrollLeft && rail.current.scrollBy({ left: -SPINE_PITCH })}
+                    >←</button>
+                    <button
+                        type="button"
+                        className="reading-control"
+                        aria-label={`Scroll ${title} right`}
+                        aria-controls={`${id}-viewport`}
+                        aria-disabled={!canScrollRight}
+                        onClick={() => canScrollRight && rail.current.scrollBy({ left: SPINE_PITCH })}
+                    >→</button>
+                </div>
+            )}
             {flow && book && (
                 <div className="reading-controls">
                     <button type="button" className="reading-control" aria-label="Previous book" onClick={(event) => stepFromButton(event, -1)} disabled={bookCount < 2}>←</button>

@@ -281,6 +281,12 @@ export const toReadBooks = [
         title: "The Metamorphosis",
         author: "Franz Kafka",
     },
+    {
+        id: "decisive",
+        title: "Decisive",
+        subtitle: "How to Make Better Choices in Life and Work",
+        author: "Chip Heath and Dan Heath",
+    },
 ];
 
 export default technicalDebtGroups.flatMap((group) => group.books);

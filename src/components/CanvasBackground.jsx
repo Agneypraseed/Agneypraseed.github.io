@@ -184,16 +184,6 @@ const CanvasBackground = ({ darkMode }) => {
             const cy = Math.cos(yaw);
             const sy = Math.sin(yaw);
 
-            const originX = isMobile ? width * 0.5 : width * 0.28;
-            const originY = isMobile
-                ? Math.min(height * 0.25, width * 0.5)
-                : height * 0.47;
-            const cameraScale = isMobile
-                ? 0.47
-                : width <= 1100
-                  ? 0.61
-                  : 0.7;
-
             const project = (x, y, z) => {
                 const rx = x * cy - y * sy;
                 const ry = x * sy + y * cy;
@@ -201,10 +191,38 @@ const CanvasBackground = ({ darkMode }) => {
                 const ty = ry * cp - rz * sp;
                 const tz = ry * sp + rz * cp;
                 const depth = 3.4 + ty;
-                const k =
-                    (Math.min(width, height) * cameraScale) / depth;
-                return [originX + rx * k, originY + 14 - tz * k, depth];
+                return [rx / depth, -tz / depth, depth];
             };
+
+            // Each vertex is shared by a row and column; project it only once.
+            let top = Infinity;
+            let bottom = -Infinity;
+            const projectedGrid = gridAxis.map((x, i) =>
+                gridAxis.map((y, j) => {
+                    const point = project(x, y, gridHeights[i][j]);
+                    if (!isMobile) {
+                        top = Math.min(top, point[1]);
+                        bottom = Math.max(bottom, point[1]);
+                    }
+                    return point;
+                }),
+            );
+
+            // Fit steeper angles inside the desktop panel, leaving room for the markers.
+            const scale = isMobile
+                ? Math.min(width, height) * 0.47
+                : Math.min(width * 0.65, height * 1.33, height * 0.9 / (bottom - top));
+            const originX = width * 0.5;
+            const originY = isMobile
+                ? Math.min(height * 0.25, width * 0.5) + 14
+                : (height - (top + bottom) * scale) * 0.5;
+            const screenX = (x) => originX + x * scale;
+            const screenY = (y) => originY + y * scale;
+            const markerRadius = clamp(
+                isMobile ? Math.min(width, height) * 0.007 : scale * 0.015,
+                3,
+                5.5,
+            );
 
             /* ── Line colour based on theme ── */
             /* Light mode: clean white, reads well on purple/blue bg */
@@ -222,21 +240,16 @@ const CanvasBackground = ({ darkMode }) => {
             context.lineWidth = isMobile ? 0.72 : 1;
             context.lineCap = "round";
 
-            // Each vertex is shared by a row and column; project it only once.
-            const projectedGrid = gridAxis.map((x, i) =>
-                gridAxis.map((y, j) => project(x, y, gridHeights[i][j])),
-            );
-
             for (let axis = 0; axis < 2; axis++) {
                 for (let i = 0; i <= N; i++) {
                     context.beginPath();
                     let pd = 0;
                     for (let j = 0; j <= N; j++) {
-                        const pr = axis ? projectedGrid[j][i] : projectedGrid[i][j];
+                        const [x, y, depth] = axis ? projectedGrid[j][i] : projectedGrid[i][j];
                         j
-                            ? context.lineTo(pr[0], pr[1])
-                            : context.moveTo(pr[0], pr[1]);
-                        pd += pr[2];
+                            ? context.lineTo(screenX(x), screenY(y))
+                            : context.moveTo(screenX(x), screenY(y));
+                        pd += depth;
                     }
                     const avg = pd / (N + 1);
                     const a = clamp(
@@ -263,19 +276,18 @@ const CanvasBackground = ({ darkMode }) => {
                     context.beginPath();
                     for (let i = 0; i < w.trail.length; i++) {
                         const point = w.trail[i];
-                        const pr = project(point[0], point[1], point[2] + 0.015);
-                        if (i === 0) context.moveTo(pr[0], pr[1]);
-                        else context.lineTo(pr[0], pr[1]);
+                        const [x, y] = project(point[0], point[1], point[2] + 0.015);
+                        if (i === 0) context.moveTo(screenX(x), screenY(y));
+                        else context.lineTo(screenX(x), screenY(y));
                     }
                     context.stroke();
                 }
 
                 const z = f(w.p[0], w.p[1]);
-                const pr = project(w.p[0], w.p[1], z + 0.02);
-                const r = clamp(Math.min(width, height) * 0.007, 3, 5.5);
+                const [x, y] = project(w.p[0], w.p[1], z + 0.02);
                 context.fillStyle = `rgba(${col},${0.92 * fade})`;
                 context.beginPath();
-                context.arc(pr[0], pr[1], r, 0, Math.PI * 2);
+                context.arc(screenX(x), screenY(y), markerRadius, 0, Math.PI * 2);
                 context.fill();
             });
 
@@ -445,18 +457,7 @@ const CanvasBackground = ({ darkMode }) => {
 
     return (
         <>
-            <canvas
-                ref={canvasRef}
-                aria-hidden="true"
-                style={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    zIndex: 1,
-                    pointerEvents: "none",
-                }}
-            />
+            <canvas ref={canvasRef} aria-hidden="true" />
             <div
                 className="home-gd-interaction"
                 role="application"

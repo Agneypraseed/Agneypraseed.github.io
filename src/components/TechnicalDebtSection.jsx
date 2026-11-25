@@ -13,7 +13,7 @@ const TechnicalDebtSection = ({ darkMode }) => (
                 <ReadingShelf key={group.id} title={group.title} books={group.books} nested />
             ))}
         </section>
-        <ReadingShelf title="To Read" books={toReadBooks} darkMode={darkMode} />
+        <ReadingShelf title="To Read" books={toReadBooks} darkMode={darkMode} railNavigation />
     </>
 );
 
