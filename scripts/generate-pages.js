@@ -36,14 +36,14 @@ for (const path of pagePaths) {
     await writeFile(new URL("index.html", folder), renderPage(page));
 
     if (!page.noindex) {
-        sitemapUrls.push(`    <url><loc>${escapeHtml(page.canonical)}</loc></url>`);
+        sitemapUrls.push(page.canonical);
     }
 }
 
 const sitemap = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...sitemapUrls,
+    ...sitemapUrls.map((url) => `    <url><loc>${escapeHtml(url)}</loc></url>`),
     "</urlset>",
     "",
 ].join("\n");
@@ -51,6 +51,7 @@ const sitemapUrl = new URL("sitemap.xml", getPageMetadata("/").canonical);
 
 await Promise.all([
     writeFile(new URL("sitemap.xml", dist), sitemap),
+    writeFile(new URL("sitemap.txt", dist), `${sitemapUrls.join("\n")}\n`),
     writeFile(new URL("robots.txt", dist), `User-agent: *\nAllow: /\nSitemap: ${sitemapUrl}\n`),
     writeFile(new URL("404.html", dist), renderPage(getPageMetadata("/404.html"))),
 ]);
