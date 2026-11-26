@@ -39,7 +39,7 @@ const HomePage = ({ darkMode }) => {
             </div>
             <div className="home-hero__intro">
               <p className="home-hero__eyebrow">HELLO WORLD! 👋</p>
-              <h1 id="home-hero-title" className="home-hero__title">
+              <h1 id="home-hero-title" className="home-hero__title" aria-label="I'm Agney Praseed">
                 <span>I&apos;m</span>{" "}
                 <strong className="home-hero__name">
                   <TypedText

@@ -14,14 +14,14 @@ His current research interests lie in mechanistic interpretability, multimodalit
 
 ## Pages
 
-- [Home](https://agneypraseed.github.io/#/): Landing page with animated introduction and an interactive 3D/2D skills graph
-- [About](https://agneypraseed.github.io/#/about): Bio, contact info, social links, resume/CV download, and photo gallery
-- [Projects](https://agneypraseed.github.io/#/projects): Portfolio of AI/ML and software engineering projects
-- [Blog](https://agneypraseed.github.io/#/blog): Essays, notes, and experiments (work in progress); links to external notes site
-- [Footprints](https://agneypraseed.github.io/#/footprints): Interactive 3D globe with travel photography from visited cities
-- [Books (Pretrain-text)](https://agneypraseed.github.io/#/books): Reading list with cover art, switchable between list and image grid views
-- [Videos (Pretrain-video)](https://agneypraseed.github.io/#/videos): Favourite anime, movies, and series with cover art and scene galleries
-- [Music (Pretrain-music)](https://agneypraseed.github.io/#/music): Spotify playlists with embedded players
+- [Home](https://agneypraseed.github.io/): Landing page with animated introduction and an interactive 3D/2D skills graph
+- [About](https://agneypraseed.github.io/about/): Bio, contact info, social links, resume/CV download, and photo gallery
+- [Projects](https://agneypraseed.github.io/projects/): Portfolio of AI/ML and software engineering projects
+- [Blog](https://agneypraseed.github.io/blog/): Essays, notes, and experiments (work in progress); links to external notes site
+- [Footprints](https://agneypraseed.github.io/footprints/): Interactive 3D globe with travel photography from visited cities
+- [Books (Pretrain-text)](https://agneypraseed.github.io/books/): Reading list with cover art, switchable between list and image grid views
+- [Videos (Pretrain-video)](https://agneypraseed.github.io/videos/): Favourite anime, movies, and series with cover art and scene galleries
+- [Music (Pretrain-music)](https://agneypraseed.github.io/music/): Spotify playlists with embedded players
 
 ## Skills
 

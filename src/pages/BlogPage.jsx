@@ -118,7 +118,7 @@ const BlogPage = ({ darkMode }) => {
                 {visibleSeries.map((s) => (
                     <div key={s.id} style={{ marginBottom: "2.5rem" }}>
                         <Link
-                            to={`/blog/${s.id}`}
+                            to={`/blog/${s.id}/`}
                             style={{
                                 textDecoration: "none",
                                 display: "block",
@@ -165,7 +165,7 @@ const BlogPage = ({ darkMode }) => {
                 {visibleEssays.map((essay) => (
                     <div key={essay.slug} style={{ marginBottom: "2rem" }}>
                         <Link
-                            to={`/blog/essays/${essay.slug}`}
+                            to={`/blog/essays/${essay.slug}/`}
                             style={{
                                 textDecoration: "none",
                                 display: "block",

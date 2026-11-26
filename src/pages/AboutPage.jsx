@@ -407,7 +407,7 @@ const AboutPage = ({ darkMode }) => {
                         My research goal is to build more explainable and reliable intelligent systems. My primary focus lies in <strong style={{ color: darkMode ? "#ffffff" : "#1a1a1a" }}>machine learning and computer vision</strong>, especially understanding how vision language models reason and respond to structured guidance.
                         <br /><br />
                         Outside of tech, I'm a huge fan of Real Madrid (Hala Madrid!) and I'm probably a little too immersed in the online world.
-                        Other hobbies include <HobbyLink to="/footprints" text="travelling" />, <HobbyLink to="/books" text="books" />, <HobbyLink to="/music" text="music" />, <HobbyLink to="/videos" text="movies/anime" />.
+                        Other hobbies include <HobbyLink to="/footprints/" text="travelling" />, <HobbyLink to="/books/" text="books" />, <HobbyLink to="/music/" text="music" />, <HobbyLink to="/videos/" text="movies/anime" />.
                     </div>
                 </div>
             </div>

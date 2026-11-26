@@ -104,9 +104,9 @@ const Navbar = ({ darkMode, isHomePage, toggleDarkMode }) => {
 
     const links = [
         { to: "/", label: "Home" },
-        { to: "/about", label: "About" },
-        { to: "/projects", label: "Projects" },
-        { to: "/blog", label: "Blog" },
+        { to: "/about/", label: "About" },
+        { to: "/projects/", label: "Projects" },
+        { to: "/blog/", label: "Blog" },
     ];
 
     const mobileLinkStyle = {

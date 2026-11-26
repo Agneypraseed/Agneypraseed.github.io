@@ -52,7 +52,7 @@ const ChapterNav = ({ darkMode, prevChapter, nextChapter, seriesId }) => {
     <div style={containerStyle}>
       {prevChapter ? (
         <Link 
-          to={`/blog/${seriesId}/${prevChapter.slug}`}
+          to={`/blog/${seriesId}/${prevChapter.slug}/`}
           style={linkStyle}
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -64,7 +64,7 @@ const ChapterNav = ({ darkMode, prevChapter, nextChapter, seriesId }) => {
       
       {nextChapter ? (
         <Link 
-          to={`/blog/${seriesId}/${nextChapter.slug}`}
+          to={`/blog/${seriesId}/${nextChapter.slug}/`}
           style={{...linkStyle, alignItems: 'flex-end', textAlign: 'right'}}
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.04)'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}

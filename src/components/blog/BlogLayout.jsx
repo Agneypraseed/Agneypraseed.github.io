@@ -8,7 +8,7 @@ import Footer from '../Footer';
 const BlogLayout = ({ 
   darkMode, 
   children, 
-  backLink = "/blog", 
+  backLink = "/blog/",
   backLabel = "Writing", 
   breadcrumb 
 }) => {

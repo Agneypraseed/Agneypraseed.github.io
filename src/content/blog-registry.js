@@ -7,7 +7,8 @@ export const essays = [
     {
         slug: "sample-essay",
         title: "Hello World",
-        // Set to true to show this essay in the blog listing.
+        description: "A short introduction to Agney Praseed’s blog and a note on getting started.",
+        // Set to true to include this essay in the blog listing and sitemap.
         showOnBlog: true,
     },
 ];

@@ -26,7 +26,7 @@ const SeriesHubPage = ({ darkMode }) => {
             >
                 <h1>Series not found</h1>
                 <Link
-                    to="/blog"
+                    to="/blog/"
                     style={{
                         color: darkMode ? "#a78bfa" : "#6366f1",
                         marginTop: "1rem",
@@ -61,7 +61,7 @@ const SeriesHubPage = ({ darkMode }) => {
             >
                 {/* Back link */}
                 <Link
-                    to="/blog"
+                    to="/blog/"
                     style={{
                         display: "inline-flex",
                         alignItems: "center",
@@ -152,7 +152,7 @@ const SeriesHubPage = ({ darkMode }) => {
                     {currentSeries.chapters.map((chapter) => (
                         <Link
                             key={chapter.slug}
-                            to={`/blog/${seriesId}/${chapter.slug}`}
+                            to={`/blog/${seriesId}/${chapter.slug}/`}
                             style={{
                                 display: "flex",
                                 alignItems: "baseline",

@@ -37,7 +37,7 @@ const BlogPostPage = ({ darkMode }) => {
     let prevChapter = null;
     let nextChapter = null;
     let breadcrumb = "";
-    let backLink = "/blog";
+    let backLink = "/blog/";
     let backLabel = "Writing";
 
     if (!isEssay) {
@@ -63,13 +63,13 @@ const BlogPostPage = ({ darkMode }) => {
             breadcrumb = currentChapter
                 ? `${currentSeries.title} · Chapter ${currentChapter.chapter}`
                 : currentSeries.title;
-            backLink = `/blog/${seriesId}`;
+            backLink = `/blog/${seriesId}/`;
             backLabel = currentSeries.title;
         }
     } else {
         const essay = essays.find((e) => e.slug === slug);
         if (essay) {
-            breadcrumb = essay.date;
+            breadcrumb = essay?.date;
         }
     }
 
