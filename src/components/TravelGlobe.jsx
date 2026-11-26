@@ -36,7 +36,6 @@ const TravelGlobe = ({ darkMode, locations = [], onLocationClick, selectedLocati
         <div style={{ 
             display: "flex", 
             justifyContent: "center",
-            marginBottom: "2rem",
         }}>
             <Globe
                 ref={globeRef}
@@ -55,7 +54,11 @@ const TravelGlobe = ({ darkMode, locations = [], onLocationClick, selectedLocati
                 pointColor={(d) => selectedLocation === d.location ? "#00ff88" : "#ff6b6b"}
                 pointRadius={(d) => selectedLocation === d.location ? 0.8 : 0.5}
                 pointAltitude={0.01}
-                pointLabel={(d) => `<div style="color: white; background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 8px; font-weight: 500; cursor: pointer;">📍 ${d.location}<br/><small style="opacity: 0.7;">Click to view photos</small></div>`}
+                pointLabel={(d) => (
+                    `<div style="color: white; background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 8px; font-weight: 500; cursor: pointer;">📍 ${d.location}${
+                        d.hasPhotos ? '<br/><small style="opacity: 0.7;">Click to view photos</small>' : ""
+                    }</div>`
+                )}
                 onPointClick={(point) => {
                     if (onLocationClick) {
                         onLocationClick(point.location);

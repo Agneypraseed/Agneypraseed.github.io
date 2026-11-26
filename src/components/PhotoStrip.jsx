@@ -12,13 +12,17 @@ const getRotation = (id) => {
     return (tiltSeed - 0.5) * 8;
 };
 
-const MagnifyingImage = ({ src, alt, isDraggingRef, isMobile }) => {
+const MagnifyingImage = ({ src, alt, isDraggingRef }) => {
     const imgRef = useRef(null);
     const magnifierRef = useRef(null);
 
-    const handleMouseMove = (e) => {
-        if (isMobile || isDraggingRef.current) {
-            if (magnifierRef.current) magnifierRef.current.style.display = 'none';
+    const hideMagnifier = () => {
+        if (magnifierRef.current) magnifierRef.current.style.display = 'none';
+    };
+
+    const handlePointerMove = (e) => {
+        if (e.pointerType === 'touch' || isDraggingRef.current) {
+            hideMagnifier();
             return;
         }
         if (!imgRef.current || !magnifierRef.current) return;
@@ -36,16 +40,13 @@ const MagnifyingImage = ({ src, alt, isDraggingRef, isMobile }) => {
         mag.style.transform = `translate3d(${e.clientX - left - magSize / 2}px, ${e.clientY - top - magSize / 2}px, 0)`;
     };
 
-    const handleMouseLeave = () => {
-        if (magnifierRef.current) magnifierRef.current.style.display = 'none';
-    };
-
     return (
         <div 
             style={{ width: '100%', height: '100%', position: 'relative' }}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            onMouseEnter={handleMouseMove}
+            onPointerMove={handlePointerMove}
+            onPointerEnter={handlePointerMove}
+            onPointerLeave={hideMagnifier}
+            onPointerCancel={hideMagnifier}
         >
             <img
                 ref={imgRef}
@@ -85,7 +86,7 @@ const MagnifyingImage = ({ src, alt, isDraggingRef, isMobile }) => {
     );
 };
 
-const PhotoStrip = ({ photos, onPhotoClick, darkMode }) => {
+const PhotoStrip = ({ photos, onPhotoClick }) => {
     const containerRef = useRef(null);
     const trackRef = useRef(null);
     const { isMobile } = useIsMobile();
@@ -159,7 +160,8 @@ const PhotoStrip = ({ photos, onPhotoClick, darkMode }) => {
         if (containerRef.current) {
             containerRef.current.style.cursor = "grabbing";
         }
-        e.currentTarget.setPointerCapture(e.pointerId);
+        // Keep clicks on the pressed photo while the strip handles drag events.
+        e.target.setPointerCapture(e.pointerId);
     }, []);
 
     const onPointerMove = useCallback((e) => {
@@ -218,21 +220,6 @@ const PhotoStrip = ({ photos, onPhotoClick, darkMode }) => {
             }
         };
     }, []);
-
-    if (photos.length === 0) {
-        return (
-            <div style={{
-                textAlign: "center",
-                padding: "3rem",
-                color: darkMode ? "rgba(255,255,255,0.6)" : "#9ca3af",
-            }}>
-                <p style={{ fontSize: "1.4rem", marginBottom: "0.5rem" }}>🌍</p>
-                <p style={{ fontSize: "1.1rem" }}>
-                    No photos to show. Prefix files with <code>fav_</code> to feature them!
-                </p>
-            </div>
-        );
-    }
 
     return (
         <div
@@ -304,7 +291,6 @@ const PhotoStrip = ({ photos, onPhotoClick, darkMode }) => {
                                     src={travel.image}
                                     alt={travel.location}
                                     isDraggingRef={isDragging}
-                                    isMobile={isMobile}
                                 />
                             </div>
                             {/* Caption */}

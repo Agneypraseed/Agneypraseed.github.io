@@ -22,6 +22,17 @@ const cityCoordinates = {
     "Hamburg, Germany": { lat: 53.5511, lng: 9.9937 },
     "Dresden, Germany": { lat: 51.0504, lng: 13.7373 },
     "Leipzig, Germany": { lat: 51.3397, lng: 12.3731 },
+    "Kozhikode, India": { lat: 11.24802, lng: 75.7804 },
+    "Kochi, India": { lat: 9.93988, lng: 76.26022 },
+    "Bengaluru, India": { lat: 12.97194, lng: 77.59369 },
+    "Kannur, India": { lat: 11.86752, lng: 75.35763 },
+    "Puducherry, India": { lat: 11.93381, lng: 79.82979 },
+};
+
+// Routes start from a configured city and stay within that country.
+export const routeStartByCountry = {
+    Germany: "Berlin, Germany",
+    India: "Kozhikode, India",
 };
 
 // === AUTO-DISCOVER ALL PHOTOS ===
@@ -37,17 +48,31 @@ const travels = Object.entries(photoModules).map(([path, image], index) => {
     const city = parts[parts.length - 2];
     const country = parts[parts.length - 3];
     const location = `${city}, ${country}`;
-    const coords = cityCoordinates[location] || { lat: 0, lng: 0 };
+    const coords = cityCoordinates[location];
     const isFavorite = filename.startsWith("fav_");
 
     return {
         id: index + 1,
+        city,
+        country,
         location,
-        lat: coords.lat,
-        lng: coords.lng,
+        lat: coords?.lat,
+        lng: coords?.lng,
         image,
         isFavorite,
         date: "",
+    };
+});
+
+const locationsWithPhotos = new Set(travels.map(({ location }) => location));
+export const globeLocations = Object.entries(cityCoordinates).map(([location, coordinates]) => {
+    const separator = location.lastIndexOf(", ");
+    return {
+        ...coordinates,
+        city: location.slice(0, separator),
+        country: location.slice(separator + 2),
+        location,
+        hasPhotos: locationsWithPhotos.has(location),
     };
 });
 

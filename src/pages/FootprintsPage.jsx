@@ -1,23 +1,28 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import Footer from "../components/Footer";
-import TravelGlobe from "../components/TravelGlobe";
+import GlobePlaceReadout from "../components/GlobePlaceReadout";
 import PhotoStrip from "../components/PhotoStrip";
-import travels from "../data/travels";
+import travels, { globeLocations, routeStartByCountry } from "../data/travels";
 import useIsMobile from "../hooks/useIsMobile";
+import "./FootprintsPage.css";
+
+const TravelGlobe = lazy(() => import("../components/TravelGlobe"));
+const RouteGlobe = lazy(() => import("../components/RouteGlobe"));
 
 const FootprintsPage = ({ darkMode }) => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedLocation, setSelectedLocation] = useState(null);
+    const [globeMode, setGlobeMode] = useState("Routes");
     const { isMobile } = useIsMobile();
 
     // Show favorites by default, or all photos for a selected city
     const photosToShow = selectedLocation
         ? travels.filter(t => t.location === selectedLocation)
         : travels.filter(t => t.isFavorite);
-
     const handleLocationClick = (location) => {
-        setSelectedLocation(location === selectedLocation ? null : location);
+        setSelectedLocation((current) => current === location ? null : location);
     };
+    const clearLocation = () => setSelectedLocation(null);
 
     return (
         <div
@@ -48,62 +53,53 @@ const FootprintsPage = ({ darkMode }) => {
                 Agney Around the World ✨
             </p>
 
-            {/* Globe */}
-            <TravelGlobe 
-                darkMode={darkMode} 
-                locations={travels} 
-                onLocationClick={handleLocationClick}
-                selectedLocation={selectedLocation}
-            />
-
-            {/* Location Filter Indicator */}
-            {travels.length > 0 && (
-                <div style={{
-                    textAlign: "center",
-                    marginBottom: "1.5rem",
-                }}>
-                    {selectedLocation ? (
-                        <div style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "0.75rem",
-                            background: darkMode ? "rgba(0, 255, 136, 0.2)" : "rgba(0, 200, 100, 0.1)",
-                            padding: "0.75rem 1.5rem",
-                            borderRadius: "50px",
-                            color: darkMode ? "#00ff88" : "#047857",
-                            fontWeight: "600",
-                            border: darkMode ? "none" : "1px solid rgba(0, 200, 100, 0.2)",
-                        }}>
-                            <span>📍 {selectedLocation}</span>
-                            <button
-                                onClick={() => setSelectedLocation(null)}
-                                style={{
-                                    background: darkMode ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)",
-                                    border: "none",
-                                    borderRadius: "50%",
-                                    width: "24px",
-                                    height: "24px",
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    fontSize: "14px",
-                                    color: "inherit",
-                                }}
-                            >
-                                ✕
-                            </button>
-                        </div>
-                    ) : null}
+            <div className="footprints-map-controls" data-theme={darkMode ? "dark" : "light"}>
+                <div className="footprints-map-switch" role="group" aria-label="Globe mode">
+                    {["Satellite", "Routes"].map((mode) => (
+                        <button
+                            key={mode}
+                            type="button"
+                            aria-pressed={globeMode === mode}
+                            onClick={() => setGlobeMode(mode)}
+                        >
+                            {mode}
+                        </button>
+                    ))}
                 </div>
-            )}
+            </div>
+
+            <Suspense fallback={<p className="footprints-route-status" role="status">Loading globe…</p>}>
+                {globeMode === "Satellite" ? (
+                    <div className="footprints-satellite-map">
+                        <TravelGlobe
+                            darkMode={darkMode}
+                            locations={globeLocations}
+                            onLocationClick={handleLocationClick}
+                            selectedLocation={selectedLocation}
+                        />
+                        {selectedLocation && (
+                            <GlobePlaceReadout darkMode={darkMode} location={selectedLocation} onClear={clearLocation} />
+                        )}
+                    </div>
+                ) : (
+                    <RouteGlobe
+                        darkMode={darkMode}
+                        locations={globeLocations}
+                        routeStartByCountry={routeStartByCountry}
+                        onLocationClick={handleLocationClick}
+                        onClearLocation={clearLocation}
+                        selectedLocation={selectedLocation}
+                    />
+                )}
+            </Suspense>
 
             {/* Photo Strip */}
-            <PhotoStrip
-                photos={photosToShow}
-                onPhotoClick={setSelectedImage}
-                darkMode={darkMode}
-            />
+            {photosToShow.length > 0 && (
+                <PhotoStrip
+                    photos={photosToShow}
+                    onPhotoClick={setSelectedImage}
+                />
+            )}
 
             {/* Lightbox */}
             {selectedImage && (
