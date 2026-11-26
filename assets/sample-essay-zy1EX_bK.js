@@ -1,0 +1,5 @@
+import{r as o,j as n,a}from"./index-Dbet4zLI.js";function m({src:e}){const t=o.useRef(null);return o.useEffect(()=>{const r=t.current,i=new MutationObserver(()=>{const s=r.querySelector("#mapmyvisitors-widget");s&&(s.setAttribute("aria-label","Visitor map statistics"),i.disconnect())});i.observe(r,{childList:!0,subtree:!0});const l=requestAnimationFrame(()=>{const s=document.createElement("script");s.id="mapmyvisitors",s.src=e,r.appendChild(s)});return()=>{cancelAnimationFrame(l),i.disconnect(),r.replaceChildren()}},[e]),n.jsx("div",{ref:t,className:"mapmyvisitors-embed"})}function c(e){const t={blockquote:"blockquote",h1:"h1",p:"p",...a(),...e.components};return n.jsxs(n.Fragment,{children:[n.jsx(t.h1,{children:"Hello world."}),`
+`,n.jsxs(t.blockquote,{children:[`
+`,n.jsx(t.p,{children:'“A small beginning is still a beginning"'}),`
+`]}),`
+`,n.jsx(m,{src:"https://mapmyvisitors.com/map.js?d=tGwl0YuHSIMpyubqRdX8N8h5t29HqQmPcDtZ4mrKLl0&cl=ffffff&w=a"})]})}function d(e={}){const{wrapper:t}={...a(),...e.components};return t?n.jsx(t,{...e,children:n.jsx(c,{...e})}):c(e)}export{d as default};
